@@ -5,16 +5,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.studygether.myFontFamily
 
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = myFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        fontSize = 16.sp
+    ),
+    titleLarge = TextStyle(
+        fontFamily = myFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp
     )
+    // add other styles as needed
+)
     /* Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
@@ -31,4 +37,3 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     )
     */
-)
