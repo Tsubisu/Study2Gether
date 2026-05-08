@@ -2,8 +2,8 @@ package com.example.studygether.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
+val MainTheme = Color(142, 170, 210, 255)
+val TextColor = Color(0xFF154B7C)
 val Pink80 = Color(0xFFEFB8C8)
 
 val Purple40 = Color(0xFF6650a4)
