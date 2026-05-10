@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StudyGether">
         <activity
-            android:name=".ProfilePage"
+            android:name=".View.ProfilePage"
             android:exported="false"
             android:label="@string/title_activity_profile_page"
             android:theme="@style/Theme.StudyGether" />
