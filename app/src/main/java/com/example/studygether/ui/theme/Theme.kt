@@ -1,6 +1,7 @@
 package com.example.studygether.ui.theme
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +33,11 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
+
+
+//private val BlueLightColorScheme= lightColorScheme(
+//    primary= Color(0xFFFFFFBFE)
+//)
 
 @Composable
 fun StudyGetherTheme(
