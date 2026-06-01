@@ -1,4 +1,4 @@
-package com.example.studygether.ui.theme
+package com.example.studygether.View.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = MainTheme,
-    secondary = TextColor,
-    tertiary = CardColour
+    primary = Purple80,
+    secondary = PurpleGrey80,
+    tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(

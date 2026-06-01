@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Study@Gether</string>
     <string name="title_activity_profile_page">ProfilePage</string>
+    <string name="title_activity_channel_page">ChannelPage</string>
 </resources>
