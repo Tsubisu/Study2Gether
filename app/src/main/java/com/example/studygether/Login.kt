@@ -1,14 +1,14 @@
 package com.example.studygether
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Space
-import androidx.compose.foundation.layout.Box
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,20 +34,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studygether.ui.theme.Topic
-import com.example.studygether.ui.theme.loginbg
 import com.example.studygether.ui.theme.input
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import com.example.studygether.ui.theme.Typography
+import com.example.studygether.ui.theme.loginbg
+import com.example.studygether.ui.theme.loginbutton
 
 val myFontFamily = FontFamily(
     Font(R.font.doppioone)
@@ -59,8 +59,10 @@ class Login : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
            LoginBody()
-           }        }
+           }
     }
+
+}
 
 
 @Composable
@@ -70,32 +72,38 @@ fun LoginBody(){
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = R.drawable.login),
+            painter = painterResource(R.drawable.login),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
         )
     Column(modifier = Modifier.fillMaxSize())
-    {   Spacer(modifier = Modifier.height(height = 75.dp))
-        Row(horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()) {
+    {
+        Spacer(modifier = Modifier.height(height = 75.dp))
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Image(
                 modifier = Modifier.size(150.dp),
                 painter = painterResource(R.drawable.study2gether),
                 contentDescription = "Logo",
             )
         }
-        Text(text = "STUDY2GETHER", style = TextStyle(
-            textAlign = TextAlign.Center,
-            color = Topic,
-            fontSize = 29.sp,
-            fontWeight = FontWeight(400),
-            fontFamily = myFontFamily
-        ),
+        Text(
+            text = "STUDY2GETHER", style = TextStyle(
+                textAlign = TextAlign.Center,
+                color = Topic,
+                fontSize = 29.sp,
+                fontWeight = FontWeight(400),
+                fontFamily = myFontFamily
+            ),
             modifier = Modifier.fillMaxWidth().padding(5.dp)
         )
-        Column(modifier = Modifier.fillMaxWidth(),
+        Column(
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Card(
                 modifier = Modifier
                     .height(450.dp)
@@ -104,39 +112,45 @@ fun LoginBody(){
                 colors = CardDefaults.cardColors(
                     containerColor = loginbg
                 )
-                ) {
+            ) {
                 Column(
                     modifier = Modifier.fillMaxSize().padding(5.dp),
 //                    verticalArrangement = Arrangement.SpaceEvenly,
 //                    horizontalAlignment = Alignment.CenterHorizontally,
 
                 ) {
-                    Text(text = "LOGIN", style = TextStyle(
-                        fontSize = 32.sp,
-                        fontFamily = myFontFamily,
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.W400
-                    ),
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        text = "LOGIN", style = TextStyle(
+                            fontSize = 32.sp,
+                            fontFamily = myFontFamily,
+                            color = Color.White,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.W400
+                        ),
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text("Email", style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.W600
-                    ))
+                    Spacer(modifier = Modifier.height(25.dp))
+                    Text(
+                        "Email", style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.W600
+                        )
+                    )
                     OutlinedTextField(
                         value = email,
-                                onValueChange = {
+                        onValueChange = {
                             email = it
                         },
                         shape = RoundedCornerShape(25.dp),
                         modifier = Modifier.fillMaxWidth().padding(10.dp),
                         placeholder = {
-                            Text("Enter your Email", style = TextStyle(
-                                fontFamily = myFontFamily,
-                                fontSize = 24.sp
-                            )
+                            Text(
+                                "Enter your Email", style = TextStyle(
+                                    fontFamily = myFontFamily,
+                                    fontSize = 24.sp,
+                                    color = Color.Black
+                                )
                             )
                         },
                         colors = TextFieldDefaults.colors(
@@ -148,10 +162,12 @@ fun LoginBody(){
                         )
                     )
                     Spacer(modifier = Modifier.height(25.dp))
-                    Text("Password", style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.W600
-                    ))
+                    Text(
+                        "Password", style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.W600
+                        )
+                    )
                     OutlinedTextField(
                         value = password,
                         onValueChange = {
@@ -160,11 +176,15 @@ fun LoginBody(){
                         shape = RoundedCornerShape(25.dp),
                         modifier = Modifier.fillMaxWidth().padding(10.dp),
                         placeholder = {
-                            Text("* * * * * * * *", style = TextStyle(
-                                textAlign = TextAlign.Center,
-                                fontFamily = myFontFamily,
-                                fontSize = 24.sp,
-                            ),
+                            Text(
+                                "* * * * * * * *",
+                                style = TextStyle(
+                                    textAlign = TextAlign.Center,
+                                    fontFamily = myFontFamily,
+                                    fontSize = 24.sp,
+                                    color = Color.Black
+    
+                                ),
                             )
                         },
                         colors = TextFieldDefaults.colors(
@@ -175,28 +195,37 @@ fun LoginBody(){
                             focusedContainerColor = Color.Blue,
                         )
                     )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Row(modifier = Modifier.fillMaxWidth().padding(5.dp),
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        ElevatedButton(
-                            modifier = Modifier,
-                            onClick = {},
-                            colors = ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color.White
-                            )) {
-                            Text(
-                                "Login", style = TextStyle(
-                                    fontFamily = myFontFamily,
-                                    fontSize = 16.sp
+
+                    Row(modifier = Modifier.padding(10.dp)) {
+                        Text(
+                            "Forget Password",
+                            modifier = Modifier.clickable{}
+                        )
+                    }
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(5.dp),
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            ElevatedButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = {},
+                                colors = ButtonDefaults.elevatedButtonColors(
+                                    containerColor = loginbutton
                                 )
-                            )
+                            ) {
+                                Text(
+                                    "Login", style = TextStyle(
+                                        fontFamily = myFontFamily,
+                                        fontSize = 16.sp
+                                    )
+                                )
+                            }
                         }
                     }
                 }
-            }
-        }}
-}
+        }
+    }
+    }
 }
 @Preview
 @Composable
