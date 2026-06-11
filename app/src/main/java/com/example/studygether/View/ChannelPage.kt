@@ -34,6 +34,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +49,7 @@ import com.example.studygether.R
 import com.example.studygether.ui.theme.CardColour
 import com.example.studygether.ui.theme.MainTheme
 import com.example.studygether.ui.theme.TextColor
+import com.example.studygether.ViewModel.ChannelViewModel
 
 class ChannelPage : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,12 +63,10 @@ class ChannelPage : ComponentActivity() {
 
 @Composable
 fun ChannelBody() {
-    var isJoined by remember { mutableStateOf(false) }
-    var Search by remember { mutableStateOf("") }
-    val context = LocalContext.current
-    //val activity= context as Activity
-    var selectedItem by remember { mutableIntStateOf(0) }
-
+        var isJoined by remember { mutableStateOf(false) }
+        var Search by remember { mutableStateOf("") }
+        val context = LocalContext.current
+        var selectedItem by remember { mutableIntStateOf(0) }
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {

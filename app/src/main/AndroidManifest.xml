@@ -12,6 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StudyGether">
         <activity
+            android:name=".View.ui.theme.ChangeUsername"
+            android:exported="true"
+            android:label="@string/title_activity_change_username"
+            android:theme="@style/Theme.StudyGether">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".View.ChannelPage"
             android:exported="true"
             android:label="@string/title_activity_channel_page"
