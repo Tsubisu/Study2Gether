@@ -1,8 +1,7 @@
-package com.example.studygether.ViewModel
+package com.example.studygether.ViewModels
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -30,9 +29,8 @@ data class CommunityCreationUiState(
 class CommunityCreationViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(CommunityCreationUiState())
-    val uiState: StateFlow<CommunityCreationUiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
-    // --- Field Updates ---
 
     fun onFirstNameChange(value: String) {
         _uiState.update {

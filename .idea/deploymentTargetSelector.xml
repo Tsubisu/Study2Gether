@@ -4,6 +4,17 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2026-06-09T03:11:06.853358600Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=2b38542a" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="CommunityCreation">
+        <option name="selectionMode" value="DROPDOWN" />
         <DropdownSelection timestamp="2026-05-22T08:59:37.506555Z">
           <Target type="DEFAULT_BOOT">
             <handle>
@@ -13,9 +24,9 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="CommunityCreation">
+      <SelectionState runConfigName="Channels">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-05-22T08:59:37.506555Z">
+        <DropdownSelection timestamp="2026-05-29T15:01:30.491380Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\subas\.android\avd\Pixel_10_Pro.avd" />

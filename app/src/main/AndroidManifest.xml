@@ -11,15 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StudyGether">
-
         <activity
-            android:name=".View.CommunityCreation"
+            android:name=".View.MainActivity"
             android:exported="true"
-            android:label="CommunityCreationActivity"
+            android:label="@string/title_activity_main"
             android:theme="@style/Theme.StudyGether">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
