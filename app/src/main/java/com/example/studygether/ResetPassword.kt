@@ -1,6 +1,7 @@
 package com.example.studygether
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,9 +22,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -40,27 +43,40 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studygether.ViewModel.AuthViewModel
+import com.example.studygether.ui.theme.black
 import com.example.studygether.ui.theme.loginbg
-import com.example.studygether.ui.theme.textcolor
 
 val myFontFamily = FontFamily(
     Font(R.font.doppioone)
 )
 
-class Login : ComponentActivity() {
+class ResetPasswordActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LoginBody()
-        }        }
+            ResetPasswordBody()
+        }
+    }
 }
 
-
 @Composable
-fun LoginBody(){
+fun ResetPasswordBody(viewModel: AuthViewModel = viewModel()) {
     var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val resetState by viewModel.resetPasswordState
+
+    LaunchedEffect(resetState) {
+        resetState?.let { result ->
+            if (result.isSuccess) {
+                Toast.makeText(context, "Password reset email sent!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Error: ${result.exceptionOrNull()?.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -68,111 +84,112 @@ fun LoginBody(){
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
         )
-        Column(modifier = Modifier.fillMaxSize())
-        {   Spacer(modifier = Modifier.height(height = 75.dp))
-            Row(horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Spacer(modifier = Modifier.height(75.dp))
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Image(
                     modifier = Modifier.size(150.dp),
                     painter = painterResource(R.drawable.logoapp),
                     contentDescription = "Logo",
                 )
             }
-            Text(text = "STUDY2GETHER", style = TextStyle(
-                textAlign = TextAlign.Center,
-                color = Color.Gray,
-                fontSize = 29.sp,
-                fontWeight = FontWeight(400),
-                fontFamily = myFontFamily
-            ),
+            Text(
+                text = "STUDY2GETHER",
+                style = TextStyle(
+                    textAlign = TextAlign.Center,
+                    color = Color.Gray,
+                    fontSize = 29.sp,
+                    fontWeight = FontWeight(400),
+                    fontFamily = myFontFamily
+                ),
                 modifier = Modifier.fillMaxWidth().padding(5.dp)
             )
-            Column(modifier = Modifier.fillMaxWidth(),
+            Column(
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Card(
                     modifier = Modifier
-                        .height(450.dp)
+                        .height(350.dp)
                         .width(300.dp),
-                    RoundedCornerShape(20),
+                    shape = RoundedCornerShape(20),
                     colors = CardDefaults.cardColors(
-                        containerColor= loginbg,
-
+                        containerColor = loginbg,
                     )
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(5.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-
+                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text(text = "Reset Password", style = TextStyle(
-                            fontSize = 32.sp,
-                            fontFamily = myFontFamily,
-                            color = textcolor,
-                            textAlign = TextAlign.Center
-                        ),
+                        Text(
+                            text = "Reset Password",
+                            style = TextStyle(
+                                fontSize = 28.sp,
+                                fontFamily = myFontFamily,
+                                color = black,
+                                textAlign = TextAlign.Center
+                            ),
                             modifier = Modifier.fillMaxWidth()
                         )
-                        Text("Email")
+                        
+                        Spacer(modifier = Modifier.height(20.dp))
+                        
+                        Text(
+                            text = "Email",
+                            modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
+                            style = TextStyle(fontFamily = myFontFamily)
+                        )
+                        
                         OutlinedTextField(
                             value = email,
-                            onValueChange = {
-                                email = it
-                            },
+                            onValueChange = { email = it },
                             shape = RoundedCornerShape(25.dp),
                             modifier = Modifier.fillMaxWidth().padding(10.dp),
                             placeholder = {
-                                Text("Enter your current password", style = TextStyle(
-                                    fontFamily = myFontFamily,
-                                    fontSize = 15.sp
-                                )
+                                Text(
+                                    "Enter your email",
+                                    style = TextStyle(fontFamily = myFontFamily, fontSize = 15.sp)
                                 )
                             },
-                            colors = colors(
-
-                                unfocusedIndicatorColor = Color.Transparent,
+                            colors = OutlinedTextFieldDefaults.colors(
                                 unfocusedContainerColor = Color.White,
+                                focusedContainerColor = Color.White,
+                                unfocusedIndicatorColor = Color.Transparent,
                                 focusedIndicatorColor = Color.Gray.copy(alpha = 0.1f),
-                                focusedContainerColor = Color.Blue,
                             )
                         )
-                        Text("Password")
-                        OutlinedTextField(
-                            value = password,
-                            onValueChange = {
-                                email = it
+                        
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        ElevatedButton(
+                            onClick = {
+                                if (email.isNotEmpty()) {
+                                    viewModel.resetPassword(email)
+                                } else {
+                                    Toast.makeText(context, "Please enter your email", Toast.LENGTH_SHORT).show()
+                                }
                             },
-                            shape = RoundedCornerShape(25.dp),
-                            modifier = Modifier.fillMaxWidth().padding(10.dp),
-                            placeholder = {
-                                Text("* * * * * * * *", style = TextStyle(
-                                    textAlign = TextAlign.Center,
-                                    fontFamily = myFontFamily,
-                                    fontSize = 24.sp,
-                                ),
-                                )
-                            },
-                            colors = colors(
-
-                                unfocusedIndicatorColor = Color.Transparent,
-                                unfocusedContainerColor = Color.White,
-                                focusedIndicatorColor = Color.Gray.copy(alpha = 0.1f),
-                                focusedContainerColor = Color.Blue,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+                        ) {
+                            Text(
+                                "Send Reset Email",
+                                style = TextStyle(fontFamily = myFontFamily)
                             )
-                        )
-                        ElevatedButton(onClick = {}) {
-                            Text("Login", style = TextStyle(
-                                fontFamily = myFontFamily,
-                            ))
                         }
                     }
                 }
-            }}
+            }
+        }
     }
 }
+
 @Preview
 @Composable
-fun LoginPreview(){
-    LoginBody()
+fun ResetPasswordPreview() {
+    ResetPasswordBody()
 }
