@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.R
 import com.example.studygether.Repository.ProfileImplementation
 import com.example.studygether.View.ui.theme.ui.theme.StudyGetherTheme
@@ -60,7 +61,7 @@ import com.example.studygether.ViewModel.ProfileViewModel
 import com.example.studygether.ui.theme.CardColour
 import com.example.studygether.ui.theme.MainTheme
 import com.example.studygether.ui.theme.TextColor
-
+//import androidx.lifecycle.viewmodel.compose.viewModel
 class ChangeUsername : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,25 +73,25 @@ class ChangeUsername : ComponentActivity() {
 }
 
 @Composable
-fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
+fun ChangeUsernameBody(viewModel: ProfileViewModel = viewModel()) {
     var username by remember { mutableStateOf("") }
     var confirm by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
-//    val profileViewModel = remember { ProfileViewModel(repo = ProfileImplementation()) }
-//    val profileData by profileViewModel.userProfile.observeAsState(initial = null)
-//    val isLoading by profileViewModel.loading.observeAsState(initial = false)
-//    val userId = profileViewModel.currentUserId
-//
-//    LaunchedEffect(key1 = profileData) {
-//        if (userId != null) {
-//            profileViewModel.getUserProfile(userId)
-//        }
-//        profileData?.let {
-//            username = it.username
-//        }
-//    }
+    val profileViewModel = remember { ProfileViewModel(repo = ProfileImplementation()) }
+    val profileData by profileViewModel.userProfile.observeAsState(initial = null)
+    val isLoading by profileViewModel.loading.observeAsState(initial = false)
+    val userId = profileViewModel.currentUserId
+
+    LaunchedEffect(key1 = profileData) {
+        if (userId != null) {
+            profileViewModel.getUserProfile(userId)
+        }
+        profileData?.let {
+            username = it.username
+        }
+    }
 
 
     Scaffold(
