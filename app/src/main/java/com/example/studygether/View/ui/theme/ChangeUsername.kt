@@ -33,7 +33,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +54,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studygether.R
+import com.example.studygether.Repository.ProfileImplementation
 import com.example.studygether.View.ui.theme.ui.theme.StudyGetherTheme
+import com.example.studygether.ViewModel.ProfileViewModel
 import com.example.studygether.ui.theme.CardColour
 import com.example.studygether.ui.theme.MainTheme
 import com.example.studygether.ui.theme.TextColor
@@ -68,14 +72,25 @@ class ChangeUsername : ComponentActivity() {
 }
 
 @Composable
-fun ChangeUsernameBody(){
-    var isJoined by remember { mutableStateOf(false) }
-    var Search by remember { mutableStateOf("") }
-    val context = LocalContext.current
-    var selectedItem by remember { mutableIntStateOf(0) }
+fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
     var username by remember { mutableStateOf("") }
     var confirm by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
+    var selectedItem by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
+//    val profileViewModel = remember { ProfileViewModel(repo = ProfileImplementation()) }
+//    val profileData by profileViewModel.userProfile.observeAsState(initial = null)
+//    val isLoading by profileViewModel.loading.observeAsState(initial = false)
+//    val userId = profileViewModel.currentUserId
+//
+//    LaunchedEffect(key1 = profileData) {
+//        if (userId != null) {
+//            profileViewModel.getUserProfile(userId)
+//        }
+//        profileData?.let {
+//            username = it.username
+//        }
+//    }
 
 
     Scaffold(
