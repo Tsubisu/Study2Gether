@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.Model.Users
+import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.MainActivityViewModel
 import com.example.studygether.ViewModels.TopBarState
 import com.example.studygether.ui.theme.Typography
@@ -45,6 +46,8 @@ fun ConvoScreen(mainViewModel: MainActivityViewModel= viewModel(),
             barColor = barColor
         ))
         Log.d("Test","Printed")
+
+        mainViewModel.setBottomBarType(BottomBarState(BottomBars.MessageBar))
 
     }
 

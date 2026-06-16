@@ -40,12 +40,7 @@ fun MainGraph(viewModel: MainActivityViewModel)
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {TopBar(navController)},
-        bottomBar = {if (showBottomNav)
-            {
-                BottomBar(navController)
-
-            }
-        }
+        bottomBar = {BottomBar(viewModel.bottomBarState.bottomBar,navController)}
     )
     {
         innerPadding->

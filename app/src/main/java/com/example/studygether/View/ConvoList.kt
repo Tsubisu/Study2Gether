@@ -47,6 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.Model.Message
 import com.example.studygether.Model.TextMessage
 import com.example.studygether.R
+import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.MainActivityViewModel
 import com.example.studygether.ViewModels.TopBarState
 import com.example.studygether.ui.theme.Typography
@@ -66,8 +67,9 @@ fun ConvoListScreen(mainViewModel: MainActivityViewModel= viewModel(),
             }
             }
         )
-
         )
+
+        mainViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))
     }
 
     val testMessage by remember { mutableStateOf(TextMessage(
@@ -78,9 +80,6 @@ fun ConvoListScreen(mainViewModel: MainActivityViewModel= viewModel(),
         content = "Test Message is being showed here"
 
     )) }
-
-
-
     Box()
     {
         Box(modifier = Modifier.fillMaxSize().background(color= MaterialTheme.colorScheme.primary)){

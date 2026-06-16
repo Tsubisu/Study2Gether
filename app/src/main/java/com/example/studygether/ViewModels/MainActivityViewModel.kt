@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import com.example.studygether.View.BottomBars
 
 
 data class TopBarState(
@@ -17,10 +18,17 @@ data class TopBarState(
     val actions: @Composable RowScope.() -> Unit={}
 )
 
+data class BottomBarState(
+    var bottomBar: BottomBars= BottomBars.NavBar
+)
+
 class MainActivityViewModel : ViewModel()
 {
     var topBarState by mutableStateOf(TopBarState())
         private set
+
+    var bottomBarState by mutableStateOf(BottomBarState())
+            private set
 
     fun setTopBar(newState:TopBarState)
     {
@@ -30,6 +38,11 @@ class MainActivityViewModel : ViewModel()
     fun setTitle(title:@Composable ()-> Unit)
     {
         topBarState=topBarState.copy(title =title )
+    }
+
+    fun setBottomBarType(bottomBars:BottomBarState)
+    {
+        bottomBarState=bottomBars
     }
 
 

@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            StudyGetherTheme(true,false) {
+            StudyGetherTheme(false,false) {
                 App()
             }
         }
