@@ -1,4 +1,4 @@
-package com.example.studygether
+package com.example.studygether.model
 
 data class chatItems(
     val imageRes: Int,

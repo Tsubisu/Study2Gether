@@ -1,9 +1,5 @@
-package com.example.studygether
+package com.example.studygether.view
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +40,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.studygether.model.chatItems
+import com.example.studygether.R
 import com.example.studygether.ui.theme.TextColor
 import com.example.studygether.ui.theme.loginbg
 

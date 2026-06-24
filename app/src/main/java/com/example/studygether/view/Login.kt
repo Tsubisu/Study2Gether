@@ -1,7 +1,8 @@
-package com.example.studygether
+package com.example.studygether.view
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -34,16 +35,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.studygether.R
 import com.example.studygether.ui.theme.Topic
 import com.example.studygether.ui.theme.input
 import com.example.studygether.ui.theme.loginbg
@@ -70,6 +72,9 @@ fun LoginBody(){
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val context = LocalContext.current
+
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.login),
@@ -85,7 +90,7 @@ fun LoginBody(){
         ) {
             Image(
                 modifier = Modifier.size(150.dp),
-                painter = painterResource(R.drawable.study2gether),
+                painter = painterResource(R.drawable.applogo),
                 contentDescription = "Logo",
             )
         }
@@ -199,7 +204,12 @@ fun LoginBody(){
                     Row(modifier = Modifier.padding(10.dp)) {
                         Text(
                             "Forget Password",
-                            modifier = Modifier.clickable{}
+                            modifier = Modifier.clickable{
+//                                val intent = Intent(context,
+//                                    ForgotPassword::class.java)
+//                                context.startActivity(intent)
+//                                activity.finish()
+                            }
                         )
                     }
                         Row(
@@ -208,7 +218,39 @@ fun LoginBody(){
                         ) {
                             ElevatedButton(
                                 modifier = Modifier.fillMaxWidth(),
-                                onClick = {},
+                                onClick = {
+                                    val sharedPreferences = context.getSharedPreferences(
+                                        "User",
+                                        Context.MODE_PRIVATE
+                                    )
+
+
+                                    val emailStorage: String? = sharedPreferences.getString("email", "")
+                                    val passwordStorage: String? = sharedPreferences.getString("password", "")
+
+                                    if (email == emailStorage && password == passwordStorage) {
+                                        Toast.makeText(
+                                            context,
+                                            "Login success",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                        val editor = sharedPreferences.edit()
+
+                                        editor.putBoolean("isLoggedIn", true)
+
+//                                        val intent = Intent(context, NaviigationActivity::class.java)
+//                                        context.startActivity(intent)
+//                                        activity.finish()
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Login failed",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                    }
+                                },
                                 colors = ButtonDefaults.elevatedButtonColors(
                                     containerColor = loginbutton
                                 )
