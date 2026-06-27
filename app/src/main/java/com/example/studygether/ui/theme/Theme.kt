@@ -12,6 +12,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.example.studygether.ui.theme.DarkColorScheme
 
 private val DarkColorScheme = darkColorScheme(
     primary = MainTheme,
@@ -89,6 +90,61 @@ private val DarkBlueColorScheme = darkColorScheme(
     surfaceContainerHighest = Color(0xFF475569)
 )
 
+private val LightGreenColorScheme = lightColorScheme(
+    primary = Color(0xFF8BA96E),
+    onPrimary = Color(0xFF84A17B),
+    primaryContainer = Color(0xFFBED2BA),
+    onPrimaryContainer = Color(0xFF394D2C),
+    secondary = Color(0xFF8DAF9B),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFAAC4BC),
+    onSecondaryContainer = Color(0xFF4DA183),
+    tertiary = Color(0xFF58AD9D),
+    onTertiary = Color(0xFF29674E),
+    tertiaryContainer = Color(0xFFF5F0E6),
+    onTertiaryContainer = Color(0xFF95AF9F),
+    background = Color(0xFFF4F7F3),
+    onBackground = Color(0xFFBBC5C0),
+    surface = Color(0xFFFFFFFF),
+    onSurface = Color(0xFF8EB980),
+    surfaceVariant = Color(0xFFE1E5DC),
+    onSurfaceVariant = Color(0xFF84AF68),
+    outline = Color(0xFF75915E),
+    outlineVariant = Color(0xFFC3C8BC),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFEEF2EB),
+    surfaceContainer = Color(0xFFE8ECE5),
+    surfaceContainerHigh = Color(0xFFE2E6DF),
+    surfaceContainerHighest = Color(0xFFDCDFD8)
+)
+private val DarkGreenColorScheme = darkColorScheme(
+    primary = Color(0xFF516240),
+    onPrimary = Color(0xFF50624B),
+    primaryContainer = Color(0xFF626C60),
+    onPrimaryContainer = Color(0xFF394D2C),
+    secondary = Color(0xFF4C6958),
+    onSecondary = Color(0xFF647A77),
+    secondaryContainer = Color(0xFF8DA29D),
+    onSecondaryContainer = Color(0xFF31624E),
+    tertiary = Color(0xFF58AD9D),
+    onTertiary = Color(0xFF29674E),
+    tertiaryContainer = Color(0xFF3C523E),
+    onTertiaryContainer = Color(0xFF7E9887),
+    background = Color(0xFFF4F7F3),
+    onBackground = Color(0xFF525E4D),
+    surface = Color(0xFFFFFFFF),
+    onSurface = Color(0xFF1A1D19),
+    surfaceVariant = Color(0xFFE1E5DC),
+    onSurfaceVariant = Color(0xFF43493F),
+    outline = Color(0xFF73796E),
+    outlineVariant = Color(0xFFC3C8BC),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFEEF2EB),
+    surfaceContainer = Color(0xFFE8ECE5),
+    surfaceContainerHigh = Color(0xFFE2E6DF),
+    surfaceContainerHighest = Color(0xFFDCDFD8)
+)
+
 @Composable
 fun StudyGetherTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -108,18 +164,24 @@ fun StudyGetherTheme(
                 AppThemeStyle.BlueTheme -> {
                     if (darkTheme) DarkBlueColorScheme else LightBlueColorScheme
                 }
+                AppThemeStyle.GreenTheme -> {
+                    if (darkTheme) DarkGreenColorScheme else LightGreenColorScheme
+                }
             }
         }
         darkTheme -> {
             when (themeStyle) {
                 AppThemeStyle.DEFAULT -> DarkColorScheme
                 AppThemeStyle.BlueTheme -> DarkBlueColorScheme
+                AppThemeStyle.GreenTheme -> DarkGreenColorScheme
             }
         }
         else -> {
             when (themeStyle) {
                 AppThemeStyle.DEFAULT -> LightColorScheme
                 AppThemeStyle.BlueTheme -> LightBlueColorScheme
+                AppThemeStyle.GreenTheme -> LightGreenColorScheme
+
             }
         }
     }
@@ -133,5 +195,5 @@ fun StudyGetherTheme(
 }
 
 enum class AppThemeStyle {
-    DEFAULT, BlueTheme
+    DEFAULT, BlueTheme, GreenTheme
 }
