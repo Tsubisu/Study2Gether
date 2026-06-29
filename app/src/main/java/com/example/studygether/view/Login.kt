@@ -1,8 +1,7 @@
-package com.example.studygether.view
+package com.example.studygether
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,13 +20,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,239 +47,263 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.studygether.R
-import com.example.studygether.ui.theme.Topic
-import com.example.studygether.ui.theme.input
-import com.example.studygether.ui.theme.loginbg
-import com.example.studygether.ui.theme.loginbutton
-import com.example.studygether.ui.theme.myFontFamily
-
-class Login : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-           LoginBody()
-           }
-    }
-
-}
-
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studygether.ViewModels.LoginViewModel
+import com.example.studygether.ui.theme.Typography
+import com.example.studygether.ui.theme.tokens.AppColors
+import com.example.studygether.ui.theme.tokens.AppShape
+import com.example.studygether.ui.theme.tokens.AppSpacing
 
 @Composable
-fun LoginBody(){
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
-    val context = LocalContext.current
+fun LoginScreen(loginViewModel: LoginViewModel= viewModel(),
+                onLogin:()->Unit={},
+                onCreateCommunity:()->Unit={},
+                onForgetPassword:()->Unit={}){
+    val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
+    var passwordVisible by remember {mutableStateOf(false)}
 
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.login),
+            painter = painterResource(R.drawable.background),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
         )
-    Column(modifier = Modifier.fillMaxSize())
-    {
-        Spacer(modifier = Modifier.height(height = 75.dp))
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Image(
-                modifier = Modifier.size(150.dp),
-                painter = painterResource(R.drawable.applogo),
-                contentDescription = "Logo",
-            )
-        }
-        Text(
-            text = "STUDY2GETHER", style = TextStyle(
-                textAlign = TextAlign.Center,
-                color = Topic,
-                fontSize = 29.sp,
-                fontWeight = FontWeight(400),
-                fontFamily = myFontFamily
-            ),
-            modifier = Modifier.fillMaxWidth().padding(5.dp)
-        )
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Card(
-                modifier = Modifier
-                    .height(450.dp)
-                    .width(300.dp),
-                RoundedCornerShape(20),
-                colors = CardDefaults.cardColors(
-                    containerColor = loginbg
-                )
+        Column(modifier = Modifier.fillMaxSize())
+        {
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.massive)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize().padding(5.dp),
-//                    verticalArrangement = Arrangement.SpaceEvenly,
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-
-                ) {
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        text = "LOGIN", style = TextStyle(
-                            fontSize = 32.sp,
-                            fontFamily = myFontFamily,
-                            color = Color.White,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.W400
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(25.dp))
-                    Text(
-                        "Email", style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.W600
-                        )
-                    )
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = {
-                            email = it
-                        },
-                        shape = RoundedCornerShape(25.dp),
-                        modifier = Modifier.fillMaxWidth().padding(10.dp),
-                        placeholder = {
-                            Text(
-                                "Enter your Email", style = TextStyle(
-                                    fontFamily = myFontFamily,
-                                    fontSize = 24.sp,
-                                    color = Color.Black
-                                )
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-
-                            unfocusedIndicatorColor = Color.Transparent,
-                            unfocusedContainerColor = input,
-                            focusedIndicatorColor = Color.Gray.copy(alpha = 0.1f),
-                            focusedContainerColor = Color.Blue,
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(25.dp))
-                    Text(
-                        "Password", style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.W600
-                        )
-                    )
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = {
-                            email = it
-                        },
-                        shape = RoundedCornerShape(25.dp),
-                        modifier = Modifier.fillMaxWidth().padding(10.dp),
-                        placeholder = {
-                            Text(
-                                "* * * * * * * *",
-                                style = TextStyle(
-                                    textAlign = TextAlign.Center,
-                                    fontFamily = myFontFamily,
-                                    fontSize = 24.sp,
-                                    color = Color.Black
-    
-                                ),
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-
-                            unfocusedIndicatorColor = Color.Transparent,
-                            unfocusedContainerColor = input,
-                            focusedIndicatorColor = Color.Gray.copy(alpha = 0.1f),
-                            focusedContainerColor = Color.Blue,
-                        )
+                Column(horizontalAlignment = Alignment.CenterHorizontally){
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = null,
                     )
 
-                    Row(modifier = Modifier.padding(10.dp)) {
-                        Text(
-                            "Forget Password",
-                            modifier = Modifier.clickable{
-//                                val intent = Intent(context,
-//                                    ForgotPassword::class.java)
-//                                context.startActivity(intent)
-//                                activity.finish()
-                            }
+                    Text("Study2Gether", style = Typography.displayMedium)
+
+                }
+
+
+            }
+
+
+            Row(Modifier.fillMaxSize()
+                .padding(horizontal = AppSpacing.extraLarge).padding(top= AppSpacing.extraLarge),
+                verticalAlignment = Alignment.Top
+
+            )
+            {
+                Card(modifier = Modifier.fillMaxWidth(),
+                    colors= CardDefaults.cardColors(
+                        containerColor = AppColors.BrandColor,
+                        contentColor =Color.Black),
+                    shape = AppShape.ExtraLarge
+                )
+                {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(AppSpacing.small),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal=AppSpacing.medium, vertical = AppSpacing.large)
+                    )
+                    {
+                        OutlinedTextField(
+                            value = loginState.email,
+                            onValueChange = {loginViewModel.onEmailChange(it) },
+                            label = {Text("Email")},
+                            placeholder = {
+                                Text("Email")
+                            },
+                            isError = loginState.emailError.isNotEmpty(),
+                            supportingText = { Text(loginState.emailError) },
+                            shape= AppShape.Large,
+                            modifier = Modifier.fillMaxWidth()
                         )
-                    }
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(5.dp),
-                            horizontalArrangement = Arrangement.Center,
-                        ) {
-                            ElevatedButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = {
-                                    val sharedPreferences = context.getSharedPreferences(
-                                        "User",
-                                        Context.MODE_PRIVATE
+
+                        OutlinedTextField(
+                            value = loginState.password,
+                            onValueChange = {loginViewModel.onPasswordChange(it) },
+                            label = {Text("Password")},
+                            placeholder = {
+                                Text("Password")
+                            },
+                            isError = loginState.emailError.isNotEmpty(),
+                            supportingText = { Text(loginState.emailError) },
+                            shape= AppShape.Large,
+                            modifier = Modifier.fillMaxWidth(),
+                            visualTransformation = if (passwordVisible) VisualTransformation.None
+                            else PasswordVisualTransformation(),
+                            trailingIcon = {
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Icon(
+                                        imageVector = if (passwordVisible) Icons.Filled.Visibility
+                                        else Icons.Filled.VisibilityOff,
+                                        contentDescription = if (passwordVisible) "Hide password"
+                                        else "Show password"
                                     )
+                                }
+                            },
+                        )
 
-
-                                    val emailStorage: String? = sharedPreferences.getString("email", "")
-                                    val passwordStorage: String? = sharedPreferences.getString("password", "")
-
-                                    if (email == emailStorage && password == passwordStorage) {
-                                        Toast.makeText(
-                                            context,
-                                            "Login success",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-
-                                        val editor = sharedPreferences.edit()
-
-                                        editor.putBoolean("isLoggedIn", true)
-
-//                                        val intent = Intent(context, NaviigationActivity::class.java)
-//                                        context.startActivity(intent)
-//                                        activity.finish()
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Login failed",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-
-                                    }
-                                },
-                                colors = ButtonDefaults.elevatedButtonColors(
-                                    containerColor = loginbutton
-                                )
-                            ) {
-                                Text(
-                                    "Login", style = TextStyle(
-                                        fontFamily = myFontFamily,
-                                        fontSize = 16.sp
-                                    )
-                                )
-                            }
+                        Button(onClick=onLogin,
+                            modifier = Modifier.padding(AppSpacing.none).fillMaxWidth(),
+                            contentPadding = PaddingValues(AppSpacing.none),
+                        )
+                        {
+                            Text("Login")
                         }
+
+
+                        Text("Forget Password?", modifier = Modifier.clickable(true, onClick = onForgetPassword),color= MaterialTheme.colorScheme.secondary)
+                        Text("Create Your Community Here",modifier = Modifier.clickable(true, onClick = onCreateCommunity), color = MaterialTheme.colorScheme.secondary)
+
+
+
+
                     }
                 }
+            }
+
         }
     }
+}
+
+
+
+
+
+@Composable
+fun ForgetPasswordBody() {
+
+    var email by remember { mutableStateOf("") }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(R.drawable.background),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+        )
+        Column(modifier = Modifier.fillMaxSize())
+        {
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.massive)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally){
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = null,
+                    )
+
+                    Text("Study2Gether", style = Typography.displayMedium)
+
+                }
+
+
+            }
+
+
+            Row(Modifier.fillMaxSize()
+                .padding(horizontal = AppSpacing.extraLarge).padding(top= AppSpacing.extraLarge),
+                verticalAlignment = Alignment.Top
+
+            )
+            {
+                Card(modifier = Modifier.fillMaxWidth(),
+                    colors= CardDefaults.cardColors(
+                        containerColor = AppColors.BrandColor,
+                        contentColor =Color.Black),
+                    shape = AppShape.ExtraLarge
+                )
+                {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(AppSpacing.small),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal=AppSpacing.medium, vertical = AppSpacing.large)
+                    ){
+
+                        Text(
+                            text = "Forget Password",
+                            style = Typography.titleLarge,
+
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Text(
+                            text = "Enter your registered email address and we'll send you a password reset link.",
+                            color = Color.DarkGray,
+                            style = Typography.labelLarge,
+                        )
+
+                       // Spacer(modifier = Modifier.height(20.dp))
+                        OutlinedTextField(
+                            onValueChange = {
+                                email = it
+                            },
+                            value = email,
+                            shape = AppShape.Large,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            placeholder = {
+                                Text(
+                                    text = "Enter your email",
+                                    style = TextStyle(
+                                       // fontFamily = myFontFamily,
+                                        fontSize = 15.sp
+                                    )
+                                )
+                            },
+                        )
+                        ElevatedButton(
+                            onClick = {
+                            },
+                            colors= ButtonDefaults.elevatedButtonColors(
+                                containerColor =MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Text(
+                                text = "Send Reset Link",
+                                color=MaterialTheme.colorScheme.onPrimary
+
+                            )
+                        }
+                        //Spacer(modifier = Modifier.height(15.dp))
+
+                        Text(
+                            text = "Back to Login",
+                            color = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.clickable(true, onClick = {})
+                        )
+                    }
+                }
+            }
+        }
     }
 }
+
+
 @Preview
 @Composable
-fun LoginPreview(){
-    LoginBody()
+fun Preview(){
+    LoginScreen()
 }
