@@ -1,4 +1,4 @@
-package com.example.studygether.View.ui.theme
+package com.example.studygether.View.ui.theme.ui.theme
 
 import android.app.Activity
 import android.os.Build

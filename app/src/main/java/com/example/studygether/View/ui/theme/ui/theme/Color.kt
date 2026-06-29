@@ -1,4 +1,4 @@
-package com.example.studygether.View.ui.theme
+package com.example.studygether.View.ui.theme.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
