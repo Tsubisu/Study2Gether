@@ -45,19 +45,7 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 
 
-class CommunityCreation : ComponentActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-            setContent {
-                StudyGetherTheme(false, false ) {
-                    CommunityCreationPage()
-                }
-             }
-
-    }
-}
 
 
 @Composable
@@ -98,7 +86,7 @@ fun CommunityCreationPage()
             }
 
 
-            Row(Modifier.fillMaxSize().padding(start = 30.dp, end=30.dp,bottom=20.dp,top=20.dp))
+            Row(Modifier.fillMaxSize().padding(horizontal = AppSpacing.extraLarge, vertical = AppSpacing.medium))
             {
                 Card(modifier = Modifier.fillMaxSize(),
                     colors= CardDefaults.cardColors(
@@ -266,6 +254,6 @@ fun preview()
         CommunityCreationPage()
     }
 
-//    CommunityCreationPage()
+
 }
 

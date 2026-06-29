@@ -8,19 +8,21 @@ import androidx.compose.material.icons.filled.Textsms
 import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Textsms
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.studygether.R
 
 
 data class BottomNavItem(
     val label: String,
-    val icon: ImageVector,
+    val unSelectedIcon: ImageVector,
+    val selectedIcon: ImageVector,
     val route: Any
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem("Home", Icons.Outlined.Home, HomePage),
-    BottomNavItem("Dms",  Icons.Outlined.Textsms,ConvoList ),
-    BottomNavItem("Channels", Icons.Outlined.Groups, Channels)
+    BottomNavItem("Home", Icons.Rounded.Home, Icons.Filled.Home,HomePage),
+    BottomNavItem("Dms",  Icons.Outlined.Textsms,Icons.Filled.Textsms,ConvoList ),
+    BottomNavItem("Channels", Icons.Outlined.Groups,Icons.Filled.Groups, ChannelList)
 )
 

@@ -3,10 +3,13 @@ package com.example.studygether.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.EmojiFlags
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.outlined.Attachment
@@ -26,6 +29,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,6 +48,7 @@ import com.example.studygether.ViewModels.MainActivityViewModel
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -125,15 +130,17 @@ fun BottomNavBar(navController: NavController)
             modifier = Modifier.drawBehind({drawLine(color = dividerColor,
                 start = Offset(0f, 0f),
                 end = Offset(size.width, 0f),
-                strokeWidth = 1.dp.toPx())}),
+                strokeWidth = 1.dp.toPx())})
+                .fillMaxWidth(),
             containerColor = MaterialTheme.colorScheme.background,
             contentColor = MaterialTheme.colorScheme.onPrimary,
             tonalElevation = 0.dp
         )
         {
             bottomNavItems.forEach { item ->
+                var isSelected=navBackStackEntry?.destination?.hasRoute(item.route::class)?:false
                 NavigationBarItem(
-                    selected = navBackStackEntry?.destination?.hasRoute(item.route::class)?:false,
+                    selected = isSelected,
 
                     onClick = {
                         navController.navigate(item.route) {
@@ -149,11 +156,14 @@ fun BottomNavBar(navController: NavController)
 
                     icon = {
                         Icon(
-                            imageVector = item.icon,
-                            contentDescription = item.label
+                            imageVector = if (isSelected) item.selectedIcon
+                                    else item.unSelectedIcon,
+                            contentDescription = item.label,
+                            Modifier.size(26.dp),
+                            tint= MaterialTheme.colorScheme.primary
                         )
                     },
-                    label = { Text(item.label, style = Typography.labelMedium) }
+                    label = { Text(item.label,color= MaterialTheme.colorScheme.primary,fontWeight = if(isSelected) FontWeight.Bold else FontWeight.Normal, style = Typography.labelMedium) }
                 )
             }
         }
@@ -201,7 +211,7 @@ fun BottomMessageBar()
                     keyboardController?.hide()
                     showEmojiPicker = true
                 }) {
-                    Icon(Icons.Default.EmojiFlags, contentDescription = "Emoji")
+                    Icon(Icons.Default.EmojiEmotions, contentDescription = "Emoji")
                 }}
 
             )

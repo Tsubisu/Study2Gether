@@ -7,6 +7,7 @@ package com.example.studygether.View
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.Model.Channel
 import com.example.studygether.R
+import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.MainActivityViewModel
 import com.example.studygether.ViewModels.TopBarState
 import com.example.studygether.ui.theme.Typography
@@ -56,10 +58,12 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 
 @Composable
-fun ChannelScreen(viewModel: MainActivityViewModel= viewModel()) {
+fun ChannelListScreen(mainViewModel: MainActivityViewModel= viewModel(),
+                      modifier:Modifier,
+                      onNavigateToChannel:(name:String, image:Int,memberCount:Int)->Unit) {
     LaunchedEffect(Unit)
     {
-        viewModel.setTopBar(TopBarState(
+        mainViewModel.setTopBar(TopBarState(
             title ={Text("Channels",style= Typography.headlineMedium)},
             actions = {IconButton(onClick={})
             {
@@ -68,25 +72,28 @@ fun ChannelScreen(viewModel: MainActivityViewModel= viewModel()) {
             }
         )
         )
+
+        mainViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))
     }
     val channel by remember{mutableStateOf(Channel(
       "Tech Support",
       R.drawable.logo,
       265))}
 
-        Box()
+        Box(modifier)
         {
             Box(modifier = Modifier.fillMaxSize().background(color= MaterialTheme.colorScheme.primary)){
                 LazyColumn(modifier = Modifier.fillMaxSize().background(
                     color = MaterialTheme.colorScheme.background,
                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                ).padding(top = AppSpacing.small),
+                ).padding(all= AppSpacing.small),
+                    verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)
                     )
                 {
 
                     items(4)
                     {
-                        ChannelCard(channel)
+                        ChannelCard(channel,onNavigateToChannel)
                     }
 
 
@@ -102,7 +109,7 @@ fun ChannelScreen(viewModel: MainActivityViewModel= viewModel()) {
 @Composable
 fun ChannelPreview()
 {
-    ChannelScreen()
+    //ChannelListScreen()
 }
 
 
@@ -113,11 +120,12 @@ fun testChannelList(): List<Channel>
 }
 
 @Composable
-fun ChannelCard(channel: Channel)
+fun ChannelCard(channel: Channel,onClick:(name:String , image:Int,memberCount:Int)-> Unit)
 {
 
-    Card(Modifier.padding(vertical = AppSpacing.medium, horizontal = AppSpacing.large),
-        colors= CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+    Card(Modifier.padding(vertical = AppSpacing.medium, horizontal = AppSpacing.large)
+            .clickable { onClick(channel.name,channel.resourceId,channel.members) },
+        colors= CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         )
     {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically)

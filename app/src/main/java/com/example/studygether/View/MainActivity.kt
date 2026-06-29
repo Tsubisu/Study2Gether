@@ -12,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.studygether.Navigation.MainGraph
+import com.example.studygether.Navigation.AppGraph
+import com.example.studygether.Navigation.AuthGraph
+//import com.example.studygether.Navigation.MainGraph
 import com.example.studygether.ViewModels.MainActivityViewModel
 import com.example.studygether.ui.theme.StudyGetherTheme
 
@@ -31,5 +33,5 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App(viewModel: MainActivityViewModel= viewModel())
 {
-    MainGraph(viewModel)
+    AppGraph()
 }

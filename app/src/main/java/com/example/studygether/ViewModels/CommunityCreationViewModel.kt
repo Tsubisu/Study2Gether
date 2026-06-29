@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-
+import com.example.studygether.Utility.validateEmail
+import com.example.studygether.Utility.validatePassword
 data class CommunityCreationUiState(
     val firstName: String = "",
     val lastName: String = "",
@@ -142,24 +143,7 @@ class CommunityCreationViewModel : ViewModel() {
         }
     }
 
-    private fun validateEmail(value: String): String {
-        return when {
-            value.isBlank() -> "Email cannot be empty"
-            !android.util.Patterns.EMAIL_ADDRESS.matcher(value).matches() -> "Invalid email format"
-            else -> ""
-        }
-    }
 
-    private fun validatePassword(value: String): String {
-        return when {
-            value.isBlank() -> "Password cannot be empty"
-            value.length < 8 -> "Must be at least 8 characters"
-            !value.any { it.isDigit() } -> "Must contain at least one number"
-            !value.any { it.isUpperCase() } -> "Must contain at least one uppercase letter"
-            !value.any { it.isLowerCase() } -> "Must contain at least one lowercase letter"
-            else -> ""
-        }
-    }
 
     private fun validateConfirmPassword(password: String, confirm: String): String {
         return when {

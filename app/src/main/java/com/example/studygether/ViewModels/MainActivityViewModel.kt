@@ -18,8 +18,9 @@ data class TopBarState(
     val actions: @Composable RowScope.() -> Unit={}
 )
 
+
 data class BottomBarState(
-    var bottomBar: BottomBars= BottomBars.NavBar
+    var bottomBar: BottomBars= BottomBars.None
 )
 
 class MainActivityViewModel : ViewModel()

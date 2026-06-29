@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,11 +35,7 @@ import com.example.studygether.ui.theme.Typography
 import com.example.studygether.ui.theme.tokens.AppSpacing
 
 
-@Composable
-fun ChatUserProfile()
-{
 
-}
 
 @Composable
 fun ChatUserLabelCard(
@@ -75,8 +73,6 @@ fun ChatUserLabelCard(
                         .background(MaterialTheme.colorScheme.inverseOnSurface))
             }
 
-            //Spacer(modifier = Modifier.width(12.dp))
-
             Column(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top,
@@ -97,10 +93,49 @@ fun ChatUserLabelCard(
 
 
 @Composable
-fun ChannelTitleCard( name:String,
-                      channelProfile:Int,
-                      onClick: ()->Unit)
+fun ChannelTitleCard( channelName:String,
+                      channelLogo:Int,
+                      channelMemberCount:Int,
+                      )
 {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 0.dp, vertical = 0.dp).fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+
+            )
+        {
+            Column(Modifier.fillMaxWidth().weight(1f))
+            {
+                Box(contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .padding( AppSpacing.tiny))
+                {
+                    Image(painter = painterResource(channelLogo),contentDescription = null,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.inverseOnSurface))
+
+                }
+
+            }
+            Column(Modifier.fillMaxWidth().weight(4f))
+            {
+                Text(channelName,style=Typography.titleMedium,color = MaterialTheme.colorScheme.onSurface)
+                Text(channelMemberCount.toString(),style=Typography.bodyMedium,color = MaterialTheme.colorScheme.onSurface)
+
+            }
+        }
+    }
 
 
 }

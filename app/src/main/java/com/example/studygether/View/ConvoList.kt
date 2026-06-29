@@ -55,6 +55,7 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 @Composable
 fun ConvoListScreen(mainViewModel: MainActivityViewModel= viewModel(),
+                    modifier: Modifier,
                     onNavigateToChat:(name:String, image:Int)->Unit)
 {
     LaunchedEffect(Unit)
@@ -80,13 +81,13 @@ fun ConvoListScreen(mainViewModel: MainActivityViewModel= viewModel(),
         content = "Test Message is being showed here"
 
     )) }
-    Box()
+    Box(modifier=modifier)
     {
         Box(modifier = Modifier.fillMaxSize().background(color= MaterialTheme.colorScheme.primary)){
             LazyColumn(modifier = Modifier.fillMaxSize().background(
                 color = MaterialTheme.colorScheme.background,
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-            ).padding(all = AppSpacing.medium),
+            ).padding(all = AppSpacing.small),
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)
             )
             {
@@ -123,7 +124,7 @@ fun MessageCard(
             .fillMaxWidth()
             .clickable { onClick(userName,image) },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Row(
