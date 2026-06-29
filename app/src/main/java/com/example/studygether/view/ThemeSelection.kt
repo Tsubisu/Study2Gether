@@ -43,7 +43,6 @@ import com.example.studygether.R
 import com.example.studygether.ui.theme.MainTheme
 import com.example.studygether.ui.theme.StudyGetherTheme
 import com.example.studygether.ui.theme.TextColor
-import com.example.studygether.ui.theme.myFontFamily
 
 class ThemeSelection : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,7 +102,7 @@ fun ThemeSelectionScreen() {
                     color = TextColor,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
-                    fontFamily = myFontFamily
+                    //fontFamily = myFontFamily
                 ),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
@@ -159,7 +158,7 @@ fun ThemeCard(theme: ThemeOption) {
                         color = theme.textColor,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
-                        fontFamily = myFontFamily
+                        //fontFamily = myFontFamily
                     )
                 )
             }

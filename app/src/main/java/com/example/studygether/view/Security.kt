@@ -5,8 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -31,19 +29,6 @@ import com.example.studygether.ui.theme.loginbutton
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import android.widget.Toast
-import com.example.studygether.ui.theme.myFontFamily
-
-class Security : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            StudyGetherTheme {
-                SecurityBody()
-            }
-        }
-    }
-}
 
 @Composable
 fun SecurityBody() {
@@ -100,7 +85,7 @@ fun SecurityBody() {
                 style = TextStyle(
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = myFontFamily,
+                  //  fontFamily = myFontFamily,
                     color = Color.Black
                 ),
                 modifier = Modifier.fillMaxWidth(),
@@ -114,7 +99,7 @@ fun SecurityBody() {
                 style = TextStyle(
                     fontSize = 16.sp,
                     color = Color.Gray,
-                    fontFamily = myFontFamily,
+                   // fontFamily = myFontFamily,
                     lineHeight = 24.sp
                 ),
                 modifier = Modifier.fillMaxWidth(),
@@ -212,7 +197,7 @@ fun SecurityBody() {
                     Text(
                         "Update Password",
                         style = TextStyle(
-                            fontFamily = myFontFamily,
+                            //fontFamily = myFontFamily,
                             fontSize = 16.sp,
                             color = Color.White
                         )
@@ -235,7 +220,7 @@ fun PasswordField(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
-        label = { Text(label, fontFamily = myFontFamily) },
+        label = { Text(label) },
         visualTransformation = if (isVisible) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             IconButton(onClick = onToggleVisibility) {

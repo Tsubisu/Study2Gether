@@ -39,7 +39,7 @@ import com.example.studygether.R
 import com.example.studygether.ui.theme.StudyGetherTheme
 import com.example.studygether.ui.theme.loginbg
 import com.example.studygether.ui.theme.loginbutton
-import com.example.studygether.ui.theme.myFontFamily
+
 
 class LoginOTP : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,7 +105,7 @@ fun LoginOTPbody() {
                 style = TextStyle(
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = myFontFamily,
+                  //  fontFamily = myFontFamily,
                     color = Color.Black
                 ),
                 modifier = Modifier.fillMaxWidth(),
@@ -119,7 +119,7 @@ fun LoginOTPbody() {
                 style = TextStyle(
                     fontSize = 16.sp,
                     color = Color.Gray,
-                    fontFamily = myFontFamily,
+                  //  fontFamily = myFontFamily,
                     lineHeight = 24.sp
                 ),
                 modifier = Modifier.fillMaxWidth(),
@@ -174,7 +174,7 @@ fun LoginOTPbody() {
             ) {
                 Text(
                     "Login", style = TextStyle(
-                        fontFamily = myFontFamily,
+                     //   fontFamily = myFontFamily,
                         fontSize = 16.sp,
                         color = Color.White
                     )
@@ -192,7 +192,7 @@ fun LoginOTPbody() {
                     style = TextStyle(
                         fontSize = 14.sp,
                         color = Color.Gray,
-                        fontFamily = myFontFamily
+                       // fontFamily = myFontFamily
                     )
                 )
                 Text(
@@ -201,7 +201,7 @@ fun LoginOTPbody() {
                         fontSize = 14.sp,
                         color = loginbg,
                         fontWeight = FontWeight.Bold,
-                        fontFamily = myFontFamily
+                       // fontFamily = myFontFamily
                     ),
                     modifier = Modifier.clickable {}
                 )

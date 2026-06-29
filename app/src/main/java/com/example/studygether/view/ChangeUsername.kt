@@ -38,7 +38,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,20 +59,8 @@ import com.example.studygether.ui.theme.TextColor
 import androidx.compose.runtime.LaunchedEffect
 import com.example.studygether.model.ProfileModel
 import com.example.studygether.repository.ProfileImplementation
-import com.example.studygether.repository.ProfileRepo
-import com.example.studygether.ui.theme.myFontFamily
 import com.example.studygether.viewModel.ProfileViewModel
 
-class ChangeUsername : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            val profileViewModel = ProfileViewModel(repo = ProfileImplementation())
-            ChangeUsernameBody(viewModel = profileViewModel)
-        }
-    }
-}
 
 @Composable
 fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
@@ -84,35 +71,35 @@ fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
     val context = LocalContext.current
     val isPreview = LocalInspectionMode.current
 
-    val profileViewModel = if (isPreview) {
-        ProfileViewModel(repo = object : ProfileRepo {
-            override fun getUserProfile(id: String, callback: (Boolean, String, ProfileModel?) -> Unit) {
-                callback(true, "Mock Success", ProfileModel(username = "MockUser"))
-            }
-            override fun updateUsername(id: String, newUsername: String, callback: (Boolean, String) -> Unit) {
-                callback(true, "Mock Success")
-            }
-            override fun getCurrentId(): String? = "mock_id"
-        })
-    } else {
-        viewModel ?: ProfileViewModel(repo = ProfileImplementation())
-    }
-
-    val profileData by profileViewModel.userProfile.observeAsState(initial = null)
-    val isLoading by profileViewModel.loading.observeAsState(initial = false)
-    val userId = profileViewModel.currentUserId
-
-    LaunchedEffect(userId) {
-        if (userId != null) {
-            profileViewModel.getUserProfile(userId)
-        }
-    }
-
-    LaunchedEffect(profileData) {
-        profileData?.let {
-            username = it.username
-        }
-    }
+//    val profileViewModel = if (isPreview) {
+//        ProfileViewModel(repo = object : ProfileRepo {
+//            override fun getUserProfile(id: String, callback: (Boolean, String, ProfileModel?) -> Unit) {
+//                callback(true, "Mock Success", ProfileModel(username = "MockUser"))
+//            }
+//            override fun updateUsername(id: String, newUsername: String, callback: (Boolean, String) -> Unit) {
+//                callback(true, "Mock Success")
+//            }
+//            override fun getCurrentId(): String? = "mock_id"
+//        })
+//    } else {
+//        viewModel ?: ProfileViewModel(repo = ProfileImplementation())
+//    }
+//
+//    val profileData by profileViewModel.userProfile.observeAsState(initial = null)
+//    val isLoading by profileViewModel.loading.observeAsState(initial = false)
+//    val userId = profileViewModel.currentUserId
+//
+//    LaunchedEffect(userId) {
+//        if (userId != null) {
+//            profileViewModel.getUserProfile(userId)
+//        }
+//    }
+//
+//    LaunchedEffect(profileData) {
+//        profileData?.let {
+//            username = it.username
+//        }
+//    }
 
 
     Scaffold(
@@ -148,8 +135,7 @@ fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
                             Text(
                                 text = label,
                                 color = if (selectedItem == index) Color.White else Color.White.copy(alpha = 0.6f),
-                                fontSize = 11.sp,
-                                fontFamily = myFontFamily
+
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(
@@ -212,13 +198,7 @@ fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
                             )
                         }
                         Text(
-                            "  STUDY2GETHER", style = TextStyle(
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 11.sp,
-                                color = TextColor,
-                                textAlign = TextAlign.Center,
-                                fontFamily = myFontFamily
-                            )
+                            "  STUDY2GETHER"
                         )
                     }
                 }
@@ -240,20 +220,14 @@ fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
                         .padding(16.dp)
                 ) {
                     Text(
-                        "Change Username", style = TextStyle(
-                            color = TextColor,
-                            fontWeight = FontWeight.W700,
-                            fontSize = 28.sp,
-                            textAlign = TextAlign.Center,
-                            fontFamily = myFontFamily
-                        ),
+                        "Change Username",
                         modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
                         text = "Current Username",
-                        style = TextStyle(color = Color.Black.copy(0.5f), fontFamily = myFontFamily),
+                        style = TextStyle(color = Color.Black.copy(0.5f)),
                         modifier = Modifier.padding(start = 10.dp)
                     )
 
@@ -274,7 +248,7 @@ fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth()
                             .padding(bottom = 15.dp, start = 10.dp, end = 10.dp),
-                        placeholder = { Text("", fontFamily = myFontFamily) },
+                        placeholder = { Text("") },
                         colors = TextFieldDefaults.colors(
                             unfocusedIndicatorColor = Color.Gray,
                             unfocusedContainerColor = CardColour.copy(0.5f),
@@ -286,7 +260,6 @@ fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
 
                     Text(
                         text = "New Username",
-                        style = TextStyle(color = Color.Black.copy(0.5f), fontFamily = myFontFamily),
                         modifier = Modifier.padding(start = 10.dp)
                     )
 
@@ -307,7 +280,7 @@ fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth()
                             .padding(bottom = 10.dp, start = 10.dp, end = 10.dp),
-                        placeholder = { Text("", fontFamily = myFontFamily) },
+                        placeholder = { Text("") },
                         colors = TextFieldDefaults.colors(
                             unfocusedIndicatorColor = Color.Gray,
                             unfocusedContainerColor = CardColour.copy(0.5f),
@@ -327,34 +300,33 @@ fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
                             .fillMaxWidth(0.6f)
                             .height(50.dp),
                         onClick = {
-                            if (confirm.isNotEmpty()) {
-                                if (userId != null) {
-                                    profileViewModel.updateUsername(userId, confirm) { success: Boolean, message: String ->
-                                        android.widget.Toast.makeText(context, message as CharSequence, android.widget.Toast.LENGTH_SHORT).show()
-                                        if (success) {
-                                            (context as? android.app.Activity)?.finish()
-                                        }
-                                    }
-                                }
-                            } else {
-                                android.widget.Toast.makeText(context, "Please enter a new username" as CharSequence, android.widget.Toast.LENGTH_SHORT).show()
-                            }
+//                            if (confirm.isNotEmpty()) {
+//                                if (userId != null) {
+//                                    profileViewModel.updateUsername(userId, confirm) { success: Boolean, message: String ->
+//                                        android.widget.Toast.makeText(context, message as CharSequence, android.widget.Toast.LENGTH_SHORT).show()
+//                                        if (success) {
+//                                            (context as? android.app.Activity)?.finish()
+//                                        }
+//                                    }
+//                                }
+//                            } else {
+//                                android.widget.Toast.makeText(context, "Please enter a new username" as CharSequence, android.widget.Toast.LENGTH_SHORT).show()
+//                            }
                         },
                         colors = ButtonDefaults.buttonColors(MainTheme.copy(0.4f)),
-                        enabled = !isLoading
-                    ) {
-                        if (isLoading) {
-                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-                        } else {
-                            Text(
-                                "Save", style = TextStyle(
-                                    fontSize = 17.sp,
-                                    color = TextColor,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = myFontFamily
-                                )
+//                        enabled = !isLoading
+                    )
+                    {
+//                        if (isLoading) {
+//                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+//                        } else {
+//                            Text(
+//                                "Save"
+//                            )
+//                        }
+                        Text(
+                                "Save"
                             )
-                        }
                     }
                 }
             }

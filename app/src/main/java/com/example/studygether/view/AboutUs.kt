@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studygether.R
 import com.example.studygether.ui.theme.TextColor
-import com.example.studygether.ui.theme.myFontFamily
+
 
 
 class AboutUs : ComponentActivity() {
@@ -98,7 +98,7 @@ fun AboutUsBody() {
                 style = TextStyle(
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = myFontFamily,
+                   // fontFamily = myFontFamily,
                     color = TextColor,
                     textDecoration = TextDecoration.Underline
                 ),
@@ -113,7 +113,7 @@ fun AboutUsBody() {
                 style = TextStyle(
                     fontSize = 16.sp,
                     color = Color.Gray,
-                    fontFamily = myFontFamily,
+                    //fontFamily = myFontFamily,
                     lineHeight = 24.sp
                 ),
                 modifier = Modifier.fillMaxWidth(),
@@ -127,7 +127,7 @@ fun AboutUsBody() {
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    fontFamily = myFontFamily,
+                   // fontFamily = myFontFamily,
                     color = TextColor,
                     textDecoration = TextDecoration.Underline
 
@@ -145,47 +145,14 @@ fun AboutUsBody() {
                 style = TextStyle(
                     fontSize = 16.sp,
                     color = Color.Gray,
-                    fontFamily = myFontFamily,
+                 //   fontFamily = myFontFamily,
                     lineHeight = 24.sp
                 ),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Justify
             )
 
-//            Spacer(modifier = Modifier.height(40.dp))
 
-//            Card(
-//                modifier = Modifier.fillMaxWidth(),
-//                shape = RoundedCornerShape(16.dp),
-//                colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
-//            ) {
-//                Column(
-//                    modifier = Modifier.padding(20.dp),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    Text(
-//                        text = "Have questions?",
-//                        style = TextStyle(
-//                            fontSize = 18.sp,
-//                            fontWeight = FontWeight.Bold,
-//                            fontFamily = myFontFamily,
-//                            color = Color.Black
-//                        )
-//                    )
-//                    Spacer(modifier = Modifier.height(8.dp))
-//                    Text(
-//                        text = "Reach out to us at:\nsupport@study2gether.com",
-//                        style = TextStyle(
-//                            fontSize = 15.sp,
-//                            color = loginbutton,
-//                            fontFamily = myFontFamily,
-//                            textAlign = TextAlign.Center
-//                        )
-//                    )
-//                }
-//            }
-//
-//            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
