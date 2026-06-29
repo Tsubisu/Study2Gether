@@ -31,6 +31,7 @@ import com.example.studygether.ui.theme.loginbutton
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import android.widget.Toast
+import com.example.studygether.ui.theme.myFontFamily
 
 class Security : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -54,15 +54,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studygether.R
-import com.example.studygether.model.ProfileModel
-import com.example.studygether.repository.ProfileImplementation
-import com.example.studygether.repository.ProfileRepo
-import com.example.studygether.viewModel.ProfileViewModel
 import com.example.studygether.ui.theme.CardColour
 import com.example.studygether.ui.theme.MainTheme
 import com.example.studygether.ui.theme.TextColor
 import androidx.compose.runtime.LaunchedEffect
-import android.widget.Toast
+import com.example.studygether.model.ProfileModel
+import com.example.studygether.repository.ProfileImplementation
+import com.example.studygether.repository.ProfileRepo
+import com.example.studygether.ui.theme.myFontFamily
+import com.example.studygether.viewModel.ProfileViewModel
 
 class ChangeUsername : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -329,15 +329,15 @@ fun ChangeUsernameBody(viewModel: ProfileViewModel? = null) {
                         onClick = {
                             if (confirm.isNotEmpty()) {
                                 if (userId != null) {
-                                    profileViewModel.updateUsername(userId, confirm) { success, message ->
-                                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                    profileViewModel.updateUsername(userId, confirm) { success: Boolean, message: String ->
+                                        android.widget.Toast.makeText(context, message as CharSequence, android.widget.Toast.LENGTH_SHORT).show()
                                         if (success) {
                                             (context as? android.app.Activity)?.finish()
                                         }
                                     }
                                 }
                             } else {
-                                Toast.makeText(context, "Please enter a new username", Toast.LENGTH_SHORT).show()
+                                android.widget.Toast.makeText(context, "Please enter a new username" as CharSequence, android.widget.Toast.LENGTH_SHORT).show()
                             }
                         },
                         colors = ButtonDefaults.buttonColors(MainTheme.copy(0.4f)),

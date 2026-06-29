@@ -2,11 +2,16 @@ package com.example.studygether.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.studygether.view.myFontFamily
+import com.example.studygether.R
 
-// Set of Material typography styles to start with
+val myFontFamily = FontFamily(
+    Font(R.font.doppioone)
+)
+
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = myFontFamily,
@@ -18,7 +23,6 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp
     )
-    // add other styles as needed
 )
     /* Other default text styles to override
     titleLarge = TextStyle(

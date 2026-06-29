@@ -1,5 +1,9 @@
 package com.example.studygether.view
 
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +48,18 @@ import com.example.studygether.model.chatItems
 import com.example.studygether.R
 import com.example.studygether.ui.theme.TextColor
 import com.example.studygether.ui.theme.loginbg
+import com.example.studygether.ui.theme.myFontFamily
+
+
+class Chats : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            ChatsBody()
+        }
+    }
+}
 
 
 @Composable

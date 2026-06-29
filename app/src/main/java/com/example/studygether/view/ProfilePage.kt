@@ -314,8 +314,7 @@ fun ProfileBody() {
                             )
                             IconButton(
                                 onClick = {
-                                    context.startActivity(Intent(context, Security::class.java))
-                                },
+                                    context.startActivity(Intent(context, ChangeUsername::class.java))                                },
                                 modifier = Modifier.size(20.dp)
                             ) {
                                 Icon(
@@ -439,8 +438,7 @@ fun ProfileBody() {
                             )
                             IconButton(
                                 onClick = {
-                                    context.startActivity(Intent(context, Security::class.java))
-                                },
+                                    context.startActivity(Intent(context, AboutUs::class.java))                                },
                                 modifier = Modifier.size(20.dp)
                             ) {
                                 Icon(
@@ -485,8 +483,7 @@ fun ProfileBody() {
                             )
                             IconButton(
                                 onClick = {
-                                    context.startActivity(Intent(context, Security::class.java))
-                                },
+                                    context.startActivity(Intent(context, ThemeSelection::class.java))                                },
                                 modifier = Modifier.size(20.dp)
                             ) {
                                 Icon(
@@ -513,7 +510,7 @@ fun ProfileBody() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun ProfilePreview() {
     ProfileBody()

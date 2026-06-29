@@ -50,10 +50,7 @@ import com.example.studygether.ui.theme.Topic
 import com.example.studygether.ui.theme.input
 import com.example.studygether.ui.theme.loginbg
 import com.example.studygether.ui.theme.loginbutton
-
-val myFontFamily = FontFamily(
-    Font(R.font.doppioone)
-)
+import com.example.studygether.ui.theme.myFontFamily
 
 class Login : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

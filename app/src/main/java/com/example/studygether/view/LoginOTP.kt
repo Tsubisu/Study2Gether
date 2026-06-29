@@ -39,6 +39,7 @@ import com.example.studygether.R
 import com.example.studygether.ui.theme.StudyGetherTheme
 import com.example.studygether.ui.theme.loginbg
 import com.example.studygether.ui.theme.loginbutton
+import com.example.studygether.ui.theme.myFontFamily
 
 class LoginOTP : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

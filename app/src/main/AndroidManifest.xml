@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ProfilePage"
+            android:name=".view.ProfilePage"
             android:exported="true"
             android:label="@string/title_activity_profile_page"
             android:theme="@style/Theme.StudyGether">
@@ -45,7 +45,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Chats"
+            android:name=".view.Chats"
             android:exported="true"
             android:label="@string/title_activity_chats"
             android:theme="@style/Theme.StudyGether">
@@ -57,6 +57,39 @@
         </activity>
         <activity
             android:name=".view.Login"
+            android:exported="true"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.StudyGether">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.AboutUs"
+            android:exported="true"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.StudyGether">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.ChangeUsername"
+            android:exported="true"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.StudyGether">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.ThemeSelection"
             android:exported="true"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.StudyGether">
