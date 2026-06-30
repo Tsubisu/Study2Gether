@@ -1,4 +1,4 @@
-package com.example.studygether.View
+package com.example.studygether.Utility
 
 
 internal val emojiData: Map<String, List<String>> = mapOf(

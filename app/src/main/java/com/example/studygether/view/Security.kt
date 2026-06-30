@@ -29,6 +29,7 @@ import com.example.studygether.ui.theme.loginbutton
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import android.widget.Toast
+import com.example.studygether.ui.theme.Typography
 
 @Composable
 fun SecurityBody() {
@@ -82,12 +83,7 @@ fun SecurityBody() {
 
             Text(
                 text = "Change Password",
-                style = TextStyle(
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                  //  fontFamily = myFontFamily,
-                    color = Color.Black
-                ),
+                style = Typography.bodyMedium,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )

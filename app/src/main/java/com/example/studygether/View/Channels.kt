@@ -43,7 +43,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.Model.Channel
@@ -73,7 +72,7 @@ fun ChannelListScreen(mainViewModel: MainActivityViewModel= viewModel(),
         )
         )
 
-        mainViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))
+        mainViewModel.setBottomBarType(BottomBarState())
     }
     val channel by remember{mutableStateOf(Channel(
       "Tech Support",
@@ -103,13 +102,6 @@ fun ChannelListScreen(mainViewModel: MainActivityViewModel= viewModel(),
     }
 
 
-}
-
-@Preview
-@Composable
-fun ChannelPreview()
-{
-    //ChannelListScreen()
 }
 
 

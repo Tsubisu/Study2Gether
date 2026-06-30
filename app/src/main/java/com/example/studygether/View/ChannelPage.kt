@@ -49,7 +49,7 @@ import com.example.studygether.R
 import com.example.studygether.ui.theme.CardColour
 import com.example.studygether.ui.theme.MainTheme
 import com.example.studygether.ui.theme.TextColor
-import com.example.studygether.ViewModel.ChannelViewModel
+import com.example.studygether.ViewModels.ChannelViewModel
 
 class ChannelPage : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

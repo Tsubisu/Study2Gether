@@ -31,9 +31,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studygether.R
 import com.example.studygether.Repository.ProfileImplementation
-import com.example.studygether.ViewModel.ProfileViewModel
+import com.example.studygether.ViewModels.ProfileViewModel
 import com.example.studygether.ui.theme.MainTheme
 import com.example.studygether.ui.theme.TextColor
 
@@ -72,20 +70,20 @@ fun ProfileBody() {
     var usernameText by remember { mutableStateOf("Loading...") }
     var emailText by remember { mutableStateOf("Loading...") }
 
-    val profileViewModel = remember { ProfileViewModel(repo = ProfileImplementation()) }
-    val profileData by profileViewModel.userProfile.observeAsState(initial = null)
-    val loading by profileViewModel.loading.observeAsState(initial = null)
-    val userId = profileViewModel.currentUserId
-
-    LaunchedEffect(key1 = profileData) {
-        if (userId != null) {
-            profileViewModel.getUserProfile(userId)
-        }
-        profileData?.let {
-            usernameText = it.username
-            emailText = it.email
-        }
-    }
+//    val profileViewModel = remember { ProfileViewModel(repo = ProfileImplementation()) }
+//    val profileData by profileViewModel.userProfile.observeAsState(initial = null)
+//    val loading by profileViewModel.loading.observeAsState(initial = null)
+//    val userId = profileViewModel.currentUserId
+//
+//    LaunchedEffect(key1 = profileData) {
+//        if (userId != null) {
+//            profileViewModel.getUserProfile(userId)
+//        }
+//        profileData?.let {
+//            usernameText = it.username
+//            emailText = it.email
+//        }
+//    }
 
     Scaffold(
         containerColor = Color.Transparent,
