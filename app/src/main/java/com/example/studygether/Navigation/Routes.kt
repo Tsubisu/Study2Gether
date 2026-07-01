@@ -1,5 +1,5 @@
 package com.example.studygether.Navigation
-import com.example.studygether.Model.Users
+import com.example.studygether.Model.User
 import kotlinx.serialization.Serializable
 
 //Graph for Main Application

@@ -1,4 +1,4 @@
-package com.studygether.View
+package com.example.studygether.View
 
 //import android.content.Context
 //import androidx.compose.foundation.clickable
@@ -222,7 +222,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.studygether.View.emojiData
+import com.example.studygether.Utility.emojiData
 import com.example.studygether.ui.theme.tokens.AppSpacing
 
 // ─────────────────────────────────────────────

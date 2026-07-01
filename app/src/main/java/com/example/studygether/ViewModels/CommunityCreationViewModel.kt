@@ -1,11 +1,20 @@
 package com.example.studygether.ViewModels
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.studygether.Model.ChannelModel
+import com.example.studygether.Model.Community
+import com.example.studygether.Repository.AppRepositories
+import com.example.studygether.Repository.ChannelRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import com.example.studygether.Utility.validateEmail
 import com.example.studygether.Utility.validatePassword
+import kotlinx.coroutines.launch
+
 data class CommunityCreationUiState(
     val firstName: String = "",
     val lastName: String = "",
@@ -89,10 +98,7 @@ class CommunityCreationViewModel : ViewModel() {
         }
     }
 
-    // --- Register ---
-
     fun onRegister() {
-        // Validate all fields on submit
         val state = _uiState.value
         val firstNameError = validateName(state.firstName, "First Name")
         val lastNameError = validateName(state.lastName, "Last Name")
@@ -117,13 +123,52 @@ class CommunityCreationViewModel : ViewModel() {
             emailError, passwordError, confirmPasswordError
         ).any { it.isNotEmpty() }
 
-        if (!hasErrors) {
-            // TODO: call your repository here
-            _uiState.update { it.copy(isRegistering = true) }
+        if (hasErrors) return  // stop here, errors are already shown in UI
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isRegistering = true, registrationError = "") }
+
+            val community = Community(
+                name = state.communityName,
+                createdAt = System.currentTimeMillis()
+            )
+
+            val result = AppRepositories.communityRepository.registerAndCreateCommunity(
+                community = community,
+                email = state.email,
+                username = "${state.firstName} ${state.lastName}",
+                password = state.password
+            )
+
+            result.fold(
+                onSuccess = {
+                    _uiState.update {
+                        it.copy(
+                            isRegistering = false,
+                            registrationSuccess = true
+                        )
+                    }
+
+                },
+                onFailure = { error ->
+                    _uiState.update {
+                        it.copy(
+                            isRegistering = false,
+                            registrationError = when {
+                                error.message?.contains("email already exists") == true ->
+                                    "This email is already registered. Please log in instead."
+                                error.message?.contains("network") == true ->
+                                    "No internet connection. Please try again."
+                                else ->
+                                    error.message ?: "Something went wrong. Please try again."
+                            }
+                        )
+                    }
+                }
+            )
         }
     }
 
-    // --- Validators ---
 
     private fun validateName(value: String, fieldName: String): String {
         return when {
