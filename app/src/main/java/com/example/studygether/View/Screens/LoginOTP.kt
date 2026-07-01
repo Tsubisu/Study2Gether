@@ -41,17 +41,6 @@ import com.example.studygether.ui.theme.loginbg
 import com.example.studygether.ui.theme.loginbutton
 
 
-class LoginOTP : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            StudyGetherTheme {
-                LoginOTPbody()
-            }
-        }
-    }
-}
 
 @Composable
 fun LoginOTPbody() {

@@ -49,10 +49,11 @@ import com.example.studygether.ui.theme.Typography
 import com.example.studygether.ui.theme.tokens.AppSpacing
 
 @Composable
-fun ConvoListScreen(mainViewModel: AppBarsViewModel= viewModel(),
-                    modifier: Modifier,
-                    onNavigateToChat:(name:String, image:Int)->Unit)
-{
+fun ConvoListScreen(
+    modifier: Modifier,
+    onNavigateToChat: (name: String, image: Int) -> Unit
+) {
+    val mainViewModel: AppBarsViewModel = viewModel()
     LaunchedEffect(Unit)
     {
         mainViewModel.setTitleBar(

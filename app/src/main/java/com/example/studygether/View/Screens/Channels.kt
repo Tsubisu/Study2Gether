@@ -75,9 +75,9 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 
 @Composable
-fun ChannelListScreen(appBarsViewModel: AppBarsViewModel= viewModel(),
-                      modifier:Modifier,
+fun ChannelListScreen(modifier:Modifier,
                       onNavigateToChannel:(name:String, image:Int,memberCount:Int)->Unit) {
+    val appBarsViewModel: AppBarsViewModel = viewModel()
     LaunchedEffect(Unit)
     {
         appBarsViewModel.setTitleBar(

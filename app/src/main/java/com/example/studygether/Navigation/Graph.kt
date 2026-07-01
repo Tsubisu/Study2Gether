@@ -61,7 +61,7 @@ fun AppGraph(appBarsViewModel: AppBarsViewModel= viewModel())
             navigation<MainGraphRoute>(startDestination = ChannelList) {
                 composable<ChannelList>
                 {
-                    ChannelListScreen(appBarsViewModel, modifier = Modifier.padding(innerPadding),{ name, image, memberCount ->
+                    ChannelListScreen(modifier = Modifier.padding(innerPadding),{ name, image, memberCount ->
                         navController.navigate(
                             Channel(name, image, memberCount)
                         )
@@ -71,7 +71,6 @@ fun AppGraph(appBarsViewModel: AppBarsViewModel= viewModel())
                 composable<ConvoList>
                 {
                     ConvoListScreen(
-                        appBarsViewModel,
                         modifier = Modifier.padding(innerPadding),
                         { name, image ->
                             navController.navigate(
@@ -85,7 +84,6 @@ fun AppGraph(appBarsViewModel: AppBarsViewModel= viewModel())
                 { backStackEntry ->
                     val route: Convo = backStackEntry.toRoute()
                     ConvoScreen(
-                        appBarsViewModel,
                         modifier = Modifier.padding(innerPadding),
                         name = route.name,
                         image = route.image,
@@ -98,7 +96,6 @@ fun AppGraph(appBarsViewModel: AppBarsViewModel= viewModel())
                         backStackEntry ->
                     val route: Channel = backStackEntry.toRoute()
                     ChannelScreen(
-                        appBarsViewModel,
                         modifier = Modifier.padding(innerPadding),
                         channelName = route.channelName,
                         channelLogo = route.channelLogo,
@@ -133,8 +130,7 @@ fun AppGraph(appBarsViewModel: AppBarsViewModel= viewModel())
 
                 composable<CommunityCreation>
                 {
-                    CommunityCreationScreen(appBarsViewModel = appBarsViewModel,
-                        onBackToLogin = {navController.navigateUp()})
+                    CommunityCreationScreen(onBackToLogin = {navController.navigateUp()})
                 }
             }
 

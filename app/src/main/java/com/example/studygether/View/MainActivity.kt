@@ -24,7 +24,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun App(viewModel: AppBarsViewModel= viewModel())
+fun App()
 {
+    val viewModel: AppBarsViewModel = viewModel()
     AppGraph()
 }

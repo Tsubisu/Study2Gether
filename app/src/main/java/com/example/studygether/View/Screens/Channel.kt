@@ -19,12 +19,13 @@ import com.example.studygether.ViewModels.AppBarsViewModel
 
 
 @Composable
-fun ChannelScreen(appBarsViewModel: AppBarsViewModel = viewModel(),
-            modifier: Modifier,
-            channelName: String,
-            channelLogo: Int,
-            channelMemberCount: Int,
+fun ChannelScreen(
+    modifier: Modifier,
+    channelName: String,
+    channelLogo: Int,
+    channelMemberCount: Int,
 ) {
+    val appBarsViewModel: AppBarsViewModel = viewModel()
     val barColor: Color = MaterialTheme.colorScheme.background
     LaunchedEffect(channelName, channelLogo, channelMemberCount) {
         appBarsViewModel.setTitleBar(

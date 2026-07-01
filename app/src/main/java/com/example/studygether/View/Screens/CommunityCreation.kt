@@ -59,9 +59,9 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 
 @Composable
-fun CommunityCreationScreen(viewModel: CommunityCreationViewModel = viewModel(),
-                            appBarsViewModel: AppBarsViewModel,
-                            onBackToLogin: () -> Unit = {}) {
+fun CommunityCreationScreen(onBackToLogin: () -> Unit = {}) {
+    val viewModel: CommunityCreationViewModel = viewModel()
+    val appBarsViewModel: AppBarsViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var passwordVisible by remember{ mutableStateOf(false) }
     var rePasswordVisible by remember{ mutableStateOf(false) }
@@ -74,6 +74,10 @@ fun CommunityCreationScreen(viewModel: CommunityCreationViewModel = viewModel(),
         appBarsViewModel.hideTopBar()
 
         appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
+    }
+    if(uiState.registrationSuccess)
+    {
+
     }
 
 
@@ -310,7 +314,7 @@ fun CommunityCreationScreen(viewModel: CommunityCreationViewModel = viewModel(),
 fun preview()
 {
     StudyGetherTheme(false,false) {
-        CommunityCreationScreen(appBarsViewModel = viewModel<AppBarsViewModel>())
+        CommunityCreationScreen()
     }
 }
 

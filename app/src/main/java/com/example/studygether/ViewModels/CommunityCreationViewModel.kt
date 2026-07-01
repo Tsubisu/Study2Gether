@@ -148,6 +148,7 @@ class CommunityCreationViewModel : ViewModel() {
                             registrationSuccess = true
                         )
                     }
+
                 },
                 onFailure = { error ->
                     _uiState.update {
@@ -168,7 +169,6 @@ class CommunityCreationViewModel : ViewModel() {
         }
     }
 
-    // --- Validators ---
 
     private fun validateName(value: String, fieldName: String): String {
         return when {

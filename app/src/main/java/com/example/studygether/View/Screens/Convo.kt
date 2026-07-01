@@ -17,13 +17,14 @@ import com.example.studygether.ViewModels.AppBarsViewModel
 
 
 @Composable
-fun ConvoScreen(mainViewModel: AppBarsViewModel= viewModel(),
-                modifier: Modifier,
-                name:String,
-                image:Int,
-                onGoBack:()->Unit)
-{
-    val barColor: Color= MaterialTheme.colorScheme.background
+fun ConvoScreen(
+    modifier: Modifier,
+    name: String,
+    image: Int,
+    onGoBack: () -> Unit
+) {
+    val mainViewModel: AppBarsViewModel = viewModel()
+    val barColor: Color = MaterialTheme.colorScheme.background
     LaunchedEffect(name, image)
     {
 
