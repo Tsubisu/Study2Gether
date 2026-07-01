@@ -1,5 +1,7 @@
 package com.example.studygether.View.Screens
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -60,8 +62,9 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 @Composable
 fun CommunityCreationScreen(onBackToLogin: () -> Unit = {}) {
+    val activity = LocalActivity.current as ComponentActivity
     val viewModel: CommunityCreationViewModel = viewModel()
-    val appBarsViewModel: AppBarsViewModel = viewModel()
+    val appBarsViewModel: AppBarsViewModel = viewModel(activity)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var passwordVisible by remember{ mutableStateOf(false) }
     var rePasswordVisible by remember{ mutableStateOf(false) }
