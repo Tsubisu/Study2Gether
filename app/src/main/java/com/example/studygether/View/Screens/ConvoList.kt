@@ -1,4 +1,4 @@
-package com.example.studygether.View
+package com.example.studygether.View.Screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,9 +42,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.Model.Message
 import com.example.studygether.Model.TextMessage
 import com.example.studygether.R
+import com.example.studygether.View.AppBars.BottomBars
 import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.AppBarsViewModel
-import com.example.studygether.ViewModels.TopBarState
 import com.example.studygether.ui.theme.Typography
 import com.example.studygether.ui.theme.tokens.AppSpacing
 

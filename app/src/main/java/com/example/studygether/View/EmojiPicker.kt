@@ -1,4 +1,4 @@
-package com.studygether.View
+package com.example.studygether.View
 
 //import android.content.Context
 //import androidx.compose.foundation.clickable

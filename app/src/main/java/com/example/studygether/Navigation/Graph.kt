@@ -17,15 +17,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
-import com.example.studygether.ForgetPasswordBody
-import com.example.studygether.LoginScreen
-import com.example.studygether.View.BottomBar
-import com.example.studygether.View.Channel
-import com.example.studygether.View.ChannelListScreen
-import com.example.studygether.View.CommunityCreationPage
-import com.example.studygether.View.ConvoListScreen
-import com.example.studygether.View.ConvoScreen
-import com.example.studygether.View.TopBar
+import com.example.studygether.View.Screens.LoginScreen
+import com.example.studygether.View.Screens.ForgetPasswordScreen
+import com.example.studygether.View.AppBars.BottomBar
+import com.example.studygether.View.Screens.ChannelListScreen
+import com.example.studygether.View.Screens.ChannelScreen
+import com.example.studygether.View.Screens.CommunityCreationScreen
+import com.example.studygether.View.Screens.ConvoListScreen
+import com.example.studygether.View.Screens.ConvoScreen
+import com.example.studygether.View.AppBars.TopBar
 import com.example.studygether.ViewModels.AppBarsViewModel
 
 
@@ -97,7 +97,7 @@ fun AppGraph(appBarsViewModel: AppBarsViewModel= viewModel())
 
                         backStackEntry ->
                     val route: Channel = backStackEntry.toRoute()
-                    Channel(
+                    ChannelScreen(
                         appBarsViewModel,
                         modifier = Modifier.padding(innerPadding),
                         channelName = route.channelName,
@@ -123,12 +123,18 @@ fun AppGraph(appBarsViewModel: AppBarsViewModel= viewModel())
 
                 composable<ForgetPassword>
                 {
-                    ForgetPasswordBody()
+                    ForgetPasswordScreen(
+                        onBackToLogin = {navController.navigate(Login)
+                        {
+                            popUpTo(Login){inclusive= false}
+                        } },
+                    )
                 }
 
                 composable<CommunityCreation>
                 {
-                    CommunityCreationPage(appBarsViewModel = appBarsViewModel)
+                    CommunityCreationScreen(appBarsViewModel = appBarsViewModel,
+                        onBackToLogin = {navController.navigateUp()})
                 }
             }
 

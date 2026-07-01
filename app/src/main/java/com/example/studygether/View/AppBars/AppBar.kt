@@ -1,4 +1,4 @@
-package com.example.studygether.View
+package com.example.studygether.View.AppBars
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,7 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.studygether.ViewModels.TopBarState
 import com.example.studygether.ui.theme.Typography
-import com.studygether.View.EmojiPickerSheet
+import com.example.studygether.View.EmojiPickerSheet
 
 
 enum class BottomBars
@@ -55,13 +55,6 @@ enum class BottomBars
     None
 }
 
-//enum class TopBars
-//{
-//    TitleBar,
-//    None
-//
-//}
-//
 @Composable
 fun TopBar(topBars: TopBarState,navController: NavController)
 {
@@ -69,9 +62,7 @@ fun TopBar(topBars: TopBarState,navController: NavController)
     {
         is TopBarState.TitleBar -> TitleBar(navController)
         is TopBarState.None -> Unit
-
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

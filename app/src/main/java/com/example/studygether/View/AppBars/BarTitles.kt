@@ -1,4 +1,4 @@
-package com.example.studygether.View
+package com.example.studygether.View.AppBars
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
