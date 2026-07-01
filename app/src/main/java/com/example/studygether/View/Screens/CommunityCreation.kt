@@ -1,10 +1,5 @@
-package com.example.studygether.View
+package com.example.studygether.View.Screens
 
-import android.os.Bundle
-
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,6 +48,7 @@ import com.example.studygether.R
 import com.example.studygether.ViewModels.AppBarsViewModel
 import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.CommunityCreationViewModel
+import com.example.studygether.View.AppBars.BottomBars
 import com.example.studygether.ui.theme.StudyGetherTheme
 import com.example.studygether.ui.theme.tokens.AppSpacing
 
@@ -63,10 +59,9 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 
 @Composable
-fun CommunityCreationPage(viewModel: CommunityCreationViewModel= viewModel(),
-                          appBarsViewModel: AppBarsViewModel)
-{
-    val viewModel=viewModel
+fun CommunityCreationScreen(viewModel: CommunityCreationViewModel = viewModel(),
+                            appBarsViewModel: AppBarsViewModel,
+                            onBackToLogin: () -> Unit = {}) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var passwordVisible by remember{ mutableStateOf(false) }
     var rePasswordVisible by remember{ mutableStateOf(false) }
@@ -123,7 +118,7 @@ fun CommunityCreationPage(viewModel: CommunityCreationViewModel= viewModel(),
                         modifier = Modifier.fillMaxWidth().padding(horizontal = AppSpacing.tiny).padding(bottom = 2.dp)
                     )
                     {
-                        Button(onClick = {},
+                        Button(onClick = onBackToLogin,
                             colors= ButtonDefaults.buttonColors
                                 (
                                 containerColor = Color.White,
@@ -315,9 +310,7 @@ fun CommunityCreationPage(viewModel: CommunityCreationViewModel= viewModel(),
 fun preview()
 {
     StudyGetherTheme(false,false) {
-        CommunityCreationPage(appBarsViewModel = AppBarsViewModel())
+        CommunityCreationScreen(appBarsViewModel = viewModel<AppBarsViewModel>())
     }
-
-
 }
 

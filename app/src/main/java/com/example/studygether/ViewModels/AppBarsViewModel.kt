@@ -7,17 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.example.studygether.View.BottomBars
+import com.example.studygether.View.AppBars.BottomBars
 
 
 
-//data class TopBarState(
-//    val topBar:TopBars= TopBars.None,
-//    val title: @Composable () -> Unit={},
-//    val showBackButton: Boolean=false,
-//    val barColor: Color =Color.Unspecified,
-//    val actions: @Composable RowScope.() -> Unit={}
-//)
 
 sealed interface TopBarState {
     data object None : TopBarState

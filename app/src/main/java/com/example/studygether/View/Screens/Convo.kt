@@ -1,4 +1,4 @@
-package com.example.studygether.View
+package com.example.studygether.View.Screens
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Phone
@@ -10,9 +10,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studygether.View.AppBars.BottomBars
+import com.example.studygether.View.AppBars.ChatUserLabelCard
 import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.AppBarsViewModel
-import com.example.studygether.ViewModels.TopBarState
 
 
 @Composable
@@ -27,7 +28,7 @@ fun ConvoScreen(mainViewModel: AppBarsViewModel= viewModel(),
     {
 
         mainViewModel.setTitleBar(
-            title = {ChatUserLabelCard(name, profileImage =image,onClick ={})},
+            title = { ChatUserLabelCard(name, profileImage = image, onClick = {}) },
             showBackButton = true,
             actions = { IconButton(onClick = {})
             {

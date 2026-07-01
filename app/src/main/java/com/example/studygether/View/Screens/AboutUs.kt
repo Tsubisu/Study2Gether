@@ -1,7 +1,6 @@
 package com.example.studygether.view
 
 import android.os.Bundle
-import android.text.style.UnderlineSpan
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -145,7 +144,6 @@ fun AboutUsBody() {
                 style = TextStyle(
                     fontSize = 16.sp,
                     color = Color.Gray,
-                 //   fontFamily = myFontFamily,
                     lineHeight = 24.sp
                 ),
                 modifier = Modifier.fillMaxWidth(),
