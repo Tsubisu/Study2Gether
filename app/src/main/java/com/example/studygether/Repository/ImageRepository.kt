@@ -8,7 +8,7 @@ data class UploadResult(
     val publicId: String
 )
 
-interface ImageRepo {
+interface ImageRepository {
     fun uploadImage(context: Context, imageUri: Uri, callback: (UploadResult?) -> Unit)
-    fun getFileNameFromUri(context: Context, uri: Uri): String?
+
 }

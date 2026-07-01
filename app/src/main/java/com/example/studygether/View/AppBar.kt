@@ -1,17 +1,12 @@
 package com.example.studygether.View
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.EmojiEmotions
-import androidx.compose.material.icons.filled.EmojiFlags
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.outlined.Attachment
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Mic
@@ -26,10 +21,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,20 +32,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.studygether.Navigation.bottomNavItems
-import com.example.studygether.ViewModels.MainActivityViewModel
-import androidx.compose.ui.graphics.drawscope.Stroke
+import com.example.studygether.ViewModels.AppBarsViewModel
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.studygether.ViewModels.TopBarState
 import com.example.studygether.ui.theme.Typography
 import com.studygether.View.EmojiPickerSheet
 
@@ -64,25 +55,48 @@ enum class BottomBars
     None
 }
 
+//enum class TopBars
+//{
+//    TitleBar,
+//    None
+//
+//}
+//
+@Composable
+fun TopBar(topBars: TopBarState,navController: NavController)
+{
+    when(topBars)
+    {
+        is TopBarState.TitleBar -> TitleBar(navController)
+        is TopBarState.None -> Unit
+
+    }
+
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController)
+fun TitleBar(navController: NavController)
 {
-    val viewModel: MainActivityViewModel= viewModel()
+    val viewModel: AppBarsViewModel= viewModel()
     val dividerColor= MaterialTheme.colorScheme.outlineVariant
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val navScreens = navBackStackEntry?.destination?.let { dest ->
         bottomNavItems.any { dest.hasRoute(it.route::class) }
     }?:false
+    var state= viewModel.topBarState
+    if(state== TopBarState.None) return
+    else
+        state=state as TopBarState.TitleBar
     TopAppBar(
-        title = viewModel.topBarState.title,
+        title = state.title,
         colors= TopAppBarDefaults.topAppBarColors(
-            containerColor =if(viewModel.topBarState.barColor==Color.Unspecified){
-                MaterialTheme.colorScheme.primary}else{viewModel.topBarState.barColor},
+            containerColor =if(state.barColor==Color.Unspecified){
+                MaterialTheme.colorScheme.primary}else{state.barColor},
             titleContentColor = Color.White
         ),
         navigationIcon = {
-            if (viewModel.topBarState.showBackButton) {
+            if (state.showBackButton) {
                 IconButton (onClick = { navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -91,7 +105,7 @@ fun TopBar(navController: NavController)
                 }
             }
         },
-        actions = viewModel.topBarState.actions,
+        actions = state.actions,
         modifier =  if (!navScreens)
                         {Modifier.drawBehind({drawLine(color = dividerColor,
                             start = Offset(0f, size.height),

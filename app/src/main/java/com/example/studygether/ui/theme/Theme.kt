@@ -25,7 +25,6 @@ private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
     tertiary = Pink40,
-    background = androidx.compose.ui.graphics.Color.White
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -153,7 +152,7 @@ fun StudyGetherTheme(
     // Dynamic color is available on Android 12+
 
     dynamicColor: Boolean = true,
-    themeStyle: AppThemeStyle = AppThemeStyle.BlueTheme,
+    themeStyle: AppThemeStyle = AppThemeStyle.DEFAULT,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

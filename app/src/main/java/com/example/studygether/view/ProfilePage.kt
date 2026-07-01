@@ -49,8 +49,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studygether.R
-import com.example.studygether.Repository.ProfileImplementation
-import com.example.studygether.ViewModels.ProfileViewModel
 import com.example.studygether.ui.theme.MainTheme
 import com.example.studygether.ui.theme.TextColor
 

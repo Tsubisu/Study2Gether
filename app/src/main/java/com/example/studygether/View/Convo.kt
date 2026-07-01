@@ -11,12 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.ViewModels.BottomBarState
-import com.example.studygether.ViewModels.MainActivityViewModel
+import com.example.studygether.ViewModels.AppBarsViewModel
 import com.example.studygether.ViewModels.TopBarState
 
 
 @Composable
-fun ConvoScreen(mainViewModel: MainActivityViewModel= viewModel(),
+fun ConvoScreen(mainViewModel: AppBarsViewModel= viewModel(),
                 modifier: Modifier,
                 name:String,
                 image:Int,
@@ -26,7 +26,7 @@ fun ConvoScreen(mainViewModel: MainActivityViewModel= viewModel(),
     LaunchedEffect(name, image)
     {
 
-        mainViewModel.setTopBar(TopBarState(
+        mainViewModel.setTitleBar(
             title = {ChatUserLabelCard(name, profileImage =image,onClick ={})},
             showBackButton = true,
             actions = { IconButton(onClick = {})
@@ -34,7 +34,7 @@ fun ConvoScreen(mainViewModel: MainActivityViewModel= viewModel(),
                 Icon(Icons.Outlined.Phone,contentDescription = null)
             } },
             barColor = barColor
-        ))
+        )
 
 
         mainViewModel.setBottomBarType(BottomBarState(BottomBars.MessageBar))

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -35,12 +33,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.node.MeasuredSizeAwareModifierNode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,26 +43,25 @@ import com.example.studygether.Model.Message
 import com.example.studygether.Model.TextMessage
 import com.example.studygether.R
 import com.example.studygether.ViewModels.BottomBarState
-import com.example.studygether.ViewModels.MainActivityViewModel
+import com.example.studygether.ViewModels.AppBarsViewModel
 import com.example.studygether.ViewModels.TopBarState
 import com.example.studygether.ui.theme.Typography
 import com.example.studygether.ui.theme.tokens.AppSpacing
 
 @Composable
-fun ConvoListScreen(mainViewModel: MainActivityViewModel= viewModel(),
+fun ConvoListScreen(mainViewModel: AppBarsViewModel= viewModel(),
                     modifier: Modifier,
                     onNavigateToChat:(name:String, image:Int)->Unit)
 {
     LaunchedEffect(Unit)
     {
-        mainViewModel.setTopBar(TopBarState(
+        mainViewModel.setTitleBar(
             title = {Text("Direct Messages",style= Typography.headlineMedium)},
             actions = {IconButton(onClick={})
             {
                 Icon(Icons.Default.Face,contentDescription = null)
             }
             }
-        )
         )
 
         mainViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))

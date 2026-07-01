@@ -1,7 +1,7 @@
 package com.example.studygether.Repository
 
 import com.google.firebase.database.FirebaseDatabase
-class ChannelRepoImplementation: ChannelRepo{
+class ChannelRepositoryImpl: ChannelRepository{
     private val database = FirebaseDatabase.getInstance()
     private val ref = database.getReference("channels")
 

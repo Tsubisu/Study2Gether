@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -27,11 +26,11 @@ import com.example.studygether.View.CommunityCreationPage
 import com.example.studygether.View.ConvoListScreen
 import com.example.studygether.View.ConvoScreen
 import com.example.studygether.View.TopBar
-import com.example.studygether.ViewModels.MainActivityViewModel
+import com.example.studygether.ViewModels.AppBarsViewModel
 
 
 @Composable
-fun AppGraph(viewModel: MainActivityViewModel= viewModel())
+fun AppGraph(appBarsViewModel: AppBarsViewModel= viewModel())
 {
     val navController= rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -43,8 +42,8 @@ fun AppGraph(viewModel: MainActivityViewModel= viewModel())
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {if(!isAuthScreen)TopBar(navController)},
-        bottomBar = {BottomBar(viewModel.bottomBarState.bottomBar,navController)}
+        topBar = {TopBar(appBarsViewModel.topBarState,navController)},
+        bottomBar = {BottomBar(appBarsViewModel.bottomBarState.bottomBar,navController)}
     )
     {
             innerPadding->
@@ -62,7 +61,7 @@ fun AppGraph(viewModel: MainActivityViewModel= viewModel())
             navigation<MainGraphRoute>(startDestination = ChannelList) {
                 composable<ChannelList>
                 {
-                    ChannelListScreen(viewModel, modifier = Modifier.padding(innerPadding),{ name, image, memberCount ->
+                    ChannelListScreen(appBarsViewModel, modifier = Modifier.padding(innerPadding),{ name, image, memberCount ->
                         navController.navigate(
                             Channel(name, image, memberCount)
                         )
@@ -72,7 +71,7 @@ fun AppGraph(viewModel: MainActivityViewModel= viewModel())
                 composable<ConvoList>
                 {
                     ConvoListScreen(
-                        viewModel,
+                        appBarsViewModel,
                         modifier = Modifier.padding(innerPadding),
                         { name, image ->
                             navController.navigate(
@@ -86,7 +85,7 @@ fun AppGraph(viewModel: MainActivityViewModel= viewModel())
                 { backStackEntry ->
                     val route: Convo = backStackEntry.toRoute()
                     ConvoScreen(
-                        viewModel,
+                        appBarsViewModel,
                         modifier = Modifier.padding(innerPadding),
                         name = route.name,
                         image = route.image,
@@ -99,7 +98,7 @@ fun AppGraph(viewModel: MainActivityViewModel= viewModel())
                         backStackEntry ->
                     val route: Channel = backStackEntry.toRoute()
                     Channel(
-                        viewModel,
+                        appBarsViewModel,
                         modifier = Modifier.padding(innerPadding),
                         channelName = route.channelName,
                         channelLogo = route.channelLogo,
@@ -129,7 +128,7 @@ fun AppGraph(viewModel: MainActivityViewModel= viewModel())
 
                 composable<CommunityCreation>
                 {
-                    CommunityCreationPage()
+                    CommunityCreationPage(appBarsViewModel = appBarsViewModel)
                 }
             }
 

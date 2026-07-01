@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -5,6 +8,12 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 
 
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
 }
 
 android {
@@ -23,7 +32,34 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "CLOUDINARY_CLOUD_NAME",
+            "\"${localProperties.getProperty("CLOUDINARY_CLOUD_NAME", "")}\""
+        )
+        buildConfigField(
+            "String",
+            "CLOUDINARY_API_KEY",
+            "\"${localProperties.getProperty("CLOUDINARY_API_KEY", "")}\""
+        )
+
+        buildConfigField(
+            "String",
+            "CLOUDINARY_API_SECRET",
+            "\"${localProperties.getProperty("CLOUDINARY_API_SECRET", "")}\""
+        )
+
+        buildConfigField(
+            "String",
+            "CLOUDINARY_UPLOAD_PRESET",
+            "\"${localProperties.getProperty("CLOUDINARY_UPLOAD_PRESET", "")}\""
+        )
+
+
     }
+
+
 
     buildTypes {
         release {
@@ -40,8 +76,11 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig=true
+
     }
 }
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -59,6 +98,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.ui.text.google.fonts)
     implementation(libs.kotlinx.serialization.json)
+    implementation("com.cloudinary:cloudinary-android:2.1.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

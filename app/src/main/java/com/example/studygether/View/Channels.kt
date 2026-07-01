@@ -48,8 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.Model.Channel
 import com.example.studygether.R
 import com.example.studygether.ViewModels.BottomBarState
-import com.example.studygether.ViewModels.MainActivityViewModel
-import com.example.studygether.ViewModels.TopBarState
+import com.example.studygether.ViewModels.AppBarsViewModel
 import com.example.studygether.ui.theme.Typography
 import com.example.studygether.ui.theme.tokens.AppSpacing
 
@@ -57,12 +56,12 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 
 @Composable
-fun ChannelListScreen(mainViewModel: MainActivityViewModel= viewModel(),
+fun ChannelListScreen(appBarsViewModel: AppBarsViewModel= viewModel(),
                       modifier:Modifier,
                       onNavigateToChannel:(name:String, image:Int,memberCount:Int)->Unit) {
     LaunchedEffect(Unit)
     {
-        mainViewModel.setTopBar(TopBarState(
+        appBarsViewModel.setTitleBar(
             title ={Text("Channels",style= Typography.headlineMedium)},
             actions = {IconButton(onClick={})
             {
@@ -70,9 +69,8 @@ fun ChannelListScreen(mainViewModel: MainActivityViewModel= viewModel(),
             }
             }
         )
-        )
 
-        mainViewModel.setBottomBarType(BottomBarState())
+        appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))
     }
     val channel by remember{mutableStateOf(Channel(
       "Tech Support",

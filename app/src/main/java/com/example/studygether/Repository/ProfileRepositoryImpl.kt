@@ -7,7 +7,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class ProfileImplementation: ProfileRepo {
+class ProfileRepositoryImpl: ProfileRepository {
    private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance()
     private val ref = database.getReference("users")

@@ -2,8 +2,8 @@ package com.example.studygether.Model
 
 
 data class User(
-    val uid: String = "",
-    val displayName: String = "",
+    val id: String = "",
+    val username: String = "",
     val email: String = "",
     val profileImageUrl: String = "",
     val profileImagePublicId: String = "",

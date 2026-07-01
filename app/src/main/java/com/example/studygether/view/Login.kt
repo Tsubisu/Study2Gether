@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -27,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studygether.View.BottomBars
+import com.example.studygether.ViewModels.AppBarsViewModel
+import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.LoginViewModel
 import com.example.studygether.ui.theme.Typography
 import com.example.studygether.ui.theme.tokens.AppColors
@@ -51,11 +56,20 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel= viewModel(),
+                appBarsViewModel: AppBarsViewModel= viewModel(),
                 onLogin:()->Unit={},
                 onCreateCommunity:()->Unit={},
                 onForgetPassword:()->Unit={}){
     val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
     var passwordVisible by remember {mutableStateOf(false)}
+
+    LaunchedEffect(Unit)
+    {
+        appBarsViewModel.hideTopBar()
+
+        appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
+    }
+
 
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -140,7 +154,7 @@ fun LoginScreen(loginViewModel: LoginViewModel= viewModel(),
                                         else "Show password"
                                     )
                                 }
-                            },
+                            }
                         )
 
                         Button(onClick=onLogin,

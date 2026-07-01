@@ -18,26 +18,40 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.R
+import com.example.studygether.ViewModels.AppBarsViewModel
+import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.CommunityCreationViewModel
 import com.example.studygether.ui.theme.StudyGetherTheme
 import com.example.studygether.ui.theme.tokens.AppSpacing
@@ -49,10 +63,24 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 
 @Composable
-fun CommunityCreationPage()
+fun CommunityCreationPage(viewModel: CommunityCreationViewModel= viewModel(),
+                          appBarsViewModel: AppBarsViewModel)
 {
-    val viewModel: CommunityCreationViewModel= viewModel()
+    val viewModel=viewModel
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var passwordVisible by remember{ mutableStateOf(false) }
+    var rePasswordVisible by remember{ mutableStateOf(false) }
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(uiState.registrationError) {
+        if (uiState.registrationError.isNotEmpty()) {
+            scrollState.animateScrollTo(scrollState.maxValue)
+        }
+        appBarsViewModel.hideTopBar()
+
+        appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
+    }
+
 
 
     Box(modifier = Modifier.fillMaxSize())
@@ -64,7 +92,8 @@ fun CommunityCreationPage()
             contentScale = ContentScale.Crop
             )
 
-        Column(modifier= Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+
+        Column(modifier= Modifier.fillMaxSize().verticalScroll(scrollState),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
 
@@ -77,15 +106,10 @@ fun CommunityCreationPage()
                         painter = painterResource(id = R.drawable.logo),
                         contentDescription = null,
                     )
-
                     Text("Get Started", fontSize = 30.sp)
                     Text("Create Your Community", fontSize = 30.sp)
-
                 }
-
             }
-
-
             Row(Modifier.fillMaxSize().padding(horizontal = AppSpacing.extraLarge, vertical = AppSpacing.medium))
             {
                 Card(modifier = Modifier.fillMaxSize(),
@@ -106,8 +130,6 @@ fun CommunityCreationPage()
                                 contentColor = Color.Black
                             ),
                             contentPadding = PaddingValues(0.dp),
-
-
                             )
                         {
                             Icon(
@@ -116,13 +138,11 @@ fun CommunityCreationPage()
                             )
                             Spacer(Modifier.width(AppSpacing.medium))
                             Text("Back to login", Modifier.padding(0.dp))
-
                         }
                     }
                     }
                     Column(modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(AppSpacing.tiny)) {
-
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = AppSpacing.tiny),
                             horizontalArrangement = Arrangement.spacedBy(AppSpacing.medium)
@@ -187,7 +207,8 @@ fun CommunityCreationPage()
                                 },
                                 isError = uiState.emailError.isNotEmpty(),
                                 supportingText = { Text(uiState.emailError) },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+
                             )
                         }
 
@@ -204,7 +225,19 @@ fun CommunityCreationPage()
                                 },
                                 isError = uiState.passwordError.isNotEmpty(),
                                 supportingText = { Text(uiState.passwordError) },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                visualTransformation = if (passwordVisible) VisualTransformation.None
+                                else PasswordVisualTransformation(),
+                                trailingIcon = {
+                                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                        Icon(
+                                            imageVector = if (passwordVisible) Icons.Filled.Visibility
+                                            else Icons.Filled.VisibilityOff,
+                                            contentDescription = if (passwordVisible) "Hide password"
+                                            else "Show password"
+                                        )
+                                    }
+                                }
                             )
                         }
 
@@ -221,7 +254,19 @@ fun CommunityCreationPage()
                                 },
                                 isError = uiState.confirmPasswordError.isNotEmpty(),
                                 supportingText = { Text(uiState.confirmPasswordError) },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                visualTransformation = if (rePasswordVisible) VisualTransformation.None
+                                else PasswordVisualTransformation(),
+                                trailingIcon = {
+                                    IconButton(onClick = { rePasswordVisible = !rePasswordVisible }) {
+                                        Icon(
+                                            imageVector = if (rePasswordVisible) Icons.Filled.Visibility
+                                            else Icons.Filled.VisibilityOff,
+                                            contentDescription = if (passwordVisible) "Hide password"
+                                            else "Show password"
+                                        )
+                                    }
+                                }
                             )
                         }
 
@@ -231,12 +276,31 @@ fun CommunityCreationPage()
                         )
                         {
 
-                            Button(onClick = {},
-//                                colors = ButtonDefaults.buttonColors(
-//                                    containerColor = Color.Black,)
-                            )
+                            Button(onClick = {viewModel.onRegister()},
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,),
+                                enabled = !uiState.isRegistering
+
+                                )
                             {
-                                Text("Register")
+                                Text(if(uiState.isRegistering)
+                                  "Registering..."
+                                else
+                                    "Register"
+                                )
+                            }
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal=AppSpacing.tiny),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        )
+                        {
+                            if(uiState.registrationError.isNotEmpty())
+                            {
+                                Text(uiState.registrationError,color=MaterialTheme.colorScheme.error,
+                                    textAlign = TextAlign.Center)
                             }
                         }
                     }
@@ -251,7 +315,7 @@ fun CommunityCreationPage()
 fun preview()
 {
     StudyGetherTheme(false,false) {
-        CommunityCreationPage()
+        CommunityCreationPage(appBarsViewModel = AppBarsViewModel())
     }
 
 

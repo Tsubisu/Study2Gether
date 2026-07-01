@@ -1,7 +1,6 @@
 package com.example.studygether.ViewModels
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +35,7 @@ data class BottomBarState(
     var bottomBar: BottomBars= BottomBars.None
 )
 
-class MainActivityViewModel : ViewModel()
+class AppBarsViewModel : ViewModel()
 {
     var topBarState by mutableStateOf<TopBarState>(TopBarState.None)
         private set
