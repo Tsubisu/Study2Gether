@@ -1,5 +1,7 @@
 package com.example.studygether.View.Screens
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -25,7 +27,8 @@ fun ChannelScreen(
     channelLogo: Int,
     channelMemberCount: Int,
 ) {
-    val appBarsViewModel: AppBarsViewModel = viewModel()
+    val activity = LocalActivity.current as ComponentActivity
+    val appBarsViewModel: AppBarsViewModel = viewModel(activity)
     val barColor: Color = MaterialTheme.colorScheme.background
     LaunchedEffect(channelName, channelLogo, channelMemberCount) {
         appBarsViewModel.setTitleBar(

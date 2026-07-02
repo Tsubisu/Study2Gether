@@ -29,16 +29,16 @@ import com.example.studygether.View.AppBars.TopBar
 import com.example.studygether.ViewModels.AppBarsViewModel
 
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
+
 @Composable
-fun AppGraph(appBarsViewModel: AppBarsViewModel= viewModel())
+fun AppGraph()
 {
+    val activity = LocalActivity.current as ComponentActivity
+    val appBarsViewModel: AppBarsViewModel = viewModel(activity)
     val navController= rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val isAuthScreen = navBackStackEntry?.destination?.let { dest ->
-        dest.hasRoute(Login::class)
-        dest.hasRoute(CommunityCreation::class)
-        dest.hasRoute(ForgetPassword::class)
-    } ?: true
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

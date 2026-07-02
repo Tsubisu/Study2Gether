@@ -1,5 +1,7 @@
 package com.example.studygether.View.Screens
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Icon
@@ -23,7 +25,8 @@ fun ConvoScreen(
     image: Int,
     onGoBack: () -> Unit
 ) {
-    val mainViewModel: AppBarsViewModel = viewModel()
+    val activity = LocalActivity.current as ComponentActivity
+    val mainViewModel: AppBarsViewModel = viewModel(activity)
     val barColor: Color = MaterialTheme.colorScheme.background
     LaunchedEffect(name, image)
     {

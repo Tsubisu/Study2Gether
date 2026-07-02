@@ -1,5 +1,7 @@
 package com.example.studygether.View.Screens
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,7 +55,8 @@ fun ConvoListScreen(
     modifier: Modifier,
     onNavigateToChat: (name: String, image: Int) -> Unit
 ) {
-    val mainViewModel: AppBarsViewModel = viewModel()
+    val activity = LocalActivity.current as ComponentActivity
+    val mainViewModel: AppBarsViewModel = viewModel(activity)
     LaunchedEffect(Unit)
     {
         mainViewModel.setTitleBar(

@@ -1,5 +1,7 @@
 package com.example.studygether.View.AppBars
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -69,7 +71,8 @@ fun TopBar(topBars: TopBarState,navController: NavController)
 @Composable
 fun TitleBar(navController: NavController)
 {
-    val viewModel: AppBarsViewModel= viewModel()
+    val activity = LocalActivity.current as ComponentActivity
+    val viewModel: AppBarsViewModel= viewModel(activity)
     val dividerColor= MaterialTheme.colorScheme.outlineVariant
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val navScreens = navBackStackEntry?.destination?.let { dest ->
