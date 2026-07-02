@@ -8,8 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.example.studygether.View.AppBars.BottomBars
-
-
+import kotlin.math.log
 
 
 sealed interface TopBarState {
@@ -48,6 +47,7 @@ class AppBarsViewModel : ViewModel()
             barColor = barColor,
             actions = actions
         )
+
     }
 
     fun hideTopBar() {

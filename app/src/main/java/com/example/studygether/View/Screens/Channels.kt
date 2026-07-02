@@ -2,10 +2,9 @@
 
 package com.example.studygether.View.Screens
 
-
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
@@ -71,13 +70,11 @@ import com.example.studygether.ui.theme.TextColor
 import com.example.studygether.ui.theme.Typography
 import com.example.studygether.ui.theme.tokens.AppSpacing
 
-
-
-
 @Composable
 fun ChannelListScreen(modifier:Modifier,
                       onNavigateToChannel:(name:String, image:Int,memberCount:Int)->Unit) {
-    val appBarsViewModel: AppBarsViewModel = viewModel()
+    val activity = LocalActivity.current as ComponentActivity
+    val appBarsViewModel: AppBarsViewModel = viewModel(activity)
     LaunchedEffect(Unit)
     {
         appBarsViewModel.setTitleBar(

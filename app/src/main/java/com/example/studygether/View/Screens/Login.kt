@@ -4,6 +4,7 @@ package com.example.studygether.View.Screens
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
@@ -76,8 +77,9 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 fun LoginScreen(onLogin:()->Unit={},
                 onCreateCommunity:()->Unit={},
                 onForgetPassword:()->Unit={}){
+    val activity = LocalActivity.current as ComponentActivity
     val loginViewModel: LoginViewModel = viewModel()
-    val appBarsViewModel: AppBarsViewModel = viewModel()
+    val appBarsViewModel: AppBarsViewModel = viewModel(activity)
     val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
     var passwordVisible by remember {mutableStateOf(false)}
 
