@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -31,26 +30,32 @@ import com.example.studygether.ViewModels.AppBarsViewModel
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.studygether.App.SessionState
+import com.example.studygether.View.Screens.HomeScreen
+import com.example.studygether.View.Screens.SignInScreen
 
 @Composable
 fun AppGraph()
 {
-    val activity = LocalActivity.current as ComponentActivity
-    val appBarsViewModel: AppBarsViewModel = viewModel(activity)
     val navController= rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val isLoggedIn by SessionState.isLoggedIn.collectAsStateWithLifecycle()
+    val startDestination = remember(isLoggedIn) { if (isLoggedIn) MainGraphRoute else AuthGraph }
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {TopBar(appBarsViewModel.topBarState,navController)},
-        bottomBar = {BottomBar(appBarsViewModel.bottomBarState.bottomBar,navController)}
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
     )
+
     {
             innerPadding->
         NavHost(
            // modifier = Modifier.padding(innerPadding),
             navController = navController,
-            startDestination = AuthGraph,
+            startDestination = startDestination,
             enterTransition = { fadeIn(animationSpec = tween(300)) },
             exitTransition = { fadeOut(animationSpec = tween(300)) },
             popEnterTransition = { fadeIn(animationSpec = tween(300)) },
@@ -59,6 +64,10 @@ fun AppGraph()
         )
         {
             navigation<MainGraphRoute>(startDestination = ChannelList) {
+
+                composable<Home> {
+                    HomeScreen(modifier = Modifier.padding(innerPadding))
+                }
                 composable<ChannelList>
                 {
                     ChannelListScreen(modifier = Modifier.padding(innerPadding),{ name, image, memberCount ->
@@ -109,13 +118,20 @@ fun AppGraph()
             {
                 composable<Login>
                 {
-                    LoginScreen(onLogin = {navController.navigate(MainGraphRoute)
+                    LoginScreen(onLoginSuccess = {navController.navigate(MainGraphRoute)
                     {
                         popUpTo(Login){inclusive= true}
                     } },
+                        onSignIn = {navController.navigate(SignIn)},
                         onCreateCommunity = {navController.navigate(CommunityCreation)},
-                        onForgetPassword = {navController.navigate(ForgetPassword)})
+                        onForgetPassword = {navController.navigate(ForgetPassword)},
+                    )
 
+                }
+
+                composable<SignIn>
+                {
+                    SignInScreen(onBackToLogin = {navController.navigateUp()})
                 }
 
                 composable<ForgetPassword>

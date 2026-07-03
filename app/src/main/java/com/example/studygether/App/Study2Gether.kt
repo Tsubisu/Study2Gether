@@ -1,47 +1,58 @@
 package com.example.studygether.App
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.studygether.App.ui.theme.StudyGetherTheme
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.studygether.Navigation.AppGraph
+import com.example.studygether.Repository.AppRepositories
+import com.example.studygether.ui.theme.StudyGetherTheme
 
-class Study2Gether : ComponentActivity() {
+class Study2Gether : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        AppRepositories.init(this)
+    }
+}
+
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            StudyGetherTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            StudyGetherTheme(false,false) {
+                App()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun App()
+{
+    val isHydrating by SessionState.isHydrating.collectAsStateWithLifecycle()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    StudyGetherTheme {
-        Greeting("Android")
+    if (isHydrating) {
+        SplashScreen() // simple loading indicator, no navigation decision made yet
+    } else {
+        AppGraph()
     }
 }
+
+
+@Composable
+fun SplashScreen() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
+    }
+}
+

@@ -1,33 +1,27 @@
 package com.example.studygether.ViewModels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.studygether.Model.ChannelModel
 import com.example.studygether.Model.Community
 import com.example.studygether.Repository.AppRepositories
-import com.example.studygether.Repository.ChannelRepository
+import com.example.studygether.Utility.validateEmail
+import com.example.studygether.Utility.validateName
+import com.example.studygether.Utility.validatePassword
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import com.example.studygether.Utility.validateEmail
-import com.example.studygether.Utility.validatePassword
-import com.example.studygether.Utility.validateName
 import kotlinx.coroutines.launch
 
-data class CommunityCreationUiState(
+
+data class SignInScreenState(
     val firstName: String = "",
     val lastName: String = "",
-    val communityName: String = "",
     val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
 
-    // Errors
     val firstNameError: String = "",
     val lastNameError: String = "",
-    val communityNameError: String = "",
     val emailError: String = "",
     val passwordError: String = "",
     val confirmPasswordError: String = "",
@@ -37,12 +31,9 @@ data class CommunityCreationUiState(
     val registrationError: String = ""
 )
 
-class CommunityCreationViewModel : ViewModel() {
-
-    private val _uiState = MutableStateFlow(CommunityCreationUiState())
+class SignInViewModel: ViewModel() {
+    private val _uiState = MutableStateFlow(SignInScreenState())
     val uiState = _uiState.asStateFlow()
-
-
     fun onFirstNameChange(value: String) {
         _uiState.update {
             it.copy(
@@ -61,15 +52,6 @@ class CommunityCreationViewModel : ViewModel() {
         }
     }
 
-    fun onCommunityNameChange(value: String) {
-        _uiState.update {
-            it.copy(
-                communityName = value,
-                communityNameError = validateCommunityName(value)
-            )
-        }
-    }
-
     fun onEmailChange(value: String) {
         _uiState.update {
             it.copy(
@@ -84,7 +66,6 @@ class CommunityCreationViewModel : ViewModel() {
             it.copy(
                 password = value,
                 passwordError = validatePassword(value),
-                // re-validate confirm password when password changes
                 confirmPasswordError = validateConfirmPassword(value, it.confirmPassword)
             )
         }
@@ -103,7 +84,6 @@ class CommunityCreationViewModel : ViewModel() {
         val state = _uiState.value
         val firstNameError = validateName(state.firstName, "First Name")
         val lastNameError = validateName(state.lastName, "Last Name")
-        val communityNameError = validateCommunityName(state.communityName)
         val emailError = validateEmail(state.email)
         val passwordError = validatePassword(state.password)
         val confirmPasswordError = validateConfirmPassword(state.password, state.confirmPassword)
@@ -112,7 +92,6 @@ class CommunityCreationViewModel : ViewModel() {
             it.copy(
                 firstNameError = firstNameError,
                 lastNameError = lastNameError,
-                communityNameError = communityNameError,
                 emailError = emailError,
                 passwordError = passwordError,
                 confirmPasswordError = confirmPasswordError
@@ -120,26 +99,22 @@ class CommunityCreationViewModel : ViewModel() {
         }
 
         val hasErrors = listOf(
-            firstNameError, lastNameError, communityNameError,
+            firstNameError, lastNameError,
             emailError, passwordError, confirmPasswordError
         ).any { it.isNotEmpty() }
 
         if (hasErrors) return  // stop here, errors are already shown in UI
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isRegistering = true, registrationError = "") }
+            _uiState.update { it.copy(isRegistering = true, registrationError = "")
+            }
+            val email = state.email
+            val username = "${state.firstName} ${state.lastName}"
+            val password = state.password
 
-            val community = Community(
-                name = state.communityName,
-                createdAt = System.currentTimeMillis()
-            )
 
-            val result = AppRepositories.communityRepository.registerAndCreateCommunity(
-                community = community,
-                email = state.email,
-                username = "${state.firstName} ${state.lastName}",
-                password = state.password
-            )
+
+            val result = AppRepositories.userRepository.registerUser(email,username,password)
 
             result.fold(
                 onSuccess = {
@@ -170,17 +145,6 @@ class CommunityCreationViewModel : ViewModel() {
         }
     }
 
-
-
-
-    private fun validateCommunityName(value: String): String {
-        return when {
-            value.isBlank() -> "Community name cannot be empty"
-            value.length < 3 -> "Community name is too short"
-            value.length > 50 -> "Community name is too long"
-            else -> ""
-        }
-    }
 
 
 

@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 //Graph for Main Application
 @Serializable object MainGraphRoute
 
+@Serializable
+object Home
+
 //App Screens
 @Serializable object HomePage
 @Serializable object ConvoList
@@ -26,3 +29,4 @@ import kotlinx.serialization.Serializable
 @Serializable object ForgetPassword
 @Serializable object Otp
 @Serializable object PasswordChange
+ @Serializable object SignIn

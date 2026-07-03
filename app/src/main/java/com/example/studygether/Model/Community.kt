@@ -8,6 +8,7 @@ data class Community(
     val creatorId: String = "",
     val createdAt: Long = 0L,
     val isPublic: Boolean = false,
+    val memberCount: Int = 0
 )
 
 

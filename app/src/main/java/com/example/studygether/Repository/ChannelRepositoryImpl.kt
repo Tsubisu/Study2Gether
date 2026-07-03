@@ -1,8 +1,10 @@
 package com.example.studygether.Repository
 
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-class ChannelRepositoryImpl: ChannelRepository{
-    private val database = FirebaseDatabase.getInstance()
+class ChannelRepositoryImpl
+    (private val database: FirebaseDatabase): ChannelRepository{
+
     private val ref = database.getReference("channels")
 
     override fun joinChannel(

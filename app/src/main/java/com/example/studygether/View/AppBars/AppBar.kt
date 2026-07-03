@@ -58,9 +58,11 @@ enum class BottomBars
 }
 
 @Composable
-fun TopBar(topBars: TopBarState,navController: NavController)
+fun TopBar(navController: NavController)
 {
-    when(topBars)
+    val activity = LocalActivity.current as ComponentActivity
+    val viewModel: AppBarsViewModel = viewModel(activity)
+    when(val topBars = viewModel.topBarState)
     {
         is TopBarState.TitleBar -> TitleBar(navController)
         is TopBarState.None -> Unit
@@ -113,9 +115,11 @@ fun TitleBar(navController: NavController)
     )
 }
 @Composable
-fun BottomBar(bottomBars: BottomBars,navController: NavController)
+fun BottomBar(navController: NavController)
 {
-    when(bottomBars){
+    val activity = LocalActivity.current as ComponentActivity
+    val viewModel: AppBarsViewModel = viewModel(activity)
+    when(viewModel.bottomBarState.bottomBar){
         BottomBars.NavBar -> BottomNavBar(navController)
         BottomBars.MessageBar -> BottomMessageBar()
         BottomBars.None -> Unit
