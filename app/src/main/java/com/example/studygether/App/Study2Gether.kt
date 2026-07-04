@@ -15,12 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.studygether.Navigation.AppGraph
 import com.example.studygether.Repository.AppRepositories
+import com.example.studygether.Utility.DatabaseMigration
 import com.example.studygether.ui.theme.StudyGetherTheme
 
 class Study2Gether : Application() {
     override fun onCreate() {
         super.onCreate()
         AppRepositories.init(this)
+        migrate()
     }
 }
 
@@ -54,5 +56,9 @@ fun SplashScreen() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator()
     }
+}
+
+fun migrate(){
+    DatabaseMigration.migrateCommunityMembersRole()
 }
 

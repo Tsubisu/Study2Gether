@@ -82,7 +82,7 @@ class CommunityRepositoryImpl(
         val withId = community.copy(id = id, creatorId = ownerId)
         newRef.setValue(withId).await()
 
-        addMember(id, ownerId)
+        addMember(id, ownerId, false, "OWNER")
         return Result.success(id)
     }
 
@@ -119,6 +119,11 @@ class CommunityRepositoryImpl(
         email: String,
         defaultAnonymous: Boolean
     ): Result<String> = withContext(Dispatchers.IO) {
+        val currentUid = auth.currentUser?.uid ?: return@withContext Result.failure(Exception("Not authenticated"))
+        val isOwner = isCommunityOwner(id, currentUid).getOrElse { false }
+        if (!isOwner) {
+            return@withContext Result.failure(Exception("Only the community owner can add users to this community."))
+        }
         try {
             val userQuery = usersRef.orderByChild("email").equalTo(email).get().await()
             val existingUser = userQuery.children.firstOrNull()
@@ -127,7 +132,7 @@ class CommunityRepositoryImpl(
                     Exception("No registered user found with this email. Ask them to sign up first.")
                 )
 
-            addMember(id, existingUser.id, defaultAnonymous)
+            addMember(id, existingUser.id, defaultAnonymous, "MEMBER").getOrThrow()
             Result.success(existingUser.id)
         } catch (e: Exception) {
             Result.failure(e)
@@ -137,12 +142,14 @@ class CommunityRepositoryImpl(
     override suspend fun addMember(
         id: String,
         userId: String,
-        defaultAnonymous: Boolean
+        defaultAnonymous: Boolean,
+        role: String
     ): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val member = CommunityMember(
                 joinedAt = System.currentTimeMillis(),
-                defaultAnonymous = defaultAnonymous
+                defaultAnonymous = defaultAnonymous,
+                role = role
             )
             val updates = mapOf(
                 "communityMembers/$id/$userId" to member,
@@ -160,6 +167,15 @@ class CommunityRepositoryImpl(
         id: String,
         userId: String
     ): Result<Unit> = withContext(Dispatchers.IO) {
+        val currentUid = auth.currentUser?.uid ?: return@withContext Result.failure(Exception("Not authenticated"))
+        
+        val isSelf = currentUid == userId
+        val isOwner = isCommunityOwner(id, currentUid).getOrElse { false }
+        
+        if (!isOwner && !isSelf) {
+            return@withContext Result.failure(Exception("Only the community owner can remove users from this community."))
+        }
+
         try {
             val updates = mapOf(
                 "communityMembers/$id/$userId" to null,
@@ -232,6 +248,20 @@ class CommunityRepositoryImpl(
         awaitClose { ref.removeEventListener(listener) }
     }
 
+    override fun observeCommunityMembers(communityId: String): Flow<List<String>> = callbackFlow {
+        val ref = membersRef.child(communityId)
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                trySend(snapshot.children.mapNotNull { it.key })
+            }
+            override fun onCancelled(error: DatabaseError) {
+                close(error.toException())
+            }
+        }
+        ref.addValueEventListener(listener)
+        awaitClose { ref.removeEventListener(listener) }
+    }
+
 
     private var userCommunitiesJob: Job? = null
     private var hasAutoSelected = false
@@ -284,5 +314,83 @@ class CommunityRepositoryImpl(
         hasAutoSelected = false
         UserCommunity.reset()
         // lastSelectedStore intentionally NOT cleared — needed for next login's auto-select
+    }
+
+    override suspend fun getMemberRole(communityId: String, userId: String): Result<String?> =
+        withContext(Dispatchers.IO) {
+            try {
+                val snapshot = membersRef.child(communityId).child(userId).get().await()
+                val member = snapshot.getValue(CommunityMember::class.java)
+                Result.success(member?.role)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    override suspend fun isCommunityOwner(
+        communityId: String,
+        userId: String
+    ): Result<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            val communitySnap = communitiesRef.child(communityId).get().await()
+            val community = communitySnap.getValue(Community::class.java)
+            if (community != null && community.creatorId == userId) {
+                return@withContext Result.success(true)
+            }
+            val snapshot = membersRef.child(communityId).child(userId).get().await()
+            val member = snapshot.getValue(CommunityMember::class.java)
+            Result.success(member?.role == "OWNER")
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun assignChannelManager(
+        communityId: String,
+        channelId: String,
+        userId: String
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        val currentUid = auth.currentUser?.uid ?: return@withContext Result.failure(Exception("Not authenticated"))
+        val isOwner = isCommunityOwner(communityId, currentUid).getOrElse { false }
+        if (!isOwner) {
+            return@withContext Result.failure(Exception("Only the community owner can assign channel managers."))
+        }
+        try {
+            db.getReference("communityChannelManagers").child(communityId).child(channelId).child(userId).setValue(true).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun removeChannelManager(
+        communityId: String,
+        channelId: String,
+        userId: String
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        val currentUid = auth.currentUser?.uid ?: return@withContext Result.failure(Exception("Not authenticated"))
+        val isOwner = isCommunityOwner(communityId, currentUid).getOrElse { false }
+        if (!isOwner) {
+            return@withContext Result.failure(Exception("Only the community owner can remove channel managers."))
+        }
+        try {
+            db.getReference("communityChannelManagers").child(communityId).child(channelId).child(userId).removeValue().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun isChannelManager(
+        communityId: String,
+        channelId: String,
+        userId: String
+    ): Result<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            val snapshot = db.getReference("communityChannelManagers").child(communityId).child(channelId).child(userId).get().await()
+            Result.success(snapshot.exists() && snapshot.value == true)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

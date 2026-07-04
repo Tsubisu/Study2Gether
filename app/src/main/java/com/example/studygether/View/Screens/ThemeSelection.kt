@@ -47,9 +47,22 @@ import com.example.studygether.ui.theme.TextColor
 
 
 
+import androidx.activity.compose.LocalActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studygether.ViewModels.AppBarsViewModel
+import com.example.studygether.View.AppBars.BottomBars
+import com.example.studygether.ViewModels.BottomBarState
+import androidx.compose.runtime.LaunchedEffect
+
 @Composable
-fun ThemeSelectionScreen() {
+fun ThemeSelectionScreen(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
+    val activity = LocalActivity.current as ComponentActivity
+    val appBarsViewModel: AppBarsViewModel = viewModel(activity)
+    LaunchedEffect(Unit) {
+        appBarsViewModel.hideTopBar()
+        appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
+    }
 
     val themes = listOf(
         ThemeOption("Blue Sky", MainTheme, Color(0xFF154B7C)),
@@ -70,7 +83,7 @@ fun ThemeSelectionScreen() {
         ) {
             Spacer(modifier = Modifier.Companion.height(20.dp))
             ElevatedButton(
-                onClick = { (context as? Activity)?.finish() },
+                onClick = onNavigateBack,
                 modifier = Modifier.Companion.size(45.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.elevatedButtonColors(containerColor = Color.Companion.White),

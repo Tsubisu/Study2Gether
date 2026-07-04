@@ -14,5 +14,6 @@ data class Community(
 
 data class CommunityMember(
     val joinedAt: Long = 0L,
-    val defaultAnonymous: Boolean = false
+    val defaultAnonymous: Boolean = false,
+    val role: String = "MEMBER"
 )

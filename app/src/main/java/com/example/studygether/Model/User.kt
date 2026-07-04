@@ -7,5 +7,7 @@ data class User(
     val email: String = "",
     val profileImageUrl: String = "",
     val profileImagePublicId: String = "",
-    val createdAt: Long = 0L
+    val createdAt: Long = 0L,
+    val status: String? = "Active",
+    val customStatus: String? = ""
 )

@@ -64,17 +64,40 @@ object SessionState {
         }
     }
 
+    private var currentUserJob: kotlinx.coroutines.Job? = null
+
     fun setUser(user: User) {
-        _currentUser.update { user }
+        currentUserJob?.cancel()
+        _currentUser.value = user
         communityRepository.startObservingUserCommunities(user.id)
+        com.example.studygether.Utility.ZegoService.login(user.id, user.username) { success ->
+            android.util.Log.d("SessionState", "Zego login success status: $success")
+        }
+        
+        try {
+            com.example.studygether.Utility.DatabaseMigration.migrateCommunityMembersRole()
+        } catch (e: Exception) {
+            android.util.Log.e("SessionState", "Failed to run database migration", e)
+        }
+
+        currentUserJob = sessionScope.launch {
+            userRepository.observeUser(user.id).collect { updatedUser ->
+                if (updatedUser != null) {
+                    _currentUser.value = updatedUser
+                }
+            }
+        }
     }
 
     fun clear() {
         val uid = _currentUser.value?.id
+        currentUserJob?.cancel()
+        currentUserJob = null
         _currentUser.update { null }
         if (uid != null) {
             communityRepository.stopObservingUserCommunities(uid)
         }
+        com.example.studygether.Utility.ZegoService.logout()
         Firebase.auth.signOut()
     }
 }

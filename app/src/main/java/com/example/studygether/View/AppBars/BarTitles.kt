@@ -31,11 +31,10 @@ import com.example.studygether.ui.theme.tokens.AppSpacing
 
 @Composable
 fun ChatUserLabelCard(
-    name:String,
-    profileImage:Int,
-    onClick: ()->Unit
-)
-{
+    name: String,
+    profileImageUrl: String?,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,35 +47,31 @@ fun ChatUserLabelCard(
             modifier = Modifier
                 .padding(horizontal = 0.dp, vertical = 0.dp),
             verticalAlignment = Alignment.CenterVertically,
-
-            ) {
-
+        ) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .padding( AppSpacing.tiny)
-
+                    .padding(AppSpacing.tiny)
             ) {
-                Image(painter = painterResource(profileImage), contentDescription = null,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.inverseOnSurface))
+                com.example.studygether.View.Components.AvatarImage(
+                    imageUrl = profileImageUrl,
+                    name = name,
+                    size = 40.dp
+                )
             }
 
             Column(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top,
                 modifier = Modifier.padding(AppSpacing.tiny)
-            )
-            {
+            ) {
                 Text(
                     text = name,
                     style = Typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-
                 Spacer(modifier = Modifier.height(6.dp))
             }
         }

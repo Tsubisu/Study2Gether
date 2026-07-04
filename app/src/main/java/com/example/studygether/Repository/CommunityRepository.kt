@@ -22,12 +22,18 @@ interface CommunityRepository{
         defaultAnonymous: Boolean = false
     ): Result<String>
 
-    suspend fun addMember(id: String, userId: String, defaultAnonymous: Boolean = false): Result<Unit>
+    suspend fun addMember(id: String, userId: String, defaultAnonymous: Boolean = false, role: String = "MEMBER"): Result<Unit>
     suspend fun removeMember(id: String, userId: String): Result<Unit>
     suspend fun isMember(id: String, userId: String): Result<Boolean>
+    suspend fun getMemberRole(communityId: String, userId: String): Result<String?>
+    suspend fun isCommunityOwner(communityId: String, userId: String): Result<Boolean>
+    suspend fun assignChannelManager(communityId: String, channelId: String, userId: String): Result<Unit>
+    suspend fun removeChannelManager(communityId: String, channelId: String, userId: String): Result<Unit>
+    suspend fun isChannelManager(communityId: String, channelId: String, userId: String): Result<Boolean>
     suspend fun getUserCommunities(userId: String): Result<List<Community>>
     fun observeCommunity(id: String): Flow<Community?>
     fun observeUserCommunityIds(uid: String): Flow<List<String>>
+    fun observeCommunityMembers(communityId: String): Flow<List<String>>
     fun startObservingUserCommunities(uid: String)
     fun stopObservingUserCommunities(uid: String)
     fun selectCommunity(uid: String, id: String?)

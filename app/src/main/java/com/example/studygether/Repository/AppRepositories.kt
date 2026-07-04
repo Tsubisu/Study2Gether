@@ -29,6 +29,19 @@ object AppRepositories {
     fun init(context: Context) {
         if (isInitialized) return
 
+        // Initialize Cloudinary MediaManager
+        try {
+            com.cloudinary.android.MediaManager.get()
+        } catch (e: IllegalStateException) {
+            val config = mapOf(
+                "cloud_name" to com.example.studygether.BuildConfig.CLOUDINARY_CLOUD_NAME,
+                "secure" to true
+            )
+            com.cloudinary.android.MediaManager.init(context.applicationContext, config)
+        } catch (e: Exception) {
+            android.util.Log.e("AppRepositories", "Failed to initialize Cloudinary MediaManager", e)
+        }
+
         communityRepository = CommunityRepositoryImpl(
             db = db,
             auth = auth,
@@ -38,6 +51,7 @@ object AppRepositories {
         )
 
         SessionState.init(communityRepository,userRepository)
+        com.example.studygether.Utility.ZegoService.init(context.applicationContext)
 
         isInitialized = true
     }

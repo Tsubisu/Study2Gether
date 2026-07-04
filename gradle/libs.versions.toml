@@ -16,9 +16,14 @@ navigationCompose = "2.9.8"
 lifecycleViewModelCompose = "2.8.7"
 uiTextGoogleFonts = "1.11.2"
 uiTextGoogleFontsVersion = "1.11.2"
+zim = "2.18.2"
+expressVideo = "3.14.0"
 
 
 [libraries]
+zego-zim = { group = "im.zego", name = "zim", version.ref = "zim" }
+zego-express = { group = "im.zego", name = "express-video", version.ref = "expressVideo" }
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
