@@ -23,7 +23,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.ViewModels.ProfileViewModel
 import com.example.studygether.ui.theme.Typography
 import coil3.compose.AsyncImage
-
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import com.example.studygether.ViewModels.AppBarsViewModel
