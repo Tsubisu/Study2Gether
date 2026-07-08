@@ -133,11 +133,15 @@ fun AppGraph()
                 {
                     ChannelListScreen(
                         modifier = Modifier.padding(innerPadding),
-                        { name, image, memberCount ->
+                        onNavigateToChannel = { name, image, memberCount ->
                             navController.navigate(
                                 Channel(name, image, memberCount)
                             )
-                        })
+                        },
+                        onNavigateToProfile = {
+                            navController.navigate(Profile)
+                        }
+                    )
                 }
 
                 composable<ConvoList>

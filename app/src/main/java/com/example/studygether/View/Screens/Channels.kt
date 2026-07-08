@@ -70,93 +70,114 @@ import com.example.studygether.ui.theme.TextColor
 import com.example.studygether.ui.theme.Typography
 import com.example.studygether.ui.theme.tokens.AppSpacing
 
+import androidx.compose.foundation.lazy.items
+
 @Composable
-fun ChannelListScreen(modifier:Modifier,
-                      onNavigateToChannel:(name:String, image:Int,memberCount:Int)->Unit) {
+fun ChannelListScreen(
+    modifier: Modifier,
+    onNavigateToChannel: (name: String, image: Int, memberCount: Int) -> Unit,
+    onNavigateToProfile: () -> Unit
+) {
     val activity = LocalActivity.current as ComponentActivity
     val appBarsViewModel: AppBarsViewModel = viewModel(activity)
-    LaunchedEffect(Unit)
-    {
+    LaunchedEffect(Unit) {
         appBarsViewModel.setTitleBar(
-            title ={Text("Channels",style= Typography.headlineMedium)},
-            actions = {IconButton(onClick={})
-            {
-                Icon(Icons.Default.Face,contentDescription = null)
-            }
-            }
-        )
-
-        appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))
-    }
-    val channel by remember{mutableStateOf(Channel(
-      "Tech Support",
-      R.drawable.logo,
-      265))}
-
-        Box(modifier)
-        {
-            Box(modifier = Modifier.fillMaxSize().background(color= MaterialTheme.colorScheme.primary)){
-                LazyColumn(modifier = Modifier.fillMaxSize().background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                ).padding(all= AppSpacing.small),
-                    verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)
-                    )
-                {
-
-                    items(4)
-                    {
-                        ChannelCard(channel,onNavigateToChannel)
-                    }
-
-
+            title = { Text("Channels", style = Typography.headlineMedium) },
+            actions = {
+                IconButton(onClick = onNavigateToProfile) {
+                    Icon(Icons.Default.Face, contentDescription = null)
                 }
             }
-
+        )
+        appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))
     }
 
+    val mockChannels = remember {
+        listOf(
+            Channel("Study Group: Calculus", R.drawable.logo, 142),
+            Channel("Tech Support", R.drawable.logo, 265),
+            Channel("Kotlin & Android", R.drawable.logo, 89),
+            Channel("General Chat", R.drawable.logo, 512)
+        )
+    }
 
+    Box(modifier) {
+        Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.primary)) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                    )
+                    .padding(all = AppSpacing.small),
+                verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)
+            ) {
+                items(mockChannels) { channel ->
+                    ChannelCard(channel = channel, onClick = onNavigateToChannel)
+                }
+            }
+        }
+    }
 }
 
-
-fun testChannelList(): List<Channel>
-{
-    val channelList= ArrayList<Channel>()
+fun testChannelList(): List<Channel> {
+    val channelList = ArrayList<Channel>()
     return channelList
 }
 
 @Composable
-fun ChannelCard(channel: Channel,onClick:(name:String , image:Int,memberCount:Int)-> Unit)
-{
-
-    Card(Modifier.padding(vertical = AppSpacing.medium, horizontal = AppSpacing.large)
-            .clickable { onClick(channel.name,channel.resourceId,channel.members) },
-        colors= CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-        )
-    {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically)
-        {
-            Column(modifier = Modifier.weight(2f).padding(start = AppSpacing.large), verticalArrangement = Arrangement.spacedBy(
-                AppSpacing.small), horizontalAlignment = Alignment.Start){
-
-                Spacer(Modifier.width(AppSpacing.large))
-                Text(channel.name,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
-                Text("Members:${channel.members}")
-            }
-            Row(modifier = Modifier.weight(1f).padding(AppSpacing.medium), horizontalArrangement = Arrangement.End)
-            {
-                Spacer(Modifier.width(AppSpacing.large))
-                Image(painter = painterResource(channel.resourceId),contentDescription = null,modifier = Modifier
+fun ChannelCard(
+    channel: Channel,
+    onClick: (name: String, image: Int, memberCount: Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick(channel.name, channel.resourceId, channel.members) },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
                     .size(48.dp)
-                    .border(1.dp, Color.Black, CircleShape)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+            ) {
+                Image(
+                    painter = painterResource(channel.resourceId),
+                    contentDescription = channel.name,
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = channel.name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "${channel.members} members",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.7f)
                 )
             }
         }
     }
-    HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(horizontal = AppSpacing.large))
 }
 
