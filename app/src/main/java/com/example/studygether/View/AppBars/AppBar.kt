@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.EmojiEmotions
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Attachment
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Mic
@@ -86,10 +87,27 @@ fun TitleBar(navController: NavController)
         state=state as TopBarState.TitleBar
     TopAppBar(
         title = state.title,
-        colors= TopAppBarDefaults.topAppBarColors(
-            containerColor =if(state.barColor==Color.Unspecified){
-                MaterialTheme.colorScheme.primary}else{state.barColor},
-            titleContentColor = Color.White
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = if (state.barColor == Color.Unspecified) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                state.barColor
+            },
+            titleContentColor = if (state.barColor == Color.Unspecified) {
+                Color.White
+            } else {
+                MaterialTheme.colorScheme.onBackground
+            },
+            navigationIconContentColor = if (state.barColor == Color.Unspecified) {
+                Color.White
+            } else {
+                MaterialTheme.colorScheme.onBackground
+            },
+            actionIconContentColor = if (state.barColor == Color.Unspecified) {
+                Color.White
+            } else {
+                MaterialTheme.colorScheme.onBackground
+            }
         ),
         navigationIcon = {
             if (state.showBackButton) {
@@ -97,6 +115,13 @@ fun TitleBar(navController: NavController)
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = "Go back"
+                    )
+                }
+            } else {
+                IconButton(onClick = { viewModel.onMenuClick?.invoke() }) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Open navigation drawer"
                     )
                 }
             }

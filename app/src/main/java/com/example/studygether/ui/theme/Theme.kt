@@ -18,42 +18,45 @@ import com.example.studygether.ui.theme.DarkColorScheme
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
-    tertiary = Pink80
+    tertiary = Pink80,
+    background = Color.Black,
+    onBackground = Color.White,
+    surface = Color(0xFF1E1E1E),
+    onSurface = Color.White,
+    surfaceVariant = Color(0xFF2D2D2D),
+    onSurfaceVariant = Color(0xFFB0B0B0)
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
     tertiary = Pink40,
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    background = Color.White,
+    onBackground = Color.Black,
+    surface = Color.White,
+    onSurface = Color.Black,
+    surfaceVariant = Color(0xFFF3F4F6),
+    onSurfaceVariant = Color(0xFF6B7280)
 )
+
 private val LightBlueColorScheme = lightColorScheme(
-    primary = Color(0xFF8AB2F5),
-    onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFBFDBFE),
-    onPrimaryContainer = Color(0xFF7389CE),
-    secondary = Color(0xFF6A87B7),
-    onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFE2ECFC),
-    onSecondaryContainer = Color(0xFF5C71AB),
-    tertiary = Color(0xFF4E889D),
-    onTertiary = Color(0xFFFFFFFF),
-    tertiaryContainer = Color(0xFFDCFCE7),
-    onTertiaryContainer = Color(0xFF3B8196),
-    background = Color(0xFFF4F7FC),
-    onBackground = Color(0xFF334562),
-    surface = Color(0xFFFFFFFF),
-    onSurface = Color(0xFF2C4977),
-    surfaceVariant = Color(0xFFE2E8F0),
+    primary = Color(0xFF1E40AF),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFDBEAFE),
+    onPrimaryContainer = Color(0xFF1E40AF),
+    secondary = Color(0xFF3B82F6),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFEFF6FF),
+    onSecondaryContainer = Color(0xFF1E40AF),
+    tertiary = Color(0xFF0369A1),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFE0F2FE),
+    onTertiaryContainer = Color(0xFF0369A1),
+    background = Color.White,
+    onBackground = Color(0xFF1E293B),
+    surface = Color.White,
+    onSurface = Color(0xFF1E293B),
+    surfaceVariant = Color(0xFFF1F5F9),
     onSurfaceVariant = Color(0xFF64748B),
     outline = Color(0xFFCBD5E1),
     outlineVariant = Color(0xFFE2E8F0),
@@ -63,87 +66,201 @@ private val LightBlueColorScheme = lightColorScheme(
     surfaceContainerHigh = Color(0xFFE2E8F0),
     surfaceContainerHighest = Color(0xFFCBD5E1)
 )
+
 private val DarkBlueColorScheme = darkColorScheme(
-    primary = Color(0xFF1F60BB),
-    onPrimary = Color(0xFF3750A4),
-    primaryContainer = Color(0xFF576DAF),
+    primary = Color(0xFF60A5FA),
+    onPrimary = Color.Black,
+    primaryContainer = Color(0xFF1E3A8A),
     onPrimaryContainer = Color(0xFFDBEAFE),
-    secondary = Color(0xFF2D5594),
-    onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFF46608A),
-    onSecondaryContainer = Color(0xFF93C5FD),
-    tertiary = Color(0xFF478186),
-    onTertiary = Color(0xFF4DBEB5),
-    tertiaryContainer = Color(0xFF66BBB9),
-    onTertiaryContainer = Color(0xFFDCFCE7),
-    background = Color(0xFF4B5F85),
+    secondary = Color(0xFF93C5FD),
+    onSecondary = Color.Black,
+    secondaryContainer = Color(0xFF172554),
+    onSecondaryContainer = Color(0xFFEFF6FF),
+    tertiary = Color(0xFF7DD3FC),
+    onTertiary = Color.Black,
+    tertiaryContainer = Color(0xFF0C4A6E),
+    onTertiaryContainer = Color(0xFFE0F2FE),
+    background = Color.Black,
     onBackground = Color(0xFFF1F5F9),
-    surface = Color(0xFF20304B),
-    onSurface = Color(0xFFF8FAFC),
-    surfaceVariant = Color(0xFF334155),
+    surface = Color(0xFF111827),
+    onSurface = Color(0xFFF1F5F9),
+    surfaceVariant = Color(0xFF1F2937),
     onSurfaceVariant = Color(0xFF94A3B8),
-    outline = Color(0xFF647998),
-    outlineVariant = Color(0xFF334155),
-    surfaceContainerLowest = Color(0xFF3E5281),
-    surfaceContainerLow = Color(0xFF0F172A),
-    surfaceContainer = Color(0xFF1E293B),
-    surfaceContainerHigh = Color(0xFF334155),
-    surfaceContainerHighest = Color(0xFF475569)
+    outline = Color(0xFF4B5563),
+    outlineVariant = Color(0xFF1F2937),
+    surfaceContainerLowest = Color(0xFF030712),
+    surfaceContainerLow = Color(0xFF111827),
+    surfaceContainer = Color(0xFF1F2937),
+    surfaceContainerHigh = Color(0xFF374151),
+    surfaceContainerHighest = Color(0xFF4B5563)
 )
 
 private val LightGreenColorScheme = lightColorScheme(
-    primary = Color(0xFF8BA96E),
-    onPrimary = Color(0xFF84A17B),
-    primaryContainer = Color(0xFFBED2BA),
-    onPrimaryContainer = Color(0xFF394D2C),
-    secondary = Color(0xFF8DAF9B),
-    onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFAAC4BC),
-    onSecondaryContainer = Color(0xFF4DA183),
-    tertiary = Color(0xFF58AD9D),
-    onTertiary = Color(0xFF29674E),
-    tertiaryContainer = Color(0xFFF5F0E6),
-    onTertiaryContainer = Color(0xFF95AF9F),
-    background = Color(0xFFF4F7F3),
-    onBackground = Color(0xFFBBC5C0),
-    surface = Color(0xFFFFFFFF),
-    onSurface = Color(0xFF8EB980),
-    surfaceVariant = Color(0xFFE1E5DC),
-    onSurfaceVariant = Color(0xFF84AF68),
-    outline = Color(0xFF75915E),
-    outlineVariant = Color(0xFFC3C8BC),
-    surfaceContainerLowest = Color(0xFFFFFFFF),
-    surfaceContainerLow = Color(0xFFEEF2EB),
-    surfaceContainer = Color(0xFFE8ECE5),
-    surfaceContainerHigh = Color(0xFFE2E6DF),
-    surfaceContainerHighest = Color(0xFFDCDFD8)
-)
-private val DarkGreenColorScheme = darkColorScheme(
-    primary = Color(0xFF516240),
-    onPrimary = Color(0xFF50624B),
-    primaryContainer = Color(0xFF626C60),
-    onPrimaryContainer = Color(0xFF394D2C),
-    secondary = Color(0xFF4C6958),
-    onSecondary = Color(0xFF647A77),
-    secondaryContainer = Color(0xFF8DA29D),
-    onSecondaryContainer = Color(0xFF31624E),
-    tertiary = Color(0xFF58AD9D),
-    onTertiary = Color(0xFF29674E),
-    tertiaryContainer = Color(0xFF3C523E),
-    onTertiaryContainer = Color(0xFF7E9887),
-    background = Color(0xFFF4F7F3),
-    onBackground = Color(0xFF525E4D),
-    surface = Color(0xFFFFFFFF),
+    primary = Color(0xFF1B5E20),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFE8F5E9),
+    onPrimaryContainer = Color(0xFF1B5E20),
+    secondary = Color(0xFF4CAF50),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFF1F8E9),
+    onSecondaryContainer = Color(0xFF1B5E20),
+    tertiary = Color(0xFF2E7D32),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFE8F5E9),
+    onTertiaryContainer = Color(0xFF2E7D32),
+    background = Color.White,
+    onBackground = Color(0xFF1A1D19),
+    surface = Color.White,
     onSurface = Color(0xFF1A1D19),
-    surfaceVariant = Color(0xFFE1E5DC),
-    onSurfaceVariant = Color(0xFF43493F),
-    outline = Color(0xFF73796E),
-    outlineVariant = Color(0xFFC3C8BC),
+    surfaceVariant = Color(0xFFF4F6F4),
+    onSurfaceVariant = Color(0xFF5D6B5D),
+    outline = Color(0xFF758F75),
+    outlineVariant = Color(0xFFE1E5DC),
     surfaceContainerLowest = Color(0xFFFFFFFF),
-    surfaceContainerLow = Color(0xFFEEF2EB),
-    surfaceContainer = Color(0xFFE8ECE5),
-    surfaceContainerHigh = Color(0xFFE2E6DF),
-    surfaceContainerHighest = Color(0xFFDCDFD8)
+    surfaceContainerLow = Color(0xFFF1F5F1),
+    surfaceContainer = Color(0xFFE8ECE8),
+    surfaceContainerHigh = Color(0xFFE0E5E0),
+    surfaceContainerHighest = Color(0xFFD0D5D0)
+)
+
+private val DarkGreenColorScheme = darkColorScheme(
+    primary = Color(0xFF81C784),
+    onPrimary = Color.Black,
+    primaryContainer = Color(0xFF1B5E20),
+    onPrimaryContainer = Color(0xFFE8F5E9),
+    secondary = Color(0xFFA5D6A7),
+    onSecondary = Color.Black,
+    secondaryContainer = Color(0xFF0F3E10),
+    onSecondaryContainer = Color(0xFFF1F8E9),
+    tertiary = Color(0xFFA5D6A7),
+    onTertiary = Color.Black,
+    tertiaryContainer = Color(0xFF1B5E20),
+    onTertiaryContainer = Color(0xFFE8F5E9),
+    background = Color.Black,
+    onBackground = Color(0xFFE2E3DF),
+    surface = Color(0xFF121812),
+    onSurface = Color(0xFFE2E3DF),
+    surfaceVariant = Color(0xFF1C241C),
+    onSurfaceVariant = Color(0xFF9CA3AF),
+    outline = Color(0xFF4D564D),
+    outlineVariant = Color(0xFF1C241C),
+    surfaceContainerLowest = Color(0xFF0A0E0A),
+    surfaceContainerLow = Color(0xFF121812),
+    surfaceContainer = Color(0xFF1C241C),
+    surfaceContainerHigh = Color(0xFF2C352C),
+    surfaceContainerHighest = Color(0xFF4D564D)
+)
+
+private val LightSunsetColorScheme = lightColorScheme(
+    primary = Color(0xFFE65100),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFFFF3E0),
+    onPrimaryContainer = Color(0xFFE65100),
+    secondary = Color(0xFFF57C00),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFFFE0B2),
+    onSecondaryContainer = Color(0xFFE65100),
+    tertiary = Color(0xFFD84315),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFFFCC80),
+    onTertiaryContainer = Color(0xFFD84315),
+    background = Color.White,
+    onBackground = Color(0xFF3E2723),
+    surface = Color.White,
+    onSurface = Color(0xFF3E2723),
+    surfaceVariant = Color(0xFFFAF2ED),
+    onSurfaceVariant = Color(0xFF7D6B65),
+    outline = Color(0xFFFFB74D),
+    outlineVariant = Color(0xFFFFECB3),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFFFF7F2),
+    surfaceContainer = Color(0xFFFAF2ED),
+    surfaceContainerHigh = Color(0xFFF5E7DF),
+    surfaceContainerHighest = Color(0xFFFFE0B2)
+)
+
+private val DarkSunsetColorScheme = darkColorScheme(
+    primary = Color(0xFFFFB74D),
+    onPrimary = Color.Black,
+    primaryContainer = Color(0xFFE65100),
+    onPrimaryContainer = Color(0xFFFFF3E0),
+    secondary = Color(0xFFFFCC80),
+    onSecondary = Color.Black,
+    secondaryContainer = Color(0xFF5D2B00),
+    onSecondaryContainer = Color(0xFFFFE0B2),
+    tertiary = Color(0xFFFFAB91),
+    onTertiary = Color.Black,
+    tertiaryContainer = Color(0xFFD84315),
+    onTertiaryContainer = Color(0xFFFFCC80),
+    background = Color.Black,
+    onBackground = Color(0xFFFFF8E1),
+    surface = Color(0xFF1E1410),
+    onSurface = Color(0xFFFFF8E1),
+    surfaceVariant = Color(0xFF2C1E18),
+    onSurfaceVariant = Color(0xFFB09B95),
+    outline = Color(0xFF8D6E63),
+    outlineVariant = Color(0xFF2C1E18),
+    surfaceContainerLowest = Color(0xFF0F0A08),
+    surfaceContainerLow = Color(0xFF1E1410),
+    surfaceContainer = Color(0xFF2C1E18),
+    surfaceContainerHigh = Color(0xFF3C2C25),
+    surfaceContainerHighest = Color(0xFF5D4037)
+)
+
+private val LightMidnightColorScheme = lightColorScheme(
+    primary = Color(0xFF263238),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFECEFF1),
+    onPrimaryContainer = Color(0xFF263238),
+    secondary = Color(0xFF455A64),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFCFD8DC),
+    onSecondaryContainer = Color(0xFF263238),
+    tertiary = Color(0xFF006064),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFE0F7FA),
+    onTertiaryContainer = Color(0xFF006064),
+    background = Color.White,
+    onBackground = Color(0xFF212121),
+    surface = Color.White,
+    onSurface = Color(0xFF212121),
+    surfaceVariant = Color(0xFFF1F3F4),
+    onSurfaceVariant = Color(0xFF5A6A72),
+    outline = Color(0xFFB0BEC5),
+    outlineVariant = Color(0xFFCFD8DC),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFF5F7F8),
+    surfaceContainer = Color(0xFFECEFF1),
+    surfaceContainerHigh = Color(0xFFDFE3E6),
+    surfaceContainerHighest = Color(0xFFCFD8DC)
+)
+
+private val DarkMidnightColorScheme = darkColorScheme(
+    primary = Color(0xFF90A4AE),
+    onPrimary = Color.Black,
+    primaryContainer = Color(0xFF37474F),
+    onPrimaryContainer = Color(0xFFECEFF1),
+    secondary = Color(0xFFB0BEC5),
+    onSecondary = Color.Black,
+    secondaryContainer = Color(0xFF1C2428),
+    onSecondaryContainer = Color(0xFFCFD8DC),
+    tertiary = Color(0xFF80DEEA),
+    onTertiary = Color.Black,
+    tertiaryContainer = Color(0xFF006064),
+    onTertiaryContainer = Color(0xFFE0F7FA),
+    background = Color.Black,
+    onBackground = Color(0xFFECEFF1),
+    surface = Color(0xFF14181B),
+    onSurface = Color(0xFFECEFF1),
+    surfaceVariant = Color(0xFF20262A),
+    onSurfaceVariant = Color(0xFF90A4AE),
+    outline = Color(0xFF37474F),
+    outlineVariant = Color(0xFF20262A),
+    surfaceContainerLowest = Color(0xFF090A0B),
+    surfaceContainerLow = Color(0xFF14181B),
+    surfaceContainer = Color(0xFF20262A),
+    surfaceContainerHigh = Color(0xFF2E373E),
+    surfaceContainerHighest = Color(0xFF37474F)
 )
 private val LightSunsetColorScheme = lightColorScheme(
     primary = Color(0xFFE65100),
@@ -259,8 +376,6 @@ private val DarkMidnightColorScheme = darkColorScheme(
 @Composable
 fun StudyGetherTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-
     dynamicColor: Boolean = true,
     themeStyle: AppThemeStyle = AppThemeStyle.DEFAULT,
     content: @Composable () -> Unit
@@ -278,6 +393,12 @@ fun StudyGetherTheme(
                 AppThemeStyle.GreenTheme -> {
                     if (darkTheme) DarkGreenColorScheme else LightGreenColorScheme
                 }
+                AppThemeStyle.SunsetTheme -> {
+                    if (darkTheme) DarkSunsetColorScheme else LightSunsetColorScheme
+                }
+                AppThemeStyle.MidnightTheme -> {
+                    if (darkTheme) DarkMidnightColorScheme else LightMidnightColorScheme
+                }
             }
         }
         darkTheme -> {
@@ -285,6 +406,8 @@ fun StudyGetherTheme(
                 AppThemeStyle.DEFAULT -> DarkColorScheme
                 AppThemeStyle.BlueTheme -> DarkBlueColorScheme
                 AppThemeStyle.GreenTheme -> DarkGreenColorScheme
+                AppThemeStyle.SunsetTheme -> DarkSunsetColorScheme
+                AppThemeStyle.MidnightTheme -> DarkMidnightColorScheme
             }
         }
         else -> {
@@ -292,7 +415,8 @@ fun StudyGetherTheme(
                 AppThemeStyle.DEFAULT -> LightColorScheme
                 AppThemeStyle.BlueTheme -> LightBlueColorScheme
                 AppThemeStyle.GreenTheme -> LightGreenColorScheme
-
+                AppThemeStyle.SunsetTheme -> LightSunsetColorScheme
+                AppThemeStyle.MidnightTheme -> LightMidnightColorScheme
             }
         }
     }
@@ -300,7 +424,7 @@ fun StudyGetherTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.isNavigationBarContrastEnforced =false
+            window.isNavigationBarContrastEnforced = false
         }
     }
 
@@ -309,9 +433,8 @@ fun StudyGetherTheme(
         typography = Typography,
         content = content
     )
-
 }
 
 enum class AppThemeStyle {
-    DEFAULT, BlueTheme, GreenTheme
+    DEFAULT, BlueTheme, GreenTheme, SunsetTheme, MidnightTheme
 }

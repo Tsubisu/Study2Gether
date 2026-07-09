@@ -82,6 +82,7 @@ fun ChannelScreen(
     var postContent by remember { mutableStateOf("") }
     var isPosting by remember { mutableStateOf(false) }
 
+    val barBgColor = MaterialTheme.colorScheme.background
     LaunchedEffect(channelId, channelName, memberCount) {
         viewModel.initChannel(channelId, communityId)
         appBarsViewModel.setTitleBar(
@@ -92,7 +93,7 @@ fun ChannelScreen(
                     // Quick stats or menu action if needed
                 }
             },
-            barColor = Color.Unspecified
+            barColor = barBgColor
         )
         appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
     }
@@ -101,15 +102,11 @@ fun ChannelScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary)
+                .background(color = MaterialTheme.colorScheme.background)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        color = MaterialTheme.colorScheme.background,
-                        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                    )
             ) {
                 LazyColumn(
                     modifier = Modifier

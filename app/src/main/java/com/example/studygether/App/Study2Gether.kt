@@ -22,6 +22,7 @@ class Study2Gether : Application() {
     override fun onCreate() {
         super.onCreate()
         AppRepositories.init(this)
+        com.example.studygether.ui.theme.ThemeManager.init(this)
         migrate()
     }
 }
@@ -31,7 +32,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            StudyGetherTheme(false,false) {
+            val currentTheme by com.example.studygether.ui.theme.ThemeManager.currentTheme.collectAsStateWithLifecycle()
+            val isDarkMode by com.example.studygether.ui.theme.ThemeManager.isDarkMode.collectAsStateWithLifecycle()
+            StudyGetherTheme(
+                darkTheme = isDarkMode,
+                dynamicColor = false,
+                themeStyle = currentTheme
+            ) {
                 App()
             }
         }
