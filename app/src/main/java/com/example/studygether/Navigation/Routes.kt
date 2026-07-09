@@ -15,7 +15,8 @@ object Home
 @Serializable data class VideoCall(val roomId: String, val targetUserId: String)
 @Serializable object ChannelList
 
-@Serializable data class Channel(val channelName:String, val channelLogo:Int, val channelMemberCount:Int)
+@Serializable data class Channel(val channelId: String, val channelName: String, val communityId: String)
+@Serializable data class PostDetail(val postId: String, val channelId: String, val communityId: String)
 @Serializable object Setting
 
 @Serializable object Profile

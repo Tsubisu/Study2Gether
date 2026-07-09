@@ -28,11 +28,24 @@ import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ui.theme.Typography
 import com.example.studygether.App.LoadingIndicator
 import com.example.studygether.App.NoCommunityJoinedContent
+import kotlinx.coroutines.flow.flowOf
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import com.example.studygether.Repository.AppRepositories
+import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.launch
+import com.example.studygether.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier, onNavigateToProfile: () -> Unit) {
+fun HomeScreen(
+    modifier: Modifier,
+    onNavigateToProfile: () -> Unit,
+    onNavigateToChannel: (channelId: String, channelName: String, communityId: String) -> Unit
+) {
     val selectedCommunity = UserCommunity.currentUserSelectedCommunity.collectAsStateWithLifecycle()
     val screenState = rememberCommunityScreenState()
     val currentUser = SessionState.currentUser.collectAsStateWithLifecycle()
@@ -98,7 +111,77 @@ fun HomeScreen(modifier: Modifier, onNavigateToProfile: () -> Unit) {
                                 Text("Add Member by Email")
                             }
                             
-                            // actual channel list content goes here
+                            val channelsFlow = remember(screenState.community.id) {
+                                AppRepositories.channelRepository.observeChannelsForCommunity(screenState.community.id)
+                            }.collectAsState(initial = emptyList())
+                            val channels = channelsFlow.value
+
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Text(
+                                text = "Channels",
+                                style = Typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.align(Alignment.Start).padding(bottom = 8.dp)
+                            )
+
+                            if (channels.isEmpty()) {
+                                Box(
+                                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "No channels created in this community yet.",
+                                        style = Typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                    )
+                                }
+                            } else {
+                                LazyColumn(
+                                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    items(channels) { channel ->
+                                        Card(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clickable {
+                                                    onNavigateToChannel(channel.id, channel.name, screenState.community.id)
+                                                },
+                                            shape = RoundedCornerShape(12.dp),
+                                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+                                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.baseline_people_24),
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.primary,
+                                                    modifier = Modifier.size(24.dp)
+                                                )
+                                                Spacer(modifier = Modifier.width(12.dp))
+                                                Column(modifier = Modifier.weight(1f)) {
+                                                    Text(
+                                                        text = channel.name,
+                                                        fontWeight = FontWeight.Bold,
+                                                        fontSize = 14.sp,
+                                                        color = MaterialTheme.colorScheme.onSecondary
+                                                    )
+                                                    Text(
+                                                        text = channel.description.ifEmpty { "No description provided." },
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        fontSize = 11.sp,
+                                                        color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.7f)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

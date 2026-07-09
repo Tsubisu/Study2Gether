@@ -21,6 +21,7 @@ import com.example.studygether.View.Screens.ForgetPasswordScreen
 import com.example.studygether.View.AppBars.BottomBar
 import com.example.studygether.View.Screens.ChannelListScreen
 import com.example.studygether.View.Screens.ChannelScreen
+import com.example.studygether.View.Screens.PostDetailScreen
 import com.example.studygether.View.Screens.CommunityCreationScreen
 import com.example.studygether.View.Screens.ConvoListScreen
 import com.example.studygether.View.Screens.ConvoScreen
@@ -126,18 +127,23 @@ fun AppGraph()
                 composable<Home> {
                     HomeScreen(
                         modifier = Modifier.padding(innerPadding),
-                        onNavigateToProfile = { navController.navigate(Profile) }
+                        onNavigateToProfile = { navController.navigate(Profile) },
+                        onNavigateToChannel = { channelId, channelName, communityId ->
+                            navController.navigate(Channel(channelId, channelName, communityId))
+                        }
                     )
                 }
                 composable<ChannelList>
                 {
                     ChannelListScreen(
                         modifier = Modifier.padding(innerPadding),
-                        { name, image, memberCount ->
-                            navController.navigate(
-                                Channel(name, image, memberCount)
-                            )
-                        })
+                        onNavigateToChannel = { channelId, channelName, communityId ->
+                            navController.navigate(Channel(channelId, channelName, communityId))
+                        },
+                        onNavigateToProfile = {
+                            navController.navigate(Profile)
+                        }
+                    )
                 }
 
                 composable<ConvoList>
@@ -176,15 +182,30 @@ fun AppGraph()
                 }
 
                 composable<Channel>
-                {
-
-                        backStackEntry ->
+                { backStackEntry ->
                     val route: Channel = backStackEntry.toRoute()
                     ChannelScreen(
                         modifier = Modifier.padding(innerPadding),
+                        channelId = route.channelId,
                         channelName = route.channelName,
-                        channelLogo = route.channelLogo,
-                        channelMemberCount = route.channelMemberCount
+                        communityId = route.communityId,
+                        onNavigateToPostDetail = { postId, channelId, communityId ->
+                            navController.navigate(PostDetail(postId, channelId, communityId))
+                        }
+                    )
+                }
+
+                composable<PostDetail>
+                { backStackEntry ->
+                    val route: PostDetail = backStackEntry.toRoute()
+                    PostDetailScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        postId = route.postId,
+                        channelId = route.channelId,
+                        communityId = route.communityId,
+                        onGoBack = {
+                            navController.navigateUp()
+                        }
                     )
                 }
 
