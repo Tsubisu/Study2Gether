@@ -146,11 +146,121 @@ private val DarkGreenColorScheme = darkColorScheme(
     surfaceContainerHighest = Color(0xFFDCDFD8)
 )
 
+private val LightSunsetColorScheme = lightColorScheme(
+    primary = Color(0xFFE65100),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFFFD180),
+    onPrimaryContainer = Color(0xFFE65100),
+    secondary = Color(0xFFF57C00),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFFFE0B2),
+    onSecondaryContainer = Color(0xFFE65100),
+    tertiary = Color(0xFFD84315),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFFFCC80),
+    onTertiaryContainer = Color(0xFFD84315),
+    background = Color(0xFFFFF8E1),
+    onBackground = Color(0xFF5D4037),
+    surface = Color(0xFFFFFFFF),
+    onSurface = Color(0xFF4E342E),
+    surfaceVariant = Color(0xFFFFECB3),
+    onSurfaceVariant = Color(0xFF5D4037),
+    outline = Color(0xFFFFB74D),
+    outlineVariant = Color(0xFFFFECB3),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFFFFDF7),
+    surfaceContainer = Color(0xFFFFF8E1),
+    surfaceContainerHigh = Color(0xFFFFF3CD),
+    surfaceContainerHighest = Color(0xFFFFE0B2)
+)
+
+private val DarkSunsetColorScheme = darkColorScheme(
+    primary = Color(0xFFFFB74D),
+    onPrimary = Color(0xFF5D4037),
+    primaryContainer = Color(0xFFE65100),
+    onPrimaryContainer = Color(0xFFFFD180),
+    secondary = Color(0xFFFFCC80),
+    onSecondary = Color(0xFF4E342E),
+    secondaryContainer = Color(0xFFF57C00),
+    onSecondaryContainer = Color(0xFFFFE0B2),
+    tertiary = Color(0xFFFFAB91),
+    onTertiary = Color(0xFF5D4037),
+    tertiaryContainer = Color(0xFFD84315),
+    onTertiaryContainer = Color(0xFFFFCC80),
+    background = Color(0xFF3E2723),
+    onBackground = Color(0xFFFFE0B2),
+    surface = Color(0xFF2D1B18),
+    onSurface = Color(0xFFFFF8E1),
+    surfaceVariant = Color(0xFF4E342E),
+    onSurfaceVariant = Color(0xFFFFD180),
+    outline = Color(0xFF8D6E63),
+    outlineVariant = Color(0xFF4E342E),
+    surfaceContainerLowest = Color(0xFF271512),
+    surfaceContainerLow = Color(0xFF35201C),
+    surfaceContainer = Color(0xFF3E2723),
+    surfaceContainerHigh = Color(0xFF4E332E),
+    surfaceContainerHighest = Color(0xFF5D4037)
+)
+
+private val LightMidnightColorScheme = lightColorScheme(
+    primary = Color(0xFF37474F),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFECEFF1),
+    onPrimaryContainer = Color(0xFF263238),
+    secondary = Color(0xFF455A64),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFCFD8DC),
+    onSecondaryContainer = Color(0xFF37474F),
+    tertiary = Color(0xFF006064),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFE0F7FA),
+    onTertiaryContainer = Color(0xFF006064),
+    background = Color(0xFFF8F9FA),
+    onBackground = Color(0xFF263238),
+    surface = Color(0xFFFFFFFF),
+    onSurface = Color(0xFF212121),
+    surfaceVariant = Color(0xFFECEFF1),
+    onSurfaceVariant = Color(0xFF455A64),
+    outline = Color(0xFFB0BEC5),
+    outlineVariant = Color(0xFFCFD8DC),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFF1F3F4),
+    surfaceContainer = Color(0xFFECEFF1),
+    surfaceContainerHigh = Color(0xFFDFE3E6),
+    surfaceContainerHighest = Color(0xFFCFD8DC)
+)
+
+private val DarkMidnightColorScheme = darkColorScheme(
+    primary = Color(0xFF90A4AE),
+    onPrimary = Color(0xFF212121),
+    primaryContainer = Color(0xFF37474F),
+    onPrimaryContainer = Color(0xFFECEFF1),
+    secondary = Color(0xFFB0BEC5),
+    onSecondary = Color(0xFF263238),
+    secondaryContainer = Color(0xFF455A64),
+    onSecondaryContainer = Color(0xFFCFD8DC),
+    tertiary = Color(0xFF80DEEA),
+    onTertiary = Color(0xFF263238),
+    tertiaryContainer = Color(0xFF006064),
+    onTertiaryContainer = Color(0xFFE0F7FA),
+    background = Color(0xFF121212),
+    onBackground = Color(0xFFECEFF1),
+    surface = Color(0xFF1E1E1E),
+    onSurface = Color(0xFFF5F5F5),
+    surfaceVariant = Color(0xFF263238),
+    onSurfaceVariant = Color(0xFFB0BEC5),
+    outline = Color(0xFF37474F),
+    outlineVariant = Color(0xFF263238),
+    surfaceContainerLowest = Color(0xFF0C0C0C),
+    surfaceContainerLow = Color(0xFF181818),
+    surfaceContainer = Color(0xFF1E1E1E),
+    surfaceContainerHigh = Color(0xFF2A2A2A),
+    surfaceContainerHighest = Color(0xFF363636)
+)
+
 @Composable
 fun StudyGetherTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-
     dynamicColor: Boolean = true,
     themeStyle: AppThemeStyle = AppThemeStyle.DEFAULT,
     content: @Composable () -> Unit
@@ -168,6 +278,12 @@ fun StudyGetherTheme(
                 AppThemeStyle.GreenTheme -> {
                     if (darkTheme) DarkGreenColorScheme else LightGreenColorScheme
                 }
+                AppThemeStyle.SunsetTheme -> {
+                    if (darkTheme) DarkSunsetColorScheme else LightSunsetColorScheme
+                }
+                AppThemeStyle.MidnightTheme -> {
+                    if (darkTheme) DarkMidnightColorScheme else LightMidnightColorScheme
+                }
             }
         }
         darkTheme -> {
@@ -175,6 +291,8 @@ fun StudyGetherTheme(
                 AppThemeStyle.DEFAULT -> DarkColorScheme
                 AppThemeStyle.BlueTheme -> DarkBlueColorScheme
                 AppThemeStyle.GreenTheme -> DarkGreenColorScheme
+                AppThemeStyle.SunsetTheme -> DarkSunsetColorScheme
+                AppThemeStyle.MidnightTheme -> DarkMidnightColorScheme
             }
         }
         else -> {
@@ -182,7 +300,8 @@ fun StudyGetherTheme(
                 AppThemeStyle.DEFAULT -> LightColorScheme
                 AppThemeStyle.BlueTheme -> LightBlueColorScheme
                 AppThemeStyle.GreenTheme -> LightGreenColorScheme
-
+                AppThemeStyle.SunsetTheme -> LightSunsetColorScheme
+                AppThemeStyle.MidnightTheme -> LightMidnightColorScheme
             }
         }
     }
@@ -190,7 +309,7 @@ fun StudyGetherTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.isNavigationBarContrastEnforced =false
+            window.isNavigationBarContrastEnforced = false
         }
     }
 
@@ -199,9 +318,8 @@ fun StudyGetherTheme(
         typography = Typography,
         content = content
     )
-
 }
 
 enum class AppThemeStyle {
-    DEFAULT, BlueTheme, GreenTheme
+    DEFAULT, BlueTheme, GreenTheme, SunsetTheme, MidnightTheme
 }
