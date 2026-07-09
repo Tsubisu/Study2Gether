@@ -20,6 +20,7 @@ object AppRepositories {
     val imageRepository: ImageRepository = CloudinaryImageRepositoryImpl()
     val userRepository: UserRepository = UserRepositoryImpl(db, auth)
     val authenticationRepository: AuthenticationRepository = AuthRepoImpl(auth, db)
+    val channelRepository: ChannelRepository = ChannelRepositoryImpl(db)
 
     lateinit var communityRepository: CommunityRepository
         private set
