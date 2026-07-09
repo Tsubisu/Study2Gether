@@ -31,8 +31,13 @@ import com.example.studygether.App.NoCommunityJoinedContent
 import kotlinx.coroutines.flow.flowOf
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import com.example.studygether.ViewModels.ConvoListViewModel
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.studygether.Repository.AppRepositories
 import androidx.compose.ui.res.painterResource
@@ -44,7 +49,8 @@ import com.example.studygether.R
 fun HomeScreen(
     modifier: Modifier,
     onNavigateToProfile: () -> Unit,
-    onNavigateToChannel: (channelId: String, channelName: String, communityId: String) -> Unit
+    onNavigateToChannel: (channelId: String, channelName: String, communityId: String) -> Unit,
+    onNavigateToChat: (name: String, image: Int, targetUserId: String) -> Unit
 ) {
     val selectedCommunity = UserCommunity.currentUserSelectedCommunity.collectAsStateWithLifecycle()
     val screenState = rememberCommunityScreenState()
@@ -53,12 +59,6 @@ fun HomeScreen(
 
     val activity = LocalActivity.current as ComponentActivity
     val appBarsViewModel = viewModel<AppBarsViewModel>(activity)
-
-    val scope = rememberCoroutineScope()
-    var showInviteDialog by remember { mutableStateOf(false) }
-    var inviteEmail by remember { mutableStateOf("") }
-    var isInviting by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))
@@ -71,17 +71,30 @@ fun HomeScreen(
         }
         appBarsViewModel.setTitleBar(
             title = { Text(title, style = Typography.headlineMedium) },
-            actions = { IconButton(onClick = onNavigateToProfile) { Icon(Icons.Default.Face, contentDescription = null) } }
+            actions = {
+                IconButton(onClick = onNavigateToProfile) {
+                    Icon(
+                        Icons.Default.Face,
+                        contentDescription = null
+                    )
+                }
+            }
         )
     }
 
     Box(modifier) {
-        Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.primary)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.primary)
+        ) {
             Column(
-                modifier = Modifier.fillMaxSize().background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                )
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                    )
             ) {
                 when (screenState) {
                     is CommunityScreenState.Loading -> LoadingIndicator()
@@ -93,40 +106,114 @@ fun HomeScreen(
                                 .padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+
                             Text(
-                                text = "Welcome to ${screenState.community.name}, ${currentUser.value?.username ?: ""}",
-                                style = Typography.titleLarge,
-                                modifier = Modifier.padding(bottom = 16.dp)
+                                text = "Recent Chats",
+                                style = Typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .align(Alignment.Start)
+                                    .padding(bottom = 8.dp)
                             )
-                            
-                            Button(
-                                onClick = {
-                                    inviteEmail = ""
-                                    showInviteDialog = true
-                                },
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Icon(Icons.Default.PersonAdd, contentDescription = "Add Member")
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Add Member by Email")
+
+                            val convoViewModel: ConvoListViewModel = viewModel()
+                            val activeConversations by convoViewModel.activeConversations.collectAsStateWithLifecycle()
+                            val communityMembers by convoViewModel.communityMembers.collectAsStateWithLifecycle()
+
+                            if (activeConversations.isEmpty()) {
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+                                            alpha = 0.3f
+                                        )
+                                    )
+                                ) {
+                                    Text(
+                                        text = "No recent chats in this community.",
+                                        style = Typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                                        modifier = Modifier.padding(16.dp)
+                                    )
+                                }
+                            } else {
+                                LazyRow(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    contentPadding = PaddingValues(horizontal = 4.dp)
+                                ) {
+                                    items(activeConversations) { convo ->
+                                        val matchingMember =
+                                            communityMembers.firstOrNull { it.id == convo.conversationID }
+                                        val resolvedName = matchingMember?.username
+                                            ?: convo.conversationName.ifEmpty { convo.conversationID }
+                                        val resolvedImageUrl = matchingMember?.profileImageUrl
+
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            modifier = Modifier
+                                                .width(80.dp)
+                                                .clickable {
+                                                    onNavigateToChat(
+                                                        resolvedName,
+                                                        R.drawable.avatar,
+                                                        convo.conversationID
+                                                    )
+                                                }
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(56.dp)
+                                                    .clip(CircleShape)
+                                            ) {
+                                                com.example.studygether.View.Components.AvatarImage(
+                                                    imageUrl = resolvedImageUrl,
+                                                    name = resolvedName,
+                                                    size = 56.dp
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text(
+                                                text = resolvedName,
+                                                style = Typography.bodySmall.copy(
+                                                    fontWeight = FontWeight.Medium,
+                                                    color = MaterialTheme.colorScheme.onBackground
+                                                ),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                textAlign = TextAlign.Center
+                                            )
+                                        }
+                                    }
+                                }
                             }
-                            
+
                             val channelsFlow = remember(screenState.community.id) {
-                                AppRepositories.channelRepository.observeChannelsForCommunity(screenState.community.id)
+                                AppRepositories.channelRepository.observeChannelsForCommunity(
+                                    screenState.community.id
+                                )
                             }.collectAsState(initial = emptyList())
                             val channels = channelsFlow.value
 
-                            Spacer(modifier = Modifier.height(20.dp))
                             Text(
-                                text = "Channels",
+                                text = "Recent Channels",
                                 style = Typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier.align(Alignment.Start).padding(bottom = 8.dp)
+                                modifier = Modifier
+                                    .align(Alignment.Start)
+                                    .padding(bottom = 8.dp)
                             )
 
                             if (channels.isEmpty()) {
                                 Box(
-                                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth(),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -137,7 +224,9 @@ fun HomeScreen(
                                 }
                             } else {
                                 LazyColumn(
-                                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth(),
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     items(channels) { channel ->
@@ -145,14 +234,21 @@ fun HomeScreen(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clickable {
-                                                    onNavigateToChannel(channel.id, channel.name, screenState.community.id)
+                                                    onNavigateToChannel(
+                                                        channel.id,
+                                                        channel.name,
+                                                        screenState.community.id
+                                                    )
                                                 },
                                             shape = RoundedCornerShape(12.dp),
                                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
                                             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                                         ) {
                                             Row(
-                                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                                modifier = Modifier.padding(
+                                                    horizontal = 16.dp,
+                                                    vertical = 12.dp
+                                                ),
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
                                                 Icon(
@@ -174,7 +270,9 @@ fun HomeScreen(
                                                         maxLines = 1,
                                                         overflow = TextOverflow.Ellipsis,
                                                         fontSize = 11.sp,
-                                                        color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.7f)
+                                                        color = MaterialTheme.colorScheme.onSecondary.copy(
+                                                            alpha = 0.7f
+                                                        )
                                                     )
                                                 }
                                             }
@@ -185,69 +283,8 @@ fun HomeScreen(
                         }
                     }
                 }
-           }
+            }
         }
     }
 
-    if (showInviteDialog) {
-        val community = (screenState as? CommunityScreenState.Loaded)?.community
-        AlertDialog(
-            onDismissRequest = { if (!isInviting) showInviteDialog = false },
-            title = { Text("Add Member to Community") },
-            text = {
-                Column {
-                    Text("Enter the email address of the user to invite them to this community.", modifier = Modifier.padding(bottom = 8.dp))
-                    OutlinedTextField(
-                        value = inviteEmail,
-                        onValueChange = { inviteEmail = it },
-                        label = { Text("User Email") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        enabled = !isInviting
-                    )
-                }
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        if (community == null) return@Button
-                        if (inviteEmail.isBlank()) {
-                            android.widget.Toast.makeText(context, "Email cannot be empty", android.widget.Toast.LENGTH_SHORT).show()
-                            return@Button
-                        }
-                        isInviting = true
-                        scope.launch {
-                            com.example.studygether.Repository.AppRepositories.communityRepository
-                                .addMemberByEmail(community.id, inviteEmail.trim(), false)
-                                .fold(
-                                    onSuccess = {
-                                        android.widget.Toast.makeText(context, "User added successfully!", android.widget.Toast.LENGTH_SHORT).show()
-                                        showInviteDialog = false
-                                    },
-                                    onFailure = { error ->
-                                        android.widget.Toast.makeText(context, error.message ?: "Failed to add member", android.widget.Toast.LENGTH_LONG).show()
-                                    }
-                                )
-                            isInviting = false
-                        }
-                    },
-                    enabled = !isInviting
-                ) {
-                    if (isInviting) {
-                        CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White, strokeWidth = 2.dp)
-                    } else {
-                        Text("Add")
-                    }
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showInviteDialog = false },
-                    enabled = !isInviting
-                ) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
 }
