@@ -145,6 +145,7 @@ private val DarkGreenColorScheme = darkColorScheme(
     surfaceContainerHigh = Color(0xFFE2E6DF),
     surfaceContainerHighest = Color(0xFFDCDFD8)
 )
+
 private val LightSunsetColorScheme = lightColorScheme(
     primary = Color(0xFFE65100),
     onPrimary = Color(0xFFFFFFFF),
@@ -256,11 +257,10 @@ private val DarkMidnightColorScheme = darkColorScheme(
     surfaceContainerHigh = Color(0xFF2A2A2A),
     surfaceContainerHighest = Color(0xFF363636)
 )
+
 @Composable
 fun StudyGetherTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-
     dynamicColor: Boolean = true,
     themeStyle: AppThemeStyle = AppThemeStyle.DEFAULT,
     content: @Composable () -> Unit
@@ -278,6 +278,12 @@ fun StudyGetherTheme(
                 AppThemeStyle.GreenTheme -> {
                     if (darkTheme) DarkGreenColorScheme else LightGreenColorScheme
                 }
+                AppThemeStyle.SunsetTheme -> {
+                    if (darkTheme) DarkSunsetColorScheme else LightSunsetColorScheme
+                }
+                AppThemeStyle.MidnightTheme -> {
+                    if (darkTheme) DarkMidnightColorScheme else LightMidnightColorScheme
+                }
             }
         }
         darkTheme -> {
@@ -285,6 +291,8 @@ fun StudyGetherTheme(
                 AppThemeStyle.DEFAULT -> DarkColorScheme
                 AppThemeStyle.BlueTheme -> DarkBlueColorScheme
                 AppThemeStyle.GreenTheme -> DarkGreenColorScheme
+                AppThemeStyle.SunsetTheme -> DarkSunsetColorScheme
+                AppThemeStyle.MidnightTheme -> DarkMidnightColorScheme
             }
         }
         else -> {
@@ -292,7 +300,8 @@ fun StudyGetherTheme(
                 AppThemeStyle.DEFAULT -> LightColorScheme
                 AppThemeStyle.BlueTheme -> LightBlueColorScheme
                 AppThemeStyle.GreenTheme -> LightGreenColorScheme
-
+                AppThemeStyle.SunsetTheme -> LightSunsetColorScheme
+                AppThemeStyle.MidnightTheme -> LightMidnightColorScheme
             }
         }
     }
@@ -300,7 +309,7 @@ fun StudyGetherTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.isNavigationBarContrastEnforced =false
+            window.isNavigationBarContrastEnforced = false
         }
     }
 
@@ -309,9 +318,8 @@ fun StudyGetherTheme(
         typography = Typography,
         content = content
     )
-
 }
 
 enum class AppThemeStyle {
-    DEFAULT, BlueTheme, GreenTheme
+    DEFAULT, BlueTheme, GreenTheme, SunsetTheme, MidnightTheme
 }
