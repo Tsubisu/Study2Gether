@@ -18,3 +18,12 @@ fun validatePassword(value: String): String {
         else -> ""
     }
 }
+
+ fun validateName(value: String, fieldName: String): String {
+    return when {
+        value.isBlank() -> "$fieldName cannot be empty"
+        value.length < 2 -> "$fieldName is too short"
+        !value.all { it.isLetter() || it.isWhitespace() } -> "$fieldName contains invalid characters"
+        else -> ""
+    }
+}

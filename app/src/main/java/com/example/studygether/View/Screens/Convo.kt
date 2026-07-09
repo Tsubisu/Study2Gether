@@ -48,7 +48,7 @@ fun ConvoScreen(
     val targetUser by chatViewModel.targetUser.collectAsStateWithLifecycle()
     val isTargetMemberOfSameCommunity by chatViewModel.isTargetMemberOfSameCommunity.collectAsStateWithLifecycle()
     val blockedUserIds by chatViewModel.blockedUserIds.collectAsStateWithLifecycle()
-
+    
     val isBlocked = blockedUserIds.contains(targetUserId)
     var messageText by remember { mutableStateOf("") }
 
@@ -119,9 +119,9 @@ fun ConvoScreen(
 
                 // Show avatar only if it is the last message in a consecutive block of the other user's messages
                 val isLastInBlock = !isCurrentUser && (
-                        index == messages.size - 1 ||
-                                messages[index + 1].senderUserID != msg.senderUserID
-                        )
+                    index == messages.size - 1 ||
+                    messages[index + 1].senderUserID != msg.senderUserID
+                )
 
                 ChatBubble(
                     text = text,

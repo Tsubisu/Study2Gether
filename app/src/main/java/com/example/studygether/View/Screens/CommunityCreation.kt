@@ -74,14 +74,24 @@ fun CommunityCreationScreen(onBackToLogin: () -> Unit = {}) {
         if (uiState.registrationError.isNotEmpty()) {
             scrollState.animateScrollTo(scrollState.maxValue)
         }
+    }
+
+    LaunchedEffect(uiState.registrationSuccess)
+    {
+        if (uiState.registrationSuccess) {
+            onBackToLogin()
+        }
+    }
+
+    LaunchedEffect(Unit) {
         appBarsViewModel.hideTopBar()
 
         appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
     }
-    if(uiState.registrationSuccess)
-    {
 
-    }
+    
+
+
 
 
 

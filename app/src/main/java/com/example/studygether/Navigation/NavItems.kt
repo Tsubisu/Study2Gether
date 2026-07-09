@@ -21,7 +21,7 @@ data class BottomNavItem(
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem("Home", Icons.Rounded.Home, Icons.Filled.Home,HomePage),
+    BottomNavItem("Home", Icons.Rounded.Home, Icons.Filled.Home,Home),
     BottomNavItem("Dms",  Icons.Outlined.Textsms,Icons.Filled.Textsms,ConvoList ),
     BottomNavItem("Channels", Icons.Outlined.Groups,Icons.Filled.Groups, ChannelList)
 )

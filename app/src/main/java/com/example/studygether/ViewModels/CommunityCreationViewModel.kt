@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import com.example.studygether.Utility.validateEmail
 import com.example.studygether.Utility.validatePassword
+import com.example.studygether.Utility.validateName
 import kotlinx.coroutines.launch
 
 data class CommunityCreationUiState(
@@ -170,14 +171,7 @@ class CommunityCreationViewModel : ViewModel() {
     }
 
 
-    private fun validateName(value: String, fieldName: String): String {
-        return when {
-            value.isBlank() -> "$fieldName cannot be empty"
-            value.length < 2 -> "$fieldName is too short"
-            !value.all { it.isLetter() || it.isWhitespace() } -> "$fieldName contains invalid characters"
-            else -> ""
-        }
-    }
+
 
     private fun validateCommunityName(value: String): String {
         return when {

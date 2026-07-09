@@ -1,4 +1,11 @@
-package com.example.studygether.view
+package com.example.studygether.View.Screens
+
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studygether.ViewModels.AppBarsViewModel
+import com.example.studygether.View.AppBars.BottomBars
+import com.example.studygether.ViewModels.BottomBarState
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -27,8 +34,15 @@ import android.widget.Toast
 import com.example.studygether.ui.theme.Typography
 
 @Composable
-fun SecurityBody() {
+fun SecurityBody(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
+    val activity = LocalActivity.current as ComponentActivity
+    val appBarsViewModel: AppBarsViewModel = viewModel(activity)
+    LaunchedEffect(Unit) {
+        appBarsViewModel.hideTopBar()
+        appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
+    }
+
     val isPreview = LocalInspectionMode.current
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
@@ -50,7 +64,7 @@ fun SecurityBody() {
 
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
                 ElevatedButton(
-                    onClick = { (context as? android.app.Activity)?.finish() },
+                    onClick = onNavigateBack,
                     modifier = Modifier.size(45.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.elevatedButtonColors(containerColor = Color.White),
@@ -163,7 +177,7 @@ fun SecurityBody() {
                                     isLoading = false
                                     if (updateTask.isSuccessful) {
                                         Toast.makeText(context, "Password updated successfully", Toast.LENGTH_SHORT).show()
-                                        (context as? android.app.Activity)?.finish()
+                                        onNavigateBack()
                                     } else {
                                         Toast.makeText(context, updateTask.exception?.message ?: "Update failed", Toast.LENGTH_SHORT).show()
                                     }
@@ -233,10 +247,10 @@ fun PasswordField(
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun SecurityPreview() {
-    StudyGetherTheme {
-        SecurityBody()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun SecurityPreview() {
+//    StudyGetherTheme {
+//        SecurityBody()
+//    }
+//}

@@ -3,613 +3,275 @@
 
 package com.example.studygether.View.Screens
 
-import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Face
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.studygether.Model.Channel
+import com.example.studygether.App.NoCommunityJoinedContent
+import com.example.studygether.Model.ChannelModel
 import com.example.studygether.R
 import com.example.studygether.View.AppBars.BottomBars
-import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.AppBarsViewModel
-import com.example.studygether.ui.theme.MainTheme
-import com.example.studygether.ui.theme.TextColor
+import com.example.studygether.ViewModels.BottomBarState
+import com.example.studygether.ViewModels.ChannelsViewModel
 import com.example.studygether.ui.theme.Typography
 import com.example.studygether.ui.theme.tokens.AppSpacing
 
 @Composable
-fun ChannelListScreen(modifier:Modifier,
-                      onNavigateToChannel:(name:String, image:Int,memberCount:Int)->Unit) {
+fun ChannelListScreen(
+    modifier: Modifier,
+    onNavigateToChannel: (channelId: String, channelName: String, communityId: String) -> Unit,
+    onNavigateToProfile: () -> Unit
+) {
     val activity = LocalActivity.current as ComponentActivity
     val appBarsViewModel: AppBarsViewModel = viewModel(activity)
-    LaunchedEffect(Unit)
-    {
+    val channelsViewModel: ChannelsViewModel = viewModel()
+
+    val selectedCommunity by channelsViewModel.selectedCommunity.collectAsStateWithLifecycle()
+    val channels by channelsViewModel.channels.collectAsStateWithLifecycle()
+    val isOwner by channelsViewModel.isOwner.collectAsStateWithLifecycle()
+
+    var showCreateDialog by remember { mutableStateOf(false) }
+    var channelNameText by remember { mutableStateOf("") }
+    var channelDescText by remember { mutableStateOf("") }
+    var isCreating by remember { mutableStateOf(false) }
+
+    LaunchedEffect(selectedCommunity) {
+        val titleText = selectedCommunity?.name ?: "Channels"
         appBarsViewModel.setTitleBar(
-            title ={Text("Channels",style= Typography.headlineMedium)},
-            actions = {IconButton(onClick={})
-            {
-                Icon(Icons.Default.Face,contentDescription = null)
-            }
+            title = { Text(titleText, style = Typography.headlineMedium) },
+            actions = {
+                IconButton(onClick = onNavigateToProfile) {
+                    Icon(Icons.Default.Face, contentDescription = null)
+                }
             }
         )
-
         appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))
     }
-    val channel by remember{mutableStateOf(Channel(
-      "Tech Support",
-      R.drawable.logo,
-      265))}
 
-        Box(modifier)
-        {
-            Box(modifier = Modifier.fillMaxSize().background(color= MaterialTheme.colorScheme.primary)){
-                LazyColumn(modifier = Modifier.fillMaxSize().background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                ).padding(all= AppSpacing.small),
-                    verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)
-                    )
-                {
-
-                    items(4)
-                    {
-                        ChannelCard(channel,onNavigateToChannel)
+    Box(modifier = modifier.fillMaxSize()) {
+        if (selectedCommunity == null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.primary)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = MaterialTheme.colorScheme.background,
+                            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                        )
+                ) {
+                    NoCommunityJoinedContent()
+                }
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.primary)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = MaterialTheme.colorScheme.background,
+                            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                        )
+                ) {
+                    if (channels.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "No channels in this community yet.\n" +
+                                        if (isOwner) "Click the '+' button below to create one!" else "Ask the community owner to create channels.",
+                                textAlign = TextAlign.Center,
+                                style = Typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .padding(all = AppSpacing.small),
+                            verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)
+                        ) {
+                            items(channels) { ch ->
+                                ChannelCard(
+                                    channel = ch,
+                                    communityId = selectedCommunity!!.id,
+                                    onClick = onNavigateToChannel
+                                )
+                            }
+                        }
                     }
-
-
                 }
             }
 
+            if (isOwner) {
+                FloatingActionButton(
+                    onClick = {
+                        channelNameText = ""
+                        channelDescText = ""
+                        showCreateDialog = true
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(24.dp),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = Color.White
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Create Channel")
+                }
+            }
+        }
+
+        if (showCreateDialog) {
+            AlertDialog(
+                onDismissRequest = { if (!isCreating) showCreateDialog = false },
+                title = { Text("Create Channel") },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedTextField(
+                            value = channelNameText,
+                            onValueChange = { channelNameText = it },
+                            label = { Text("Channel Name") },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            enabled = !isCreating
+                        )
+                        OutlinedTextField(
+                            value = channelDescText,
+                            onValueChange = { channelDescText = it },
+                            label = { Text("Description") },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !isCreating
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            if (channelNameText.isBlank()) return@Button
+                            isCreating = true
+                            channelsViewModel.createChannel(
+                                name = channelNameText.trim(),
+                                description = channelDescText.trim()
+                            ) { result ->
+                                isCreating = false
+                                showCreateDialog = false
+                            }
+                        },
+                        enabled = !isCreating && channelNameText.isNotBlank()
+                    ) {
+                        if (isCreating) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = Color.White,
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Text("Create")
+                        }
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showCreateDialog = false },
+                        enabled = !isCreating
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
     }
-
-
-}
-
-
-fun testChannelList(): List<Channel>
-{
-    val channelList= ArrayList<Channel>()
-    return channelList
 }
 
 @Composable
-fun ChannelCard(channel: Channel,onClick:(name:String , image:Int,memberCount:Int)-> Unit)
-{
-
-    Card(Modifier.padding(vertical = AppSpacing.medium, horizontal = AppSpacing.large)
-            .clickable { onClick(channel.name,channel.resourceId,channel.members) },
-        colors= CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-        )
-    {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically)
-        {
-            Column(modifier = Modifier.weight(2f).padding(start = AppSpacing.large), verticalArrangement = Arrangement.spacedBy(
-                AppSpacing.small), horizontalAlignment = Alignment.Start){
-
-                Spacer(Modifier.width(AppSpacing.large))
-                Text(channel.name,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
-                Text("Members:${channel.members}")
-            }
-            Row(modifier = Modifier.weight(1f).padding(AppSpacing.medium), horizontalArrangement = Arrangement.End)
-            {
-                Spacer(Modifier.width(AppSpacing.large))
-                Image(painter = painterResource(channel.resourceId),contentDescription = null,modifier = Modifier
+fun ChannelCard(
+    channel: ChannelModel,
+    communityId: String,
+    onClick: (channelId: String, channelName: String, communityId: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick(channel.id, channel.name, communityId) },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
                     .size(48.dp)
-                    .border(1.dp, Color.Black, CircleShape)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = channel.name,
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
             }
-        }
-    }
-    HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(horizontal = AppSpacing.large))
-}
-
-class ProfilePage : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            ProfileBody()
-        }
-    }
-}
-
-@Composable
-fun ProfileBody() {
-    var selectedItem by remember { mutableIntStateOf(0) }
-    var usernameText by remember { mutableStateOf("Loading...") }
-    var emailText by remember { mutableStateOf("Loading...") }
-
-//    val profileViewModel = remember { ProfileViewModel(repo = ProfileImplementation()) }
-//    val profileData by profileViewModel.userProfile.observeAsState(initial = null)
-//    val loading by profileViewModel.loading.observeAsState(initial = null)
-//    val userId = profileViewModel.currentUserId
-//
-//    LaunchedEffect(key1 = profileData) {
-//        if (userId != null) {
-//            profileViewModel.getUserProfile(userId)
-//        }
-//        profileData?.let {
-//            usernameText = it.username
-//            emailText = it.email
-//        }
-//    }
-
-    Scaffold(
-        containerColor = Color.Transparent,
-        bottomBar = {
-            NavigationBar(
-                containerColor = MainTheme,
-                contentColor = Color.White,
-                tonalElevation = 0.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-            ) {
-                val items = listOf(
-                    Pair("Home", R.drawable.baseline_home_24),
-                    Pair("Chats", R.drawable.baseline_chat_24),
-                    Pair("Notifications", R.drawable.baseline_notifications_24),
-                    Pair("Settings", R.drawable.baseline_settings_24),
-                )
-                items.forEachIndexed { index, (label, icon) ->
-                    NavigationBarItem(
-                        modifier = Modifier.background(color = MainTheme),
-                        selected = selectedItem == index,
-                        onClick = { selectedItem = index },
-                        icon = {
-                            Icon(
-                                painter = painterResource(icon),
-                                contentDescription = label,
-                                tint = if (selectedItem == index) Color.White
-                                else Color.White.copy(alpha = 0.6f)
-                            )
-                        },
-                        label = {
-                            Text(
-                                text = label,
-                                color = if (selectedItem == index) Color.White
-                                else Color.White.copy(alpha = 0.6f),
-                                fontSize = 11.sp
-                            )
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.White,
-                            unselectedIconColor = Color.White.copy(alpha = 0.6f),
-                            indicatorColor = Color.White.copy(alpha = 0.15f)
-                        )
-                    )
-                }
-            }
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
+            Spacer(modifier = Modifier.width(12.dp))
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.weight(1f)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .height(100.dp).weight(1f),
-                        shape = RoundedCornerShape(20.dp),
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 30.dp
-                        ),
-                        colors = CardDefaults.cardColors(containerColor = MainTheme),
-                    ) {
-                        Column(
-                            modifier = Modifier
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.Top
-                            ) {
-                                Image(
-                                    modifier = Modifier.size(50.dp),
-                                    painter = painterResource(R.drawable.applogo),
-                                    contentDescription = "App Logo"
-                                )
-                            }
-                            Row(
-                                modifier = Modifier,
-                            ) {
-                                Text(
-                                    "  STUDY2GETHER", style = TextStyle(
-                                        fontWeight = FontWeight.Companion.SemiBold,
-                                        fontSize = 11.sp,
-                                        color = TextColor,
-                                        textAlign = TextAlign.Companion.Center
-                                    )
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    "PROFILE", style = TextStyle(
-                                        fontWeight = FontWeight.Companion.ExtraBold,
-                                        fontSize = 20.sp,
-                                        textAlign = TextAlign.Companion.Center,
-                                        color = TextColor.copy(0.7f)
-                                    )
-                                )
-                            }
-                        }
-                    }
-                }
-                Spacer(
-                    modifier = Modifier.height(5.dp)
+                Text(
+                    text = channel.name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(10.dp)
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .height(100.dp).weight(1f),
-                        shape = RoundedCornerShape(20.dp),
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 30.dp
-                        ),
-                        colors = CardDefaults.cardColors(containerColor = Color.LightGray)
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(5.dp),
-                            horizontalArrangement = Arrangement.Absolute.Left
-                        ) {
-                            Image(
-                                modifier = Modifier
-                                    .width(80.dp)
-                                    .height(80.dp)
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Fit,
-                                painter = painterResource(R.drawable.profilepfp),
-                                contentDescription = "profile picture"
-                            )
-                            Column(
-                                modifier = Modifier.fillMaxWidth()
-                                    .height(200.dp),
-                                horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = usernameText, style = TextStyle(
-                                        fontWeight = FontWeight.Companion.Bold,
-                                        fontSize = 18.sp,
-                                        textAlign = TextAlign.Companion.Left,
-                                        color = Color.Black.copy(0.5f)
-                                    ),
-                                    modifier = Modifier.padding(5.dp)
-                                )
-                                Text(
-                                    text = emailText, style = TextStyle(
-                                        fontWeight = FontWeight.Companion.SemiBold,
-                                        fontSize = 15.sp,
-                                        textAlign = TextAlign.Companion.Left,
-                                        color = Color.Black.copy(0.5f)
-                                    ),
-                                    modifier = Modifier.padding(5.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-                Spacer(
-                    modifier = Modifier.height(5.dp)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = channel.description.ifEmpty { "No description provided." },
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.7f)
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(5.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        "    Account", style = TextStyle(
-                            fontWeight = FontWeight.Companion.SemiBold,
-                            fontSize = 13.sp,
-                            textAlign = TextAlign.Companion.Start,
-                            color = Color.Gray
-                        )
-                    )
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .height(180.dp).weight(1f)
-                            .padding(5.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 30.dp
-                        ),
-                        colors = CardDefaults.cardColors(containerColor = Color.LightGray)
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(20.dp),
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(30.dp),
-                                painter = painterResource(R.drawable.baseline_account_circle_24),
-                                contentDescription = "Account profile"
-                            )
-                            Spacer(
-                                modifier = Modifier.width(15.dp)
-                            )
-                            Text(
-                                "   Change Username", style = TextStyle(
-                                    fontWeight = FontWeight.Companion.SemiBold,
-                                    fontSize = 20.sp,
-                                    textAlign = TextAlign.Companion.Center,
-                                    color = Color.Gray
-                                )
-                            )
-                            Spacer(
-                                modifier = Modifier.width(90.dp)
-                            )
-                            IconButton(
-                                onClick = {},
-                                modifier = Modifier.size(20.dp)
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(90.dp),
-                                    painter = painterResource(R.drawable.baseline_navigate_next_24),
-                                    contentDescription = "Account profile"
-                                )
-                            }
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            HorizontalDivider(
-                                modifier = Modifier.weight(1f),
-                                thickness = 2.dp,
-                                color = Color.Gray.copy(alpha = 0.4f)
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(20.dp),
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(30.dp),
-                                painter = painterResource(R.drawable.baseline_lock_24),
-                                contentDescription = "Account profile"
-                            )
-                            Spacer(
-                                modifier = Modifier.width(15.dp)
-                            )
-                            Text(
-                                "   Password & Security", style = TextStyle(
-                                    fontWeight = FontWeight.Companion.SemiBold,
-                                    fontSize = 20.sp,
-                                    textAlign = TextAlign.Companion.Center,
-                                    color = Color.Gray
-                                )
-                            )
-                            Spacer(
-                                modifier = Modifier.width(70.dp)
-                            )
-                            IconButton(
-                                onClick = {},
-                                modifier = Modifier.size(20.dp)
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(90.dp),
-                                    painter = painterResource(R.drawable.baseline_navigate_next_24),
-                                    contentDescription = "Account profile"
-                                )
-                            }
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            HorizontalDivider(
-                                modifier = Modifier.weight(1f),
-                                thickness = 2.dp,
-                                color = Color.Gray.copy(alpha = 0.4f)
-                            )
-                        }
-                    }
-                }
-                Spacer(
-                    modifier = Modifier.height(5.dp)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(5.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        "    Preferences", style = TextStyle(
-                            fontWeight = FontWeight.Companion.SemiBold,
-                            fontSize = 13.sp,
-                            textAlign = TextAlign.Companion.Start,
-                            color = Color.Gray
-                        )
-                    )
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .height(180.dp).weight(1f)
-                            .padding(5.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 30.dp
-                        ),
-                        colors = CardDefaults.cardColors(containerColor = Color.LightGray)
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(20.dp),
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(30.dp),
-                                painter = painterResource(R.drawable.baseline_people_24),
-                                contentDescription = "Account profile"
-                            )
-                            Spacer(
-                                modifier = Modifier.width(15.dp)
-                            )
-                            Text(
-                                "   About Us", style = TextStyle(
-                                    fontWeight = FontWeight.Companion.SemiBold,
-                                    fontSize = 20.sp,
-                                    textAlign = TextAlign.Companion.Center,
-                                    color = Color.Gray
-                                )
-                            )
-                            Spacer(
-                                modifier = Modifier.width(160.dp)
-                            )
-                            IconButton(
-                                onClick = {},
-                                modifier = Modifier.size(20.dp)
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(90.dp),
-                                    painter = painterResource(R.drawable.baseline_navigate_next_24),
-                                    contentDescription = "Account profile"
-                                )
-                            }
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            HorizontalDivider(
-                                modifier = Modifier.weight(1f),
-                                thickness = 2.dp,
-                                color = Color.Gray.copy(alpha = 0.4f)
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(20.dp),
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(30.dp),
-                                painter = painterResource(R.drawable.baseline_color_lens_24),
-                                contentDescription = "Account profile"
-                            )
-                            Spacer(
-                                modifier = Modifier.width(20.dp)
-                            )
-                            Text(
-                                "   Themes & Colours", style = TextStyle(
-                                    fontWeight = FontWeight.Companion.SemiBold,
-                                    fontSize = 20.sp,
-                                    textAlign = TextAlign.Companion.Center,
-                                    color = Color.Gray
-                                )
-                            )
-                            Spacer(
-                                modifier = Modifier.width(70.dp)
-                            )
-                            IconButton(
-                                onClick = {},
-                                modifier = Modifier.size(20.dp)
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(90.dp),
-                                    painter = painterResource(R.drawable.baseline_navigate_next_24),
-                                    contentDescription = "Account profile"
-                                )
-                            }
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            HorizontalDivider(
-                                modifier = Modifier.weight(1f),
-                                thickness = 2.dp,
-                                color = Color.Gray.copy(alpha = 0.4f)
-                            )
-                        }
-                    }
-                }
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfilePreview() {
-    ProfileBody()
 }

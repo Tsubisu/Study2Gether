@@ -49,7 +49,7 @@ fun ConvoListScreen(
 ) {
     val activity = LocalActivity.current as ComponentActivity
     val mainViewModel: AppBarsViewModel = viewModel(activity)
-
+    
     val listViewModel: ConvoListViewModel = viewModel()
     val activeConversations by listViewModel.activeConversations.collectAsStateWithLifecycle()
     val communityMembers by listViewModel.communityMembers.collectAsStateWithLifecycle()
