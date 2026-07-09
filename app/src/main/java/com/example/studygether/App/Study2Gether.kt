@@ -33,8 +33,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val currentTheme by com.example.studygether.ui.theme.ThemeManager.currentTheme.collectAsStateWithLifecycle()
+            val isDarkMode by com.example.studygether.ui.theme.ThemeManager.isDarkMode.collectAsStateWithLifecycle()
             StudyGetherTheme(
-                darkTheme = false,
+                darkTheme = isDarkMode,
                 dynamicColor = false,
                 themeStyle = currentTheme
             ) {

@@ -33,9 +33,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.LocalContext
 import com.example.studygether.ViewModels.BottomBarState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
+    modifier: Modifier,
     onNavigateBack: () -> Unit,
     onNavigateToTheme: () -> Unit,
     onNavigateToSecurity: () -> Unit,
@@ -43,8 +43,15 @@ fun ProfileScreen(
 ) {
     val activity = LocalActivity.current as ComponentActivity
     val appBarsViewModel: AppBarsViewModel = viewModel(activity)
+    
+    val barBgColor = MaterialTheme.colorScheme.background
     LaunchedEffect(Unit) {
-        appBarsViewModel.hideTopBar()
+        appBarsViewModel.setTitleBar(
+            title = { Text("You", fontWeight = FontWeight.Bold) },
+            showBackButton = true,
+            actions = {},
+            barColor = barBgColor
+        )
         appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
     }
 
@@ -62,209 +69,186 @@ fun ProfileScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("You", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onSurface
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 20.dp)
+    ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // User Info Section
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Avatar representation
+            Box(
+                modifier = Modifier.clickable(enabled = !isUploading) {
+                    launcher.launch("image/*")
+                }
+            ) {
+                com.example.studygether.View.Components.AvatarImage(
+                    imageUrl = currentUser?.profileImageUrl,
+                    name = currentUser?.username ?: "Anonymous User",
+                    size = 68.dp,
+                    textStyle = Typography.headlineMedium
+                )
+
+                if (isUploading) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.4f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.primary,
+                            strokeWidth = 2.dp
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 20.dp)
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(20.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CameraAlt,
+                            contentDescription = "Edit Profile Picture",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(12.dp)
+                        )
+                    }
+                }
 
-            // User Info Section
+                // Active dot
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(2.dp)
+                        .size(12.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (currentUser?.status == "Active") Color.Green else Color.Gray
+                        )
+                )
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column {
+                Text(
+                    text = currentUser?.username ?: "Anonymous User",
+                    style = Typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                )
+                Text(
+                    text = currentUser?.status ?: "Active",
+                    style = Typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Update status trigger
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    tempStatusText = currentUser?.customStatus ?: ""
+                    showCustomStatusDialog = true
+                },
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Avatar representation
-                Box(
-                    modifier = Modifier.clickable(enabled = !isUploading) {
-                        launcher.launch("image/*")
-                    }
-                ) {
-                    com.example.studygether.View.Components.AvatarImage(
-                        imageUrl = currentUser?.profileImageUrl,
-                        name = currentUser?.username ?: "Anonymous User",
-                        size = 68.dp,
-                        textStyle = Typography.headlineMedium
-                    )
-
-                    if (isUploading) {
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .clip(CircleShape)
-                                .background(Color.Black.copy(alpha = 0.4f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = MaterialTheme.colorScheme.primary,
-                                strokeWidth = 2.dp
-                            )
-                        }
+                Icon(
+                    imageVector = Icons.Default.SentimentSatisfied,
+                    contentDescription = "Status",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = if (currentUser?.customStatus.isNullOrEmpty()) {
+                        "Update your status"
                     } else {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .size(20.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primary),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.CameraAlt,
-                                contentDescription = "Edit Profile Picture",
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.size(12.dp)
-                            )
-                        }
-                    }
-
-                    // Active dot
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(2.dp)
-                            .size(12.dp)
-                            .clip(CircleShape)
-                            .background(
-                                if (currentUser?.status == "Active") Color.Green else Color.Gray
-                            )
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Column {
-                    Text(
-                        text = currentUser?.username ?: "Anonymous User",
-                        style = Typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    )
-                    Text(
-                        text = currentUser?.status ?: "Active",
-                        style = Typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                        )
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Update status trigger
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        tempStatusText = currentUser?.customStatus ?: ""
-                        showCustomStatusDialog = true
+                        currentUser?.customStatus.orEmpty()
                     },
-                shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.SentimentSatisfied,
-                        contentDescription = "Status",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = if (currentUser?.customStatus.isNullOrEmpty()) {
-                            "Update your status"
+                    style = Typography.bodyMedium.copy(
+                        color = if (currentUser?.customStatus.isNullOrEmpty()) {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                         } else {
-                            currentUser?.customStatus.orEmpty()
-                        },
-                        style = Typography.bodyMedium.copy(
-                            color = if (currentUser?.customStatus.isNullOrEmpty()) {
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            }
-                        )
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
                     )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(28.dp))
+
+        // Options List
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            val isAway = currentUser?.status == "Away"
+            ProfileOptionItem(
+                icon = Icons.Default.AccountCircle,
+                title = if (isAway) "Set yourself as active" else "Set yourself as away",
+                onClick = {
+                    viewModel.updateStatus(if (isAway) "Active" else "Away")
                 }
-            }
+            )
 
-            Spacer(modifier = Modifier.height(28.dp))
+            ProfileOptionItem(
+                icon = Icons.Default.Tune,
+                title = "Preferences (Theme Chooser)",
+                onClick = onNavigateToTheme
+            )
 
-            // Options List
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                val isAway = currentUser?.status == "Away"
-                ProfileOptionItem(
-                    icon = Icons.Default.AccountCircle,
-                    title = if (isAway) "Set yourself as active" else "Set yourself as away",
-                    onClick = {
-                        viewModel.updateStatus(if (isAway) "Active" else "Away")
-                    }
-                )
+            ProfileOptionItem(
+                icon = Icons.Default.Security,
+                title = "Security",
+                onClick = onNavigateToSecurity
+            )
+        }
 
-
-                ProfileOptionItem(
-                    icon = Icons.Default.Tune,
-                    title = "Preferences (Theme Chooser)",
-                    onClick = onNavigateToTheme
-                )
-
-                ProfileOptionItem(
-                    icon = Icons.Default.Security,
-                    title = "Security",
-                    onClick = onNavigateToSecurity
-                )
-            }
-
-            // Logout Action
-            Button(
-                onClick = { viewModel.logout() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp)
-                    .height(52.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Icon(Icons.Default.ExitToApp, contentDescription = "Log Out")
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Log Out", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            }
+        // Logout Action
+        Button(
+            onClick = { viewModel.logout() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp)
+                .height(52.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer
+            ),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Icon(Icons.Default.ExitToApp, contentDescription = "Log Out")
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Log Out", fontWeight = FontWeight.Bold, fontSize = 16.sp)
         }
     }
 

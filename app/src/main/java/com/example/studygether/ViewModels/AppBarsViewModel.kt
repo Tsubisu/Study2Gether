@@ -29,6 +29,8 @@ data class BottomBarState(
 
 class AppBarsViewModel : ViewModel()
 {
+    var onMenuClick: (() -> Unit)? = null
+
     var topBarState by mutableStateOf<TopBarState>(TopBarState.None)
         private set
 

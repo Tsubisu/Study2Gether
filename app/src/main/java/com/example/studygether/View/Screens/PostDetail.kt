@@ -62,13 +62,14 @@ fun PostDetailScreen(
     var commentText by remember { mutableStateOf("") }
     var isSubmitting by remember { mutableStateOf(false) }
 
+    val barBgColor = MaterialTheme.colorScheme.background
     LaunchedEffect(postId, channelId, communityId) {
         viewModel.initPost(postId, channelId, communityId)
         appBarsViewModel.setTitleBar(
             title = { Text("Post Thread", style = Typography.headlineMedium) },
             showBackButton = true,
             actions = {},
-            barColor = Color.Unspecified
+            barColor = barBgColor
         )
         appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
     }
@@ -76,16 +77,12 @@ fun PostDetailScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                )
         ) {
             Column(
                 modifier = Modifier

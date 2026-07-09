@@ -67,14 +67,17 @@ fun SecurityBody(onNavigateBack: () -> Unit) {
                     onClick = onNavigateBack,
                     modifier = Modifier.size(45.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.elevatedButtonColors(containerColor = Color.White),
+                    colors = ButtonDefaults.elevatedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
                     contentPadding = PaddingValues(0.dp),
                     elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_arrow_back_24),
                         contentDescription = "Back",
-                        tint = Color.Black,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(24.dp)
                     )
                 }

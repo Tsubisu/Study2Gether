@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,6 +45,7 @@ import com.example.studygether.ui.theme.MainTheme
 import com.example.studygether.ui.theme.TextColor
 import com.example.studygether.ui.theme.AppThemeStyle
 import com.example.studygether.ui.theme.ThemeManager
+import com.example.studygether.ui.theme.Typography
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.ViewModels.AppBarsViewModel
@@ -51,79 +54,109 @@ import com.example.studygether.ViewModels.BottomBarState
 import androidx.compose.runtime.LaunchedEffect
 
 @Composable
-fun ThemeSelectionScreen(onNavigateBack: () -> Unit) {
+fun ThemeSelectionScreen(
+    modifier: Modifier,
+    onNavigateBack: () -> Unit
+) {
     val activity = LocalActivity.current as ComponentActivity
     val appBarsViewModel: AppBarsViewModel = viewModel(activity)
-    LaunchedEffect(Unit) {
-        appBarsViewModel.hideTopBar()
+
+    val currentTheme by ThemeManager.currentTheme.collectAsStateWithLifecycle()
+    val isDarkMode by ThemeManager.isDarkMode.collectAsStateWithLifecycle()
+    
+    val barBgColor = MaterialTheme.colorScheme.background
+    LaunchedEffect(currentTheme, isDarkMode) {
+        appBarsViewModel.setTitleBar(
+            title = { Text("Choose Theme", style = Typography.headlineMedium) },
+            showBackButton = true,
+            actions = {},
+            barColor = barBgColor
+        )
         appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
     }
 
-    val currentTheme by ThemeManager.currentTheme.collectAsStateWithLifecycle()
-
     val themes = listOf(
-        ThemeOption("Default", AppThemeStyle.DEFAULT, Color(0xFF6650A4), Color(0xFFFFFFFF)),
-        ThemeOption("Blue Sky", AppThemeStyle.BlueTheme, Color(0xFF8AB2F5), Color(0xFF154B7C)),
-        ThemeOption("Sunset", AppThemeStyle.SunsetTheme, Color(0xFFFFB74D), Color(0xFFE65100)),
-        ThemeOption("Forest", AppThemeStyle.GreenTheme, Color(0xFF81C784), Color(0xFF1B5E20)),
-        ThemeOption("Midnight", AppThemeStyle.MidnightTheme, Color(0xFF37474F), Color(0xFFCFD8DC))
+        ThemeOption(
+            name = "Default",
+            themeStyle = AppThemeStyle.DEFAULT,
+            primaryColor = if (isDarkMode) Color(0xFFD0BCFF) else Color(0xFF6650A4),
+            textColor = if (isDarkMode) Color(0xFF381E72) else Color(0xFFFFFFFF)
+        ),
+        ThemeOption(
+            name = "Blue Sky",
+            themeStyle = AppThemeStyle.BlueTheme,
+            primaryColor = if (isDarkMode) Color(0xFF60A5FA) else Color(0xFF1E40AF),
+            textColor = if (isDarkMode) Color.Black else Color.White
+        ),
+        ThemeOption(
+            name = "Sunset",
+            themeStyle = AppThemeStyle.SunsetTheme,
+            primaryColor = if (isDarkMode) Color(0xFFFFB74D) else Color(0xFFE65100),
+            textColor = if (isDarkMode) Color.Black else Color.White
+        ),
+        ThemeOption(
+            name = "Forest",
+            themeStyle = AppThemeStyle.GreenTheme,
+            primaryColor = if (isDarkMode) Color(0xFF81C784) else Color(0xFF1B5E20),
+            textColor = if (isDarkMode) Color.Black else Color.White
+        ),
+        ThemeOption(
+            name = "Midnight",
+            themeStyle = AppThemeStyle.MidnightTheme,
+            primaryColor = if (isDarkMode) Color(0xFF90A4AE) else Color(0xFF263238),
+            textColor = if (isDarkMode) Color.Black else Color.White
+        )
     )
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = Color.White
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 16.dp, vertical = 24.dp)
+    ) {
+        // Light / Dark Mode selector tabs
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-            ElevatedButton(
-                onClick = onNavigateBack,
-                modifier = Modifier.size(45.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.elevatedButtonColors(containerColor = Color.White),
-                contentPadding = PaddingValues(0.dp),
-                elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_arrow_back_24),
-                    contentDescription = "Back",
-                    tint = Color.Black,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Text(
-                text = "Choose Theme",
-                style = TextStyle(
-                    color = TextColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp
+            Button(
+                onClick = { ThemeManager.setDarkMode(false) },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (!isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = if (!isDarkMode) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
                 ),
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxWidth()
+                shape = RoundedCornerShape(12.dp)
             ) {
-                items(themes) { theme ->
-                    ThemeCard(
-                        theme = theme,
-                        isSelected = theme.themeStyle == currentTheme,
-                        onSelect = { ThemeManager.setTheme(theme.themeStyle) }
-                    )
-                }
+                Text("Light Mode")
+            }
+            Button(
+                onClick = { ThemeManager.setDarkMode(true) },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = if (isDarkMode) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Dark Mode")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(themes) { theme ->
+                ThemeCard(
+                    theme = theme,
+                    isSelected = theme.themeStyle == currentTheme,
+                    onSelect = { ThemeManager.setTheme(theme.themeStyle) }
+                )
             }
         }
     }
