@@ -4,8 +4,11 @@ package com.example.studygether.View.Screens
 
 import android.widget.Toast
 import androidx.compose.runtime.collectAsState
+import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -82,11 +85,33 @@ fun ChannelScreen(
     var postContent by remember { mutableStateOf("") }
     var isPosting by remember { mutableStateOf(false) }
 
+    val scope = rememberCoroutineScope()
+    val channelLogoLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            AppRepositories.imageRepository.uploadImage(context, uri) { result ->
+                if (result != null) {
+                    scope.launch {
+                        AppRepositories.channelRepository.updateChannelImage(channelId, result.url)
+                    }
+                }
+            }
+        }
+    }
+
     val barBgColor = MaterialTheme.colorScheme.background
-    LaunchedEffect(channelId, channelName, memberCount) {
+    LaunchedEffect(channelId, channelName, memberCount, channelDetail?.imageUrl, isModerator) {
         viewModel.initChannel(channelId, communityId)
         appBarsViewModel.setTitleBar(
-            title = { ChannelTitleCard(channelName, R.drawable.logo, memberCount) },
+            title = {
+                ChannelTitleCard(
+                    channelName = channelName,
+                    imageUrl = channelDetail?.imageUrl,
+                    channelMemberCount = memberCount,
+                    onLogoClick = if (isModerator) { { channelLogoLauncher.launch("image/*") } } else null
+                )
+            },
             showBackButton = true,
             actions = {
                 Row {

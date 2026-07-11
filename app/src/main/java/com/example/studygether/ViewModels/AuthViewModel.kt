@@ -20,7 +20,8 @@ data class LoginScreenState(
     val password:String="",
 
     val emailError: String="",
-    val passwordError:String=""
+    val passwordError:String="",
+    val isLoading: Boolean = false
 )
 
 class LoginScreenViewModel: ViewModel() {
@@ -50,18 +51,19 @@ class LoginScreenViewModel: ViewModel() {
         val emailError: String = _loginState.value.emailError
         if (emailError.isNotEmpty()) return
         viewModelScope.launch {
-
+            _loginState.update { it.copy(isLoading = true, passwordError = "") }
             AppRepositories.authenticationRepository.loginAndFetchUser(
                 _loginState.value.email,
                 _loginState.value.password
             ).fold(
                 onSuccess = {
                     SessionState.setUser(it)
+                    _loginState.update { it.copy(isLoading = false) }
                 },
                 onFailure = {
                         e ->
                     _loginState.update {
-                        it.copy(passwordError =e.message.orEmpty() )
+                        it.copy(passwordError = e.message.orEmpty(), isLoading = false)
                     }
                 }
             )

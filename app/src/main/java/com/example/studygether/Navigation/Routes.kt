@@ -31,6 +31,4 @@ object Home
 @Serializable object Login
 @Serializable object CommunityCreation
 @Serializable object ForgetPassword
-@Serializable object Otp
-@Serializable object PasswordChange
  @Serializable object SignIn

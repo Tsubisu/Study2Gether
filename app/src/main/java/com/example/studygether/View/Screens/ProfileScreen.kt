@@ -23,6 +23,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studygether.ViewModels.ProfileViewModel
 import com.example.studygether.ui.theme.Typography
 import coil3.compose.AsyncImage
+import android.widget.Toast
+import androidx.compose.ui.layout.ContentScale
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
@@ -60,6 +62,21 @@ fun ProfileScreen(
     val context = LocalContext.current
     var showCustomStatusDialog by remember { mutableStateOf(false) }
     var tempStatusText by remember { mutableStateOf("") }
+
+    var showCreateCommunityDialog by remember { mutableStateOf(false) }
+    var communityName by remember { mutableStateOf("") }
+    var isCommunityPublic by remember { mutableStateOf(true) }
+    var selectedCommunityImageUri by remember { mutableStateOf<android.net.Uri?>(null) }
+    var isCreatingCommunity by remember { mutableStateOf(false) }
+    var communityCreationError by remember { mutableStateOf("") }
+
+    val communityImageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            selectedCommunityImageUri = uri
+        }
+    }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -183,7 +200,7 @@ fun ProfileScreen(
                 Icon(
                     imageVector = Icons.Default.SentimentSatisfied,
                     contentDescription = "Status",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
@@ -230,6 +247,18 @@ fun ProfileScreen(
                 icon = Icons.Default.Security,
                 title = "Security",
                 onClick = onNavigateToSecurity
+            )
+
+            ProfileOptionItem(
+                icon = Icons.Default.GroupAdd,
+                title = "Create Community",
+                onClick = {
+                    communityName = ""
+                    isCommunityPublic = true
+                    selectedCommunityImageUri = null
+                    communityCreationError = ""
+                    showCreateCommunityDialog = true
+                }
             )
         }
 
@@ -281,6 +310,157 @@ fun ProfileScreen(
             }
         )
     }
+
+    if (showCreateCommunityDialog) {
+        AlertDialog(
+            onDismissRequest = { if (!isCreatingCommunity) showCreateCommunityDialog = false },
+            title = { Text("Create Community") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedTextField(
+                        value = communityName,
+                        onValueChange = { communityName = it },
+                        label = { Text("Community Name") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        enabled = !isCreatingCommunity
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text("Public Community")
+                        Switch(
+                            checked = isCommunityPublic,
+                            onCheckedChange = { isCommunityPublic = it },
+                            enabled = !isCreatingCommunity
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text("Community Logo", style = Typography.titleSmall)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                                .clickable(enabled = !isCreatingCommunity) {
+                                    communityImageLauncher.launch("image/*")
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (selectedCommunityImageUri != null) {
+                                AsyncImage(
+                                    model = selectedCommunityImageUri,
+                                    contentDescription = "Selected logo",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.CameraAlt,
+                                    contentDescription = "Pick logo",
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
+                        }
+
+                        TextButton(
+                            onClick = { communityImageLauncher.launch("image/*") },
+                            enabled = !isCreatingCommunity
+                        ) {
+                            Text("Choose Image")
+                        }
+                    }
+
+                    if (communityCreationError.isNotEmpty()) {
+                        Text(
+                            text = communityCreationError,
+                            color = MaterialTheme.colorScheme.error,
+                            style = Typography.bodySmall
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (communityName.isBlank()) return@Button
+                        isCreatingCommunity = true
+                        communityCreationError = ""
+
+                        if (selectedCommunityImageUri != null) {
+                            com.example.studygether.Repository.AppRepositories.imageRepository.uploadImage(context, selectedCommunityImageUri!!) { result ->
+                                if (result != null) {
+                                    viewModel.createCommunity(
+                                        name = communityName.trim(),
+                                        isPublic = isCommunityPublic,
+                                        logoUrl = result.url,
+                                        logoPublicId = result.publicId,
+                                        onSuccess = {
+                                            isCreatingCommunity = false
+                                            showCreateCommunityDialog = false
+                                            Toast.makeText(context, "Community created successfully!", Toast.LENGTH_SHORT).show()
+                                        },
+                                        onFailure = { error ->
+                                            communityCreationError = error
+                                            isCreatingCommunity = false
+                                        }
+                                    )
+                                } else {
+                                    communityCreationError = "Failed to upload community logo."
+                                    isCreatingCommunity = false
+                                }
+                            }
+                        } else {
+                            viewModel.createCommunity(
+                                name = communityName.trim(),
+                                isPublic = isCommunityPublic,
+                                logoUrl = "",
+                                logoPublicId = "",
+                                onSuccess = {
+                                    isCreatingCommunity = false
+                                    showCreateCommunityDialog = false
+                                    Toast.makeText(context, "Community created successfully!", Toast.LENGTH_SHORT).show()
+                                },
+                                onFailure = { error ->
+                                    communityCreationError = error
+                                    isCreatingCommunity = false
+                                }
+                            )
+                        }
+                    },
+                    enabled = !isCreatingCommunity && communityName.isNotBlank()
+                ) {
+                    if (isCreatingCommunity) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text("Create")
+                    }
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showCreateCommunityDialog = false },
+                    enabled = !isCreatingCommunity
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -299,7 +479,8 @@ fun ProfileOptionItem(
         Icon(
             imageVector = icon,
             contentDescription = title,
-            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            //tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))

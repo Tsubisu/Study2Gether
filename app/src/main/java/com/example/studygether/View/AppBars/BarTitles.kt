@@ -86,8 +86,9 @@ fun ChatUserLabelCard(
 @Composable
 fun ChannelTitleCard(
     channelName: String,
-    channelLogo: Int,
+    imageUrl: String?,
     channelMemberCount: Int,
+    onLogoClick: (() -> Unit)? = null
 ) {
     Card(
         modifier = Modifier
@@ -107,14 +108,12 @@ fun ChannelTitleCard(
                     .size(48.dp)
                     .clip(CircleShape)
                     .padding(AppSpacing.tiny)
+                    .then(if (onLogoClick != null) Modifier.clickable { onLogoClick() } else Modifier)
             ) {
-                Image(
-                    painter = painterResource(channelLogo),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
+                com.example.studygether.View.Components.AvatarImage(
+                    imageUrl = imageUrl,
+                    name = channelName,
+                    size = 40.dp
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))

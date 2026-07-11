@@ -16,27 +16,59 @@ import androidx.compose.ui.platform.LocalView
 import com.example.studygether.ui.theme.DarkColorScheme
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = Color.Black,
-    onBackground = Color.White,
-    surface = Color(0xFF1E1E1E),
-    onSurface = Color.White,
-    surfaceVariant = Color(0xFF2D2D2D),
-    onSurfaceVariant = Color(0xFFB0B0B0)
+    primary = Color(0xFFADC6EB),
+    onPrimary = Color(0xFF1A3351),
+    primaryContainer = Color(0xFF334B69),
+    onPrimaryContainer = Color(0xFFD2E2F9),
+    secondary = Color(0xFF9AB2DA),
+    onSecondary = Color(0xFF263C59),
+    secondaryContainer = Color(0xFF3C5372),
+    onSecondaryContainer = Color(0xFFDCE6F5),
+    tertiary = Color(0xFFB5C9EA),
+    onTertiary = Color(0xFF20344D),
+    tertiaryContainer = Color(0xFF384B63),
+    onTertiaryContainer = Color(0xFFD9E5FA),
+    background = Color(0xFF121418),
+    onBackground = Color(0xFFE2E2E6),
+    surface = Color(0xFF121418),
+    onSurface = Color(0xFFE2E2E6),
+    surfaceVariant = Color(0xFF242A31),
+    onSurfaceVariant = Color(0xFFC4C7CF),
+    outline = Color(0xFF8E9199),
+    outlineVariant = Color(0xFF44474D),
+    surfaceContainerLowest = Color(0xFF0C0E11),
+    surfaceContainerLow = Color(0xFF1A1C20),
+    surfaceContainer = Color(0xFF242A31),
+    surfaceContainerHigh = Color(0xFF2E343C),
+    surfaceContainerHighest = Color(0xFF394049)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-    background = Color.White,
-    onBackground = Color.Black,
+    primary = Color(0xFF4C6A92),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFD8E4F3),
+    onPrimaryContainer = Color(0xFF0F1E36),
+    secondary = Color(0xFF7E9BC5),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFE8EEF5),
+    onSecondaryContainer = Color(0xFF263C59),
+    tertiary = Color(0xFF5A789A),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFE2EBF5),
+    onTertiaryContainer = Color(0xFF14243B),
+    background = Color(0xFFF9FBFC),
+    onBackground = Color(0xFF1B1B1E),
     surface = Color.White,
-    onSurface = Color.Black,
-    surfaceVariant = Color(0xFFF3F4F6),
-    onSurfaceVariant = Color(0xFF6B7280)
+    onSurface = Color(0xFF1B1B1E),
+    surfaceVariant = Color(0xFFF0F3F7),
+    onSurfaceVariant = Color(0xFF44474D),
+    outline = Color(0xFF74777F),
+    outlineVariant = Color(0xFFC4C7CF),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFF3F5F9),
+    surfaceContainer = Color(0xFFECF0F4),
+    surfaceContainerHigh = Color(0xFFE6EAEF),
+    surfaceContainerHighest = Color(0xFFE0E5EA)
 )
 
 private val LightBlueColorScheme = lightColorScheme(
@@ -266,7 +298,7 @@ private val DarkMidnightColorScheme = darkColorScheme(
 @Composable
 fun StudyGetherTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     themeStyle: AppThemeStyle = AppThemeStyle.DEFAULT,
     content: @Composable () -> Unit
 ) {

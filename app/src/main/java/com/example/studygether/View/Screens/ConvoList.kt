@@ -60,11 +60,7 @@ fun ConvoListScreen(
     LaunchedEffect(Unit) {
         mainViewModel.setTitleBar(
             title = { Text("Direct Messages", style = Typography.headlineMedium) },
-            actions = {
-                IconButton(onClick = {}) {
-                    Icon(Icons.Default.Face, contentDescription = null)
-                }
-            }
+            actions = {}
         )
         mainViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))
     }

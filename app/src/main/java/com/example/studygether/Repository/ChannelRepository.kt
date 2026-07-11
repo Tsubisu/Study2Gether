@@ -36,4 +36,6 @@ interface ChannelRepository {
     suspend fun createComment(postId: String, authorId: String, authorName: String, content: String): Result<String>
     fun observeComments(postId: String): Flow<List<Comment>>
     suspend fun deleteComment(postId: String, commentId: String): Result<Unit>
+
+    suspend fun updateChannelImage(channelId: String, url: String): Result<Unit>
 }

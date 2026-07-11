@@ -40,7 +40,8 @@ class ChannelRepositoryImpl(
                 "description" to description,
                 "communityId" to communityId,
                 "creatorId" to creatorId,
-                "createdAt" to System.currentTimeMillis()
+                "createdAt" to System.currentTimeMillis(),
+                "imageUrl" to ""
             )
             
             val updates = mapOf(
@@ -73,6 +74,7 @@ class ChannelRepositoryImpl(
                                 val name = snap.child("name").getValue(String::class.java) ?: ""
                                 val description = snap.child("description").getValue(String::class.java) ?: ""
                                 val idVal = snap.child("id").getValue(String::class.java) ?: id
+                                val imageUrl = snap.child("imageUrl").getValue(String::class.java) ?: ""
                                 
                                 val memberIds = snap.child("members").children.mapNotNull { it.key }
                                 val modIds = snap.child("moderators").children.mapNotNull { it.key }
@@ -82,7 +84,8 @@ class ChannelRepositoryImpl(
                                     name = name,
                                     description = description,
                                     memberId = memberIds,
-                                    moderators = modIds
+                                    moderators = modIds,
+                                    imageUrl = imageUrl
                                 )
                             } else null
                         }
@@ -352,6 +355,15 @@ class ChannelRepositoryImpl(
     override suspend fun deleteComment(postId: String, commentId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             commentsRef.child(postId).child(commentId).removeValue().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun updateChannelImage(channelId: String, url: String): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            channelsRef.child(channelId).child("imageUrl").setValue(url).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

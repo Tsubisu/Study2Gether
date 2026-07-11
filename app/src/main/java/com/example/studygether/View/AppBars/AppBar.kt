@@ -94,17 +94,17 @@ fun TitleBar(navController: NavController)
                 state.barColor
             },
             titleContentColor = if (state.barColor == Color.Unspecified) {
-                Color.White
+                MaterialTheme.colorScheme.onPrimary
             } else {
                 MaterialTheme.colorScheme.onBackground
             },
             navigationIconContentColor = if (state.barColor == Color.Unspecified) {
-                Color.White
+                MaterialTheme.colorScheme.onPrimary
             } else {
                 MaterialTheme.colorScheme.onBackground
             },
             actionIconContentColor = if (state.barColor == Color.Unspecified) {
-                Color.White
+                MaterialTheme.colorScheme.onPrimary
             } else {
                 MaterialTheme.colorScheme.onBackground
             }

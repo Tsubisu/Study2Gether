@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.studygether.App.SessionState
 import com.example.studygether.Model.User
+import com.example.studygether.Model.Community
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -64,8 +65,37 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
+    fun createCommunity(
+        name: String,
+        isPublic: Boolean,
+        logoUrl: String,
+        logoPublicId: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        val uid = currentUser.value?.id ?: return
+        viewModelScope.launch {
+            val community = Community(
+                name = name,
+                isPublic = isPublic,
+                profileImageUrl = logoUrl,
+                profileImagePublicId = logoPublicId,
+                createdAt = System.currentTimeMillis()
+            )
+            val result = com.example.studygether.Repository.AppRepositories.communityRepository.createCommunity(community, uid)
+            result.fold(
+                onSuccess = { communityId ->
+                    com.example.studygether.Repository.AppRepositories.communityRepository.selectCommunity(uid, communityId)
+                    onSuccess()
+                },
+                onFailure = { error ->
+                    onFailure(error.message ?: "Failed to create community")
+                }
+            )
+        }
+    }
+
     fun logout() {
         SessionState.clear()
-        com.example.studygether.Utility.ZegoService.logout()
     }
 }

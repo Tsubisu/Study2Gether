@@ -32,14 +32,36 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import android.widget.Toast
 import com.example.studygether.ui.theme.Typography
+import com.example.studygether.ui.theme.ThemeManager
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.OutlinedTextFieldDefaults
+
+import androidx.compose.ui.text.font.FontWeight
 
 @Composable
-fun SecurityBody(onNavigateBack: () -> Unit) {
+fun SecurityBody(
+    modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit
+) {
     val context = LocalContext.current
     val activity = LocalActivity.current as ComponentActivity
     val appBarsViewModel: AppBarsViewModel = viewModel(activity)
-    LaunchedEffect(Unit) {
-        appBarsViewModel.hideTopBar()
+
+    val currentTheme by ThemeManager.currentTheme.collectAsStateWithLifecycle()
+    val isDarkMode by ThemeManager.isDarkMode.collectAsStateWithLifecycle()
+    val barBgColor = MaterialTheme.colorScheme.background
+
+    LaunchedEffect(currentTheme, isDarkMode) {
+        appBarsViewModel.setTitleBar(
+            title = { Text("Security", style = Typography.headlineMedium) },
+            showBackButton = true,
+            actions = {},
+            barColor = barBgColor
+        )
         appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
     }
 
@@ -47,169 +69,154 @@ fun SecurityBody(onNavigateBack: () -> Unit) {
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
+    
+    var currentPasswordVisible by remember { mutableStateOf(false) }
+    var newPasswordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
+    
     var isLoading by remember { mutableStateOf(false) }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
-                ElevatedButton(
-                    onClick = onNavigateBack,
-                    modifier = Modifier.size(45.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        contentColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    contentPadding = PaddingValues(0.dp),
-                    elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_arrow_back_24),
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Image(
-                painter = painterResource(id = R.drawable.applogo),
-                contentDescription = "App Logo",
-                modifier = Modifier.size(120.dp)
-            )
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Text(
-                text = "Change Password",
-                style = Typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Your password is getting bored time for a new one",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    color = Color.Gray,
-                   // fontFamily = myFontFamily,
-                    lineHeight = 24.sp
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Current Password
-            PasswordField(
-                value = currentPassword,
-                onValueChange = { currentPassword = it },
-                label = "Current Password",
-                isVisible = passwordVisible,
-                onToggleVisibility = { passwordVisible = !passwordVisible }
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // New Password
-            PasswordField(
-                value = newPassword,
-                onValueChange = { newPassword = it },
-                label = "New Password",
-                isVisible = passwordVisible,
-                onToggleVisibility = { passwordVisible = !passwordVisible }
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Confirm New Password
-            PasswordField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
-                label = "Confirm New Password",
-                isVisible = passwordVisible,
-                onToggleVisibility = { passwordVisible = !passwordVisible }
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // Update Button
-            ElevatedButton(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp),
-                shape = RoundedCornerShape(16.dp),
-                enabled = !isLoading,
-                onClick = {
-                    if (isPreview) {
-                        Toast.makeText(context, "Mock Update Success", Toast.LENGTH_SHORT).show()
-                        return@ElevatedButton
-                    }
-                    if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-                        Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
-                        return@ElevatedButton
-                    }
-                    if (newPassword != confirmPassword) {
-                        Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                        return@ElevatedButton
-                    }
-
-                    isLoading = true
-                    val user = FirebaseAuth.getInstance().currentUser
-                    if (user != null && user.email != null) {
-                        val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
-                        user.reauthenticate(credential).addOnCompleteListener { reauthTask ->
-                            if (reauthTask.isSuccessful) {
-                                user.updatePassword(newPassword).addOnCompleteListener { updateTask ->
-                                    isLoading = false
-                                    if (updateTask.isSuccessful) {
-                                        Toast.makeText(context, "Password updated successfully", Toast.LENGTH_SHORT).show()
-                                        onNavigateBack()
-                                    } else {
-                                        Toast.makeText(context, updateTask.exception?.message ?: "Update failed", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            } else {
-                                isLoading = false
-                                Toast.makeText(context, "Authentication failed. Check current password.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    } else {
-                        isLoading = false
-                        Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
-                    }
-                },
-                colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = loginbutton
-                )
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (isLoading) {
-                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-                } else {
-                    Text(
-                        "Update Password",
-                        style = TextStyle(
-                            //fontFamily = myFontFamily,
-                            fontSize = 16.sp,
-                            color = Color.White
-                        )
+                Text(
+                    text = "Update Password",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+
+                Text(
+                    text = "Ensure your account security by updating your password. Choose a strong combination of at least 6 characters.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    lineHeight = 22.sp,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Current Password
+                PasswordField(
+                    value = currentPassword,
+                    onValueChange = { currentPassword = it },
+                    label = "Current Password",
+                    isVisible = currentPasswordVisible,
+                    onToggleVisibility = { currentPasswordVisible = !currentPasswordVisible }
+                )
+
+                // New Password
+                PasswordField(
+                    value = newPassword,
+                    onValueChange = { newPassword = it },
+                    label = "New Password",
+                    isVisible = newPasswordVisible,
+                    onToggleVisibility = { newPasswordVisible = !newPasswordVisible }
+                )
+
+                // Confirm New Password
+                PasswordField(
+                    value = confirmPassword,
+                    onValueChange = { confirmPassword = it },
+                    label = "Confirm New Password",
+                    isVisible = confirmPasswordVisible,
+                    onToggleVisibility = { confirmPasswordVisible = !confirmPasswordVisible }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Update Button
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    enabled = !isLoading,
+                    onClick = {
+                        if (isPreview) {
+                            Toast.makeText(context, "Mock Update Success", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+                        if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
+                            Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+                        if (newPassword.length < 6) {
+                            Toast.makeText(context, "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+                        if (newPassword != confirmPassword) {
+                            Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+
+                        isLoading = true
+                        val user = FirebaseAuth.getInstance().currentUser
+                        if (user != null && user.email != null) {
+                            val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+                            user.reauthenticate(credential).addOnCompleteListener { reauthTask ->
+                                if (reauthTask.isSuccessful) {
+                                    user.updatePassword(newPassword).addOnCompleteListener { updateTask ->
+                                        isLoading = false
+                                        if (updateTask.isSuccessful) {
+                                            Toast.makeText(context, "Password updated successfully", Toast.LENGTH_SHORT).show()
+                                            onNavigateBack()
+                                        } else {
+                                            Toast.makeText(context, updateTask.exception?.message ?: "Update failed", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                } else {
+                                    isLoading = false
+                                    Toast.makeText(context, "Authentication failed. Check current password.", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } else {
+                            isLoading = false
+                            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     )
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    } else {
+                        Text(
+                            "Update Password",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -240,11 +247,11 @@ fun PasswordField(
                 )
             }
         },
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(14.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = loginbutton,
-            unfocusedBorderColor = Color.LightGray,
-            focusedLabelColor = loginbutton
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+            focusedLabelColor = MaterialTheme.colorScheme.primary
         ),
         singleLine = true
     )

@@ -16,11 +16,6 @@ interface CommunityRepository{
 
     suspend fun getCommunity(id: String): Result<Community?>
     suspend fun updateCommunityImage(id: String, url: String, publicId: String): Result<Unit>
-    suspend fun addMemberByEmail(
-        id: String,
-        email: String,
-        defaultAnonymous: Boolean = false
-    ): Result<String>
 
     suspend fun addMember(id: String, userId: String, defaultAnonymous: Boolean = false, role: String = "MEMBER"): Result<Unit>
     suspend fun removeMember(id: String, userId: String): Result<Unit>

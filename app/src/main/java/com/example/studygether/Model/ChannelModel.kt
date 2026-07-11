@@ -5,5 +5,6 @@ data class ChannelModel(
     val name: String = "",
     val description: String = "",
     val memberId: List<String> = emptyList(),
-    val moderators: List<String> = emptyList()
+    val moderators: List<String> = emptyList(),
+    val imageUrl: String = ""
 )

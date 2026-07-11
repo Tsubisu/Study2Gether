@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -27,6 +28,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,6 +58,8 @@ import com.example.studygether.View.AppBars.BottomBars
 import com.example.studygether.ViewModels.ForgetPasswordScreenViewModel
 import com.example.studygether.ViewModels.LoginScreenViewModel
 import com.example.studygether.ui.theme.Typography
+import com.example.studygether.ui.theme.StudyGetherTheme
+import com.example.studygether.ui.theme.AppThemeStyle
 import com.example.studygether.ui.theme.tokens.AppColors
 import com.example.studygether.ui.theme.tokens.AppShape
 import com.example.studygether.ui.theme.tokens.AppSpacing
@@ -61,142 +69,187 @@ fun LoginScreen(onLoginSuccess:()->Unit={},
                 onSignIn:()-> Unit={},
                 onCreateCommunity:()->Unit={},
                 onForgetPassword:()->Unit={}){
-    val activity = LocalActivity.current as ComponentActivity
-    val loginViewModel: LoginScreenViewModel = viewModel()
-    val appBarsViewModel: AppBarsViewModel = viewModel(activity)
-    val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
-    var passwordVisible by remember {mutableStateOf(false)}
+    StudyGetherTheme(dynamicColor = false, themeStyle = AppThemeStyle.DEFAULT) {
+        val activity = LocalActivity.current as ComponentActivity
+        val loginViewModel: LoginScreenViewModel = viewModel()
+        val appBarsViewModel: AppBarsViewModel = viewModel(activity)
+        val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
+        var passwordVisible by remember {mutableStateOf(false)}
 
-    LaunchedEffect(Unit)
-    {
-        appBarsViewModel.hideTopBar()
+        LaunchedEffect(Unit)
+        {
+            appBarsViewModel.hideTopBar()
 
-        appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
-    }
-    val isLoggedIn by SessionState.isLoggedIn.collectAsStateWithLifecycle()
+            appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.None))
+        }
+        val isLoggedIn by SessionState.isLoggedIn.collectAsStateWithLifecycle()
 
-    LaunchedEffect(isLoggedIn)
-    {
-
-        if(isLoggedIn)
-        onLoginSuccess()
-    }
-
-
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(R.drawable.background),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-        )
-        Column(modifier = Modifier.fillMaxSize())
+        LaunchedEffect(isLoggedIn)
         {
 
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.massive)
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally){
-                    Image(
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = null,
-                    )
-
-                    Text("Study2Gether", style = Typography.displayMedium)
-
-                }
+            if(isLoggedIn)
+            onLoginSuccess()
+        }
 
 
-            }
 
-
-            Row(Modifier.fillMaxSize()
-                .padding(horizontal = AppSpacing.extraLarge).padding(top= AppSpacing.extraLarge),
-                verticalAlignment = Alignment.Top
-
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(R.drawable.background),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
             )
+            Column(modifier = Modifier.fillMaxSize())
             {
-                Card(modifier = Modifier.fillMaxWidth(),
-                    colors= CardDefaults.cardColors(
-                        containerColor = AppColors.BrandColor,
-                        contentColor =Color.Black),
-                    shape = AppShape.ExtraLarge
-                )
-                {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(AppSpacing.tiny),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal=AppSpacing.medium, vertical = AppSpacing.large)
-                    )
-                    {
-                        OutlinedTextField(
-                            value = loginState.email,
-                            onValueChange = {loginViewModel.onEmailChange(it) },
-                            label = {Text("Email")},
-                            placeholder = {
-                                Text("Email")
-                            },
-                            isError = loginState.emailError.isNotEmpty(),
-                            supportingText = { Text(loginState.emailError) },
-                            shape= AppShape.Large,
-                            modifier = Modifier.fillMaxWidth()
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.massive)
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally){
+                        Image(
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = null,
+                            modifier = Modifier.size(80.dp)
                         )
 
-                        OutlinedTextField(
-                            value = loginState.password,
-                            onValueChange = {loginViewModel.onPasswordChange(it) },
-                            label = {Text("Password")},
-                            placeholder = {
-                                Text("Password")
-                            },
-                            isError = loginState.emailError.isNotEmpty(),
-                            supportingText = { Text(loginState.passwordError, color=MaterialTheme.colorScheme.error
-                                ,style=Typography.bodyLarge) },
-                            shape= AppShape.Large,
-                            modifier = Modifier.fillMaxWidth(),
-                            visualTransformation = if (passwordVisible) VisualTransformation.None
-                            else PasswordVisualTransformation(),
-                            trailingIcon = {
-                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                    Icon(
-                                        imageVector = if (passwordVisible) Icons.Filled.Visibility
-                                        else Icons.Filled.VisibilityOff,
-                                        contentDescription = if (passwordVisible) "Hide password"
-                                        else "Show password"
-                                    )
-                                }
-                            }
-                        )
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                        Button(onClick={loginViewModel.onLogin()},
-                            modifier = Modifier.padding(AppSpacing.none).fillMaxWidth(),
-                            contentPadding = PaddingValues(AppSpacing.none),
-                        )
-                        {
-                            Text("Login")
-                        }
-
-                        Button(onClick={onSignIn()},
-                            modifier = Modifier.padding(AppSpacing.none).fillMaxWidth(),
-                            contentPadding = PaddingValues(AppSpacing.none),
-                        )
-                        {
-                            Text("SignIn")
-                        }
-
-
-                        Text("Forget Password?", modifier = Modifier.clickable(true, onClick = onForgetPassword),color= MaterialTheme.colorScheme.secondary)
-                        Text("Create Your Community Here",modifier = Modifier.clickable(true, onClick = onCreateCommunity), color = MaterialTheme.colorScheme.secondary)
-
-
-
+                        Text("Study2Gether", style = MaterialTheme.typography.headlineMedium)
 
                     }
+
+
                 }
+
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.Top
+                )
+                {
+                    Card(modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFF7E9BC5).copy(alpha = 0.95f),
+                            contentColor = Color.White),
+                        shape = RoundedCornerShape(24.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    )
+                    {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 24.dp)
+                        )
+                        {
+                            val inputColors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = Color.White.copy(alpha = 0.15f),
+                                unfocusedContainerColor = Color.White.copy(alpha = 0.15f),
+                                errorContainerColor = Color.White.copy(alpha = 0.15f),
+                                focusedBorderColor = Color.White,
+                                unfocusedBorderColor = Color.White.copy(alpha = 0.4f),
+                                errorBorderColor = Color.White,
+                                focusedLabelColor = Color.White,
+                                unfocusedLabelColor = Color.White.copy(alpha = 0.8f),
+                                errorLabelColor = Color.White,
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+                                errorTextColor = Color.White,
+                                focusedPlaceholderColor = Color.White.copy(alpha = 0.6f),
+                                unfocusedPlaceholderColor = Color.White.copy(alpha = 0.6f),
+                                focusedTrailingIconColor = Color.White,
+                                unfocusedTrailingIconColor = Color.White
+                            )
+
+                            OutlinedTextField(
+                                value = loginState.email,
+                                onValueChange = {loginViewModel.onEmailChange(it) },
+                                label = {Text("Email")},
+                                placeholder = {
+                                    Text("Email")
+                                },
+                                isError = loginState.emailError.isNotEmpty(),
+                                supportingText = { if (loginState.emailError.isNotEmpty()) Text(loginState.emailError, color = Color(0xFFFFD2D2)) },
+                                shape = RoundedCornerShape(14.dp),
+                                colors = inputColors,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            OutlinedTextField(
+                                value = loginState.password,
+                                onValueChange = {loginViewModel.onPasswordChange(it) },
+                                label = {Text("Password")},
+                                placeholder = {
+                                    Text("Password")
+                                },
+                                isError = loginState.passwordError.isNotEmpty(),
+                                supportingText = { if (loginState.passwordError.isNotEmpty()) Text(loginState.passwordError, color = Color(0xFFFFD2D2)) },
+                                shape = RoundedCornerShape(14.dp),
+                                colors = inputColors,
+                                modifier = Modifier.fillMaxWidth(),
+                                visualTransformation = if (passwordVisible) VisualTransformation.None
+                                else PasswordVisualTransformation(),
+                                trailingIcon = {
+                                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                        Icon(
+                                            imageVector = if (passwordVisible) Icons.Filled.Visibility
+                                            else Icons.Filled.VisibilityOff,
+                                            contentDescription = if (passwordVisible) "Hide password"
+                                            else "Show password"
+                                        )
+                                    }
+                                }
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Button(
+                                onClick = { loginViewModel.onLogin() },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.White,
+                                    contentColor = Color(0xFF7E9BC5)
+                                ),
+                                shape = RoundedCornerShape(14.dp),
+                                modifier = Modifier.fillMaxWidth().height(50.dp)
+                            )
+                            {
+                                Text("Login")
+                            }
+
+                            OutlinedButton(
+                                onClick = { onSignIn() },
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color.White
+                                ),
+                                border = BorderStroke(1.dp, Color.White),
+                                shape = RoundedCornerShape(14.dp),
+                                modifier = Modifier.fillMaxWidth().height(50.dp)
+                            )
+                            {
+                                Text("Sign In")
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            TextButton(onClick = onForgetPassword) {
+                                Text("Forget Password?", style = Typography.bodyMedium, color = Color.White)
+                            }
+
+                            TextButton(onClick = onCreateCommunity) {
+                                Text("Create Your Community Here", style = Typography.bodyMedium, color = Color.White)
+                            }
+                        }
+                    }
+                }
+
             }
 
+            if (loginState.isLoading) {
+                com.example.studygether.App.SplashScreen(message = "Logging in...")
+            }
         }
     }
 }
@@ -208,112 +261,132 @@ fun LoginScreen(onLoginSuccess:()->Unit={},
 @Composable
 fun ForgetPasswordScreen(onSendResetLink:()->Unit={},
                          onBackToLogin:()->Unit={}) {
+    StudyGetherTheme(dynamicColor = false, themeStyle = AppThemeStyle.DEFAULT) {
+        val forgetPasswordViewModel : ForgetPasswordScreenViewModel =viewModel()
+        val forgetPassworeScreenState by forgetPasswordViewModel.forgetPasswordState.collectAsStateWithLifecycle()
 
-    val forgetPasswordViewModel : ForgetPasswordScreenViewModel =viewModel()
-    val forgetPassworeScreenState by forgetPasswordViewModel.forgetPasswordState.collectAsStateWithLifecycle()
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(R.drawable.background),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+            )
+            Column(modifier = Modifier.fillMaxSize())
+            {
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(R.drawable.background),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-        )
-        Column(modifier = Modifier.fillMaxSize())
-        {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.massive)
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally){
+                        Image(
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = null,
+                            modifier = Modifier.size(80.dp)
+                        )
 
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.massive)
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally){
-                    Image(
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = null,
-                    )
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                    Text("Study2Gether", style = Typography.displayMedium)
+                        Text("Study2Gether", style = MaterialTheme.typography.headlineMedium)
+
+                    }
+
 
                 }
 
-
-            }
-
-            Row(Modifier.fillMaxSize()
-                .padding(horizontal = AppSpacing.extraLarge).padding(top= AppSpacing.extraLarge),
-                verticalAlignment = Alignment.Top
-
-            )
-            {
-                Card(modifier = Modifier.fillMaxWidth(),
-                    colors= CardDefaults.cardColors(
-                        containerColor = AppColors.BrandColor,
-                        contentColor =Color.Black),
-                    shape = AppShape.ExtraLarge
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.Top
                 )
                 {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(AppSpacing.small),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal=AppSpacing.medium, vertical = AppSpacing.large)
-                    ){
+                    Card(modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFF7E9BC5).copy(alpha = 0.95f),
+                            contentColor = Color.White),
+                        shape = RoundedCornerShape(24.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    )
+                    {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 24.dp)
+                        ){
 
-                        Text(
-                            text = "Forget Password",
-                            style = Typography.titleLarge,
-
-                        )
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        Text(
-                            text = "Enter your registered email address and we'll send you a password reset link.",
-                        )
-
-                        OutlinedTextField(
-                            onValueChange = {
-                                forgetPasswordViewModel.onEmailChange(it)
-                            },
-                            value = forgetPassworeScreenState.email,
-                            shape = AppShape.Large,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp),
-                            placeholder = {
-                                Text(
-                                    text = "Enter your email"
-                                )
-                            },
-                            isError = forgetPassworeScreenState.emailError.isNotEmpty(),
-                            supportingText = { Text(forgetPassworeScreenState.emailError, color=MaterialTheme.colorScheme.error
-                                ,style=Typography.bodyLarge) },
-                        )
-                        ElevatedButton(
-                            onClick = {forgetPasswordViewModel.onSendResendLink()
-                            },
-                            colors= ButtonDefaults.elevatedButtonColors(
-                                containerColor =MaterialTheme.colorScheme.primary
-                            )
-                        ) {
                             Text(
-                                text = "Send Reset Link",
-                                color=MaterialTheme.colorScheme.onPrimary
-
+                                text = "Forget Password",
+                                style = Typography.titleLarge,
+                                color = Color.White
                             )
+
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            Text(
+                                text = "Enter your registered email address and we'll send you a password reset link.",
+                                textAlign = TextAlign.Center,
+                                color = Color.White
+                            )
+
+                            val inputColors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = Color.White.copy(alpha = 0.15f),
+                                unfocusedContainerColor = Color.White.copy(alpha = 0.15f),
+                                errorContainerColor = Color.White.copy(alpha = 0.15f),
+                                focusedBorderColor = Color.White,
+                                unfocusedBorderColor = Color.White.copy(alpha = 0.4f),
+                                errorBorderColor = Color.White,
+                                focusedLabelColor = Color.White,
+                                unfocusedLabelColor = Color.White.copy(alpha = 0.8f),
+                                errorLabelColor = Color.White,
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+                                errorTextColor = Color.White,
+                                focusedPlaceholderColor = Color.White.copy(alpha = 0.6f),
+                                unfocusedPlaceholderColor = Color.White.copy(alpha = 0.6f),
+                                focusedTrailingIconColor = Color.White,
+                                unfocusedTrailingIconColor = Color.White
+                            )
+
+                            OutlinedTextField(
+                                onValueChange = {
+                                    forgetPasswordViewModel.onEmailChange(it)
+                                },
+                                value = forgetPassworeScreenState.email,
+                                shape = RoundedCornerShape(14.dp),
+                                colors = inputColors,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp),
+                                placeholder = {
+                                    Text(
+                                        text = "Enter your email"
+                                    )
+                                },
+                                isError = forgetPassworeScreenState.emailError.isNotEmpty(),
+                                supportingText = { if (forgetPassworeScreenState.emailError.isNotEmpty()) Text(forgetPassworeScreenState.emailError, color=Color(0xFFFFD2D2)) },
+                            )
+                            Button(
+                                onClick = { forgetPasswordViewModel.onSendResendLink() },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.White,
+                                    contentColor = Color(0xFF7E9BC5)
+                                ),
+                                shape = RoundedCornerShape(14.dp),
+                                modifier = Modifier.fillMaxWidth().height(50.dp)
+                            ) {
+                                Text(
+                                    text = "Send Reset Link"
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            TextButton(onClick = onBackToLogin) {
+                                Text("Back to Login", color = Color.White, style = Typography.bodyMedium)
+                            }
                         }
-//                        Text(
-//                            text = "Login With Email verification instead?",
-//                            color = MaterialTheme.colorScheme.secondary,
-//                            modifier = Modifier.clickable(true, onClick = onBackToLogin)
-//                        )
-
-
-
-                        Text(
-                            text = "Back to Login",
-                            color = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.clickable(true, onClick = onBackToLogin)
-                        )
                     }
                 }
             }

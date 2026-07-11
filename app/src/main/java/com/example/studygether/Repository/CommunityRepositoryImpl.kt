@@ -114,30 +114,6 @@ class CommunityRepositoryImpl(
         }
     }
 
-    override suspend fun addMemberByEmail(
-        id: String,
-        email: String,
-        defaultAnonymous: Boolean
-    ): Result<String> = withContext(Dispatchers.IO) {
-        val currentUid = auth.currentUser?.uid ?: return@withContext Result.failure(Exception("Not authenticated"))
-        val isOwner = isCommunityOwner(id, currentUid).getOrElse { false }
-        if (!isOwner) {
-            return@withContext Result.failure(Exception("Only the community owner can add users to this community."))
-        }
-        try {
-            val userQuery = usersRef.orderByChild("email").equalTo(email).get().await()
-            val existingUser = userQuery.children.firstOrNull()
-                ?.getValue(com.example.studygether.Model.User::class.java)
-                ?: return@withContext Result.failure(
-                    Exception("No registered user found with this email. Ask them to sign up first.")
-                )
-
-            addMember(id, existingUser.id, defaultAnonymous, "MEMBER").getOrThrow()
-            Result.success(existingUser.id)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 
     override suspend fun addMember(
         id: String,

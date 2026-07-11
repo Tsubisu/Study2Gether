@@ -38,6 +38,7 @@ import com.example.studygether.ViewModels.AppBarsViewModel
 import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.ChannelsViewModel
 import com.example.studygether.ui.theme.Typography
+import com.example.studygether.View.Components.AvatarImage
 import com.example.studygether.ui.theme.tokens.AppSpacing
 
 @Composable
@@ -63,11 +64,7 @@ fun ChannelListScreen(
         val titleText = selectedCommunity?.name ?: "Channels"
         appBarsViewModel.setTitleBar(
             title = { Text(titleText, style = Typography.headlineMedium) },
-            actions = {
-                IconButton(onClick = onNavigateToProfile) {
-                    Icon(Icons.Default.Face, contentDescription = null)
-                }
-            }
+            actions = {}
         )
         appBarsViewModel.setBottomBarType(BottomBarState(BottomBars.NavBar))
     }
@@ -238,20 +235,11 @@ fun ChannelCard(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.logo),
-                    contentDescription = channel.name,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            AvatarImage(
+                imageUrl = channel.imageUrl,
+                name = channel.name,
+                size = 48.dp
+            )
             Spacer(modifier = Modifier.width(12.dp))
             Column(
                 modifier = Modifier.weight(1f)

@@ -55,6 +55,8 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -167,13 +169,15 @@ fun AppGraph()
             if (isLoggedIn) {
                 ModalDrawerSheet(
                     modifier = Modifier.width(300.dp),
-                    drawerContainerColor = MaterialTheme.colorScheme.background
+                    drawerContainerColor = MaterialTheme.colorScheme.background,
+                    windowInsets = WindowInsets(0, 0, 0, 0)
                 ) {
-                    // Header (User Profile)
+                   
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.primary)
+                            .statusBarsPadding()
                             .padding(horizontal = 16.dp, vertical = 24.dp)
                     ) {
                         Box(
@@ -352,6 +356,9 @@ fun AppGraph()
                             onNavigateToProfile = { navController.navigate(Profile) },
                             onNavigateToChannel = { channelId, channelName, communityId ->
                                 navController.navigate(Channel(channelId, channelName, communityId))
+                            },
+                            onNavigateToChat = { name, image, targetUserId ->
+                                navController.navigate(Convo(name, image, targetUserId))
                             }
                         )
                     }
@@ -443,6 +450,7 @@ fun AppGraph()
 
                     composable<Security> {
                         SecurityBody(
+                            modifier = Modifier.padding(innerPadding),
                             onNavigateBack = { navController.navigateUp() }
                         )
                     }

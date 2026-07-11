@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object SessionState {
     private val sessionScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -20,6 +21,9 @@ object SessionState {
 
     private val _isHydrating = MutableStateFlow(true)
     val isHydrating: StateFlow<Boolean> = _isHydrating.asStateFlow()
+
+    private val _isLoggingOut = MutableStateFlow(false)
+    val isLoggingOut: StateFlow<Boolean> = _isLoggingOut.asStateFlow()
 
     val isLoggedIn: StateFlow<Boolean> = _currentUser
         .map { it != null }
@@ -90,14 +94,22 @@ object SessionState {
     }
 
     fun clear() {
-        val uid = _currentUser.value?.id
-        currentUserJob?.cancel()
-        currentUserJob = null
-        _currentUser.update { null }
-        if (uid != null) {
-            communityRepository.stopObservingUserCommunities(uid)
+        sessionScope.launch {
+            _isLoggingOut.value = true
+            val uid = _currentUser.value?.id
+            currentUserJob?.cancel()
+            currentUserJob = null
+            
+            withContext(Dispatchers.IO) {
+                if (uid != null) {
+                    communityRepository.stopObservingUserCommunities(uid)
+                }
+                com.example.studygether.Utility.ZegoService.logout()
+                Firebase.auth.signOut()
+            }
+            
+            _currentUser.update { null }
+            _isLoggingOut.value = false
         }
-        com.example.studygether.Utility.ZegoService.logout()
-        Firebase.auth.signOut()
     }
 }
