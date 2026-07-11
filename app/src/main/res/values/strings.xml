@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Study@Gether</string>
+    <string name="app_name">Study2Gether</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_channels">Channels</string>
+    <string name="title_activity_study2_gether">Study2Gether</string>
 </resources>
