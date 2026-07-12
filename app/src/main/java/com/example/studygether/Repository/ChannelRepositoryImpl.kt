@@ -370,6 +370,19 @@ class ChannelRepositoryImpl(
         }
     }
 
+    override suspend fun deleteChannel(communityId: String, channelId: String): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val updates = mapOf(
+                "channels/$channelId" to null,
+                "communityChannels/$communityId/$channelId" to null
+            )
+            db.reference.updateChildren(updates).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     private class IncrementTransactionHandler : com.google.firebase.database.Transaction.Handler {
         override fun doTransaction(currentData: com.google.firebase.database.MutableData): com.google.firebase.database.Transaction.Result {
             val current = currentData.getValue(Int::class.java) ?: 0

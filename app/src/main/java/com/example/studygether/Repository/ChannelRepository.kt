@@ -38,4 +38,5 @@ interface ChannelRepository {
     suspend fun deleteComment(postId: String, commentId: String): Result<Unit>
 
     suspend fun updateChannelImage(channelId: String, url: String): Result<Unit>
+    suspend fun deleteChannel(communityId: String, channelId: String): Result<Unit>
 }

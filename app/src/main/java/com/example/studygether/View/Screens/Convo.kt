@@ -2,6 +2,9 @@ package com.example.studygether.View.Screens
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -51,12 +54,33 @@ fun ConvoScreen(
     
     val isBlocked = blockedUserIds.contains(targetUserId)
     var messageText by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    val hasCallPermissions = remember {
+        mutableStateOf(
+            context.checkSelfPermission(android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED &&
+            context.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val callPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val cameraGranted = permissions[android.Manifest.permission.CAMERA] ?: false
+        val audioGranted = permissions[android.Manifest.permission.RECORD_AUDIO] ?: false
+        hasCallPermissions.value = cameraGranted && audioGranted
+        if (hasCallPermissions.value) {
+            chatViewModel.startCall { }
+        } else {
+            android.widget.Toast.makeText(context, "Camera and microphone permissions are required for video calls", android.widget.Toast.LENGTH_LONG).show()
+        }
+    }
 
     LaunchedEffect(targetUserId) {
         chatViewModel.initChat(targetUserId)
     }
 
-    LaunchedEffect(targetUser, name, targetUserId, isBlocked) {
+    LaunchedEffect(targetUser, name, targetUserId, isBlocked, hasCallPermissions.value) {
         val resolvedName = when {
             targetUser != null -> targetUser!!.username
             name.isNotBlank() && name != targetUserId && name.length < 24 -> name
@@ -68,8 +92,15 @@ fun ConvoScreen(
             actions = {
                 // Call trigger button
                 IconButton(onClick = {
-                    chatViewModel.startCall { callId ->
-                        // Automatically navigated via AppGraph callState flow
+                    if (hasCallPermissions.value) {
+                        chatViewModel.startCall { }
+                    } else {
+                        callPermissionLauncher.launch(
+                            arrayOf(
+                                android.Manifest.permission.CAMERA,
+                                android.Manifest.permission.RECORD_AUDIO
+                            )
+                        )
                     }
                 }) {
                     Icon(Icons.Default.Videocam, contentDescription = "Video Call")

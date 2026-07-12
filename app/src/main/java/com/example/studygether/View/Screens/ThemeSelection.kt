@@ -79,8 +79,8 @@ fun ThemeSelectionScreen(
         ThemeOption(
             name = "Default",
             themeStyle = AppThemeStyle.DEFAULT,
-            primaryColor = if (isDarkMode) Color(0xFFD0BCFF) else Color(0xFF6650A4),
-            textColor = if (isDarkMode) Color(0xFF381E72) else Color(0xFFFFFFFF)
+            primaryColor = if (isDarkMode) Color(0xFFADC6EB) else Color(0xFF4C6A92),
+            textColor = if (isDarkMode) Color(0xFF1A3351) else Color(0xFFFFFFFF)
         ),
         ThemeOption(
             name = "Blue Sky",

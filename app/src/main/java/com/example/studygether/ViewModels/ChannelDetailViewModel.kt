@@ -9,6 +9,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+enum class PostSortOrder {
+    NEWEST,
+    MOST_POPULAR
+}
+
 class ChannelDetailViewModel : ViewModel() {
 
     private val channelRepository = AppRepositories.channelRepository
@@ -17,12 +22,28 @@ class ChannelDetailViewModel : ViewModel() {
     private val _channelId = MutableStateFlow<String?>(null)
     private val _communityId = MutableStateFlow<String?>(null)
 
+    private val _sortOrder = MutableStateFlow(PostSortOrder.NEWEST)
+    val sortOrder: StateFlow<PostSortOrder> = _sortOrder.asStateFlow()
+
+    fun setSortOrder(order: PostSortOrder) {
+        _sortOrder.value = order
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val posts: StateFlow<List<Post>> = _channelId
-        .flatMapLatest { id ->
-            if (id != null) channelRepository.observePosts(id) else flowOf(emptyList())
+    val posts: StateFlow<List<Post>> = combine(_channelId, _sortOrder) { id, sortOrder ->
+        Pair(id, sortOrder)
+    }.flatMapLatest { (id, sortOrder) ->
+        if (id != null) {
+            channelRepository.observePosts(id).map { list ->
+                when (sortOrder) {
+                    PostSortOrder.NEWEST -> list.sortedByDescending { it.createdAt }
+                    PostSortOrder.MOST_POPULAR -> list.sortedByDescending { it.likesCount - it.dislikesCount }
+                }
+            }
+        } else {
+            flowOf(emptyList())
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val isMember: StateFlow<Boolean> = combine(_channelId, SessionState.currentUser) { id, user ->

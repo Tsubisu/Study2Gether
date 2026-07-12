@@ -66,6 +66,10 @@ fun VideoCallScreen(
         val cameraGranted = permissions[android.Manifest.permission.CAMERA] ?: false
         val audioGranted = permissions[android.Manifest.permission.RECORD_AUDIO] ?: false
         hasPermissions = cameraGranted && audioGranted
+        if (!hasPermissions) {
+            android.widget.Toast.makeText(context, "Camera and microphone permissions are required for video calls", android.widget.Toast.LENGTH_LONG).show()
+            onCallEnded()
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -81,6 +85,78 @@ fun VideoCallScreen(
         }
     }
 
+    var isRemoteSurfaceReady by remember { mutableStateOf(false) }
+    var remoteStreamId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(hasPermissions) {
+        if (hasPermissions) {
+            localTextureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
+                override fun onSurfaceTextureAvailable(surface: android.graphics.SurfaceTexture, width: Int, height: Int) {
+                    try {
+                        ZegoExpressEngine.getEngine().startPreview(ZegoCanvas(localTextureView))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+                override fun onSurfaceTextureSizeChanged(surface: android.graphics.SurfaceTexture, width: Int, height: Int) {}
+                override fun onSurfaceTextureDestroyed(surface: android.graphics.SurfaceTexture): Boolean {
+                    try {
+                        ZegoExpressEngine.getEngine().stopPreview()
+                    } catch (e: Exception) {}
+                    return true
+                }
+                override fun onSurfaceTextureUpdated(surface: android.graphics.SurfaceTexture) {}
+            }
+
+            remoteTextureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
+                override fun onSurfaceTextureAvailable(surface: android.graphics.SurfaceTexture, width: Int, height: Int) {
+                    isRemoteSurfaceReady = true
+                    try {
+                        val express = ZegoExpressEngine.getEngine()
+                        val streamId = remoteStreamId ?: targetUserId
+                        express.startPlayingStream(streamId, ZegoCanvas(remoteTextureView))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+                override fun onSurfaceTextureSizeChanged(surface: android.graphics.SurfaceTexture, width: Int, height: Int) {}
+                override fun onSurfaceTextureDestroyed(surface: android.graphics.SurfaceTexture): Boolean {
+                    isRemoteSurfaceReady = false
+                    try {
+                        val streamId = remoteStreamId ?: targetUserId
+                        ZegoExpressEngine.getEngine().stopPlayingStream(streamId)
+                    } catch (e: Exception) {}
+                    return true
+                }
+                override fun onSurfaceTextureUpdated(surface: android.graphics.SurfaceTexture) {}
+            }
+
+            // Fallback: If surfaces are already available upon composition, trigger manually
+            if (localTextureView.isAvailable) {
+                try { ZegoExpressEngine.getEngine().startPreview(ZegoCanvas(localTextureView)) } catch (e: Exception) {}
+            }
+            if (remoteTextureView.isAvailable) {
+                isRemoteSurfaceReady = true
+                try {
+                    val streamId = remoteStreamId ?: targetUserId
+                    ZegoExpressEngine.getEngine().startPlayingStream(streamId, ZegoCanvas(remoteTextureView))
+                } catch (e: Exception) {}
+            }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            try {
+                localTextureView.surfaceTextureListener = null
+                remoteTextureView.surfaceTextureListener = null
+                ZegoService.endRtcCall()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     DisposableEffect(hasPermissions) {
         val eventHandler = object : IZegoEventHandler() {
             override fun onRoomStreamUpdate(
@@ -93,7 +169,10 @@ fun VideoCallScreen(
                 if (updateType == ZegoUpdateType.ADD && streamList != null) {
                     for (stream in streamList) {
                         if (stream.user.userID == targetUserId) {
-                            express.startPlayingStream(stream.streamID, ZegoCanvas(remoteTextureView))
+                            remoteStreamId = stream.streamID
+                            if (isRemoteSurfaceReady) {
+                                express.startPlayingStream(stream.streamID, ZegoCanvas(remoteTextureView))
+                            }
                         }
                     }
                 } else if (updateType == ZegoUpdateType.DELETE && streamList != null) {
@@ -110,8 +189,6 @@ fun VideoCallScreen(
             try {
                 val express = ZegoExpressEngine.getEngine()
                 express.setEventHandler(eventHandler)
-                express.startPreview(ZegoCanvas(localTextureView))
-                express.startPlayingStream(targetUserId, ZegoCanvas(remoteTextureView))
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -121,7 +198,6 @@ fun VideoCallScreen(
             try {
                 val express = try { ZegoExpressEngine.getEngine() } catch (e: Exception) { null }
                 express?.setEventHandler(null)
-                ZegoService.endRtcCall()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -175,7 +176,7 @@ fun LoginScreen(onLoginSuccess:()->Unit={},
                                 supportingText = { if (loginState.emailError.isNotEmpty()) Text(loginState.emailError, color = Color(0xFFFFD2D2)) },
                                 shape = RoundedCornerShape(14.dp),
                                 colors = inputColors,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth().testTag("email_input")
                             )
 
                             OutlinedTextField(
@@ -189,11 +190,14 @@ fun LoginScreen(onLoginSuccess:()->Unit={},
                                 supportingText = { if (loginState.passwordError.isNotEmpty()) Text(loginState.passwordError, color = Color(0xFFFFD2D2)) },
                                 shape = RoundedCornerShape(14.dp),
                                 colors = inputColors,
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth().testTag("password_input"),
                                 visualTransformation = if (passwordVisible) VisualTransformation.None
                                 else PasswordVisualTransformation(),
                                 trailingIcon = {
-                                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    IconButton(
+                                        onClick = { passwordVisible = !passwordVisible },
+                                        modifier = Modifier.testTag("password_toggle")
+                                    ) {
                                         Icon(
                                             imageVector = if (passwordVisible) Icons.Filled.Visibility
                                             else Icons.Filled.VisibilityOff,
@@ -213,7 +217,7 @@ fun LoginScreen(onLoginSuccess:()->Unit={},
                                     contentColor = Color(0xFF7E9BC5)
                                 ),
                                 shape = RoundedCornerShape(14.dp),
-                                modifier = Modifier.fillMaxWidth().height(50.dp)
+                                modifier = Modifier.fillMaxWidth().height(50.dp).testTag("login_button")
                             )
                             {
                                 Text("Login")
@@ -226,7 +230,7 @@ fun LoginScreen(onLoginSuccess:()->Unit={},
                                 ),
                                 border = BorderStroke(1.dp, Color.White),
                                 shape = RoundedCornerShape(14.dp),
-                                modifier = Modifier.fillMaxWidth().height(50.dp)
+                                modifier = Modifier.fillMaxWidth().height(50.dp).testTag("sign_in_button")
                             )
                             {
                                 Text("Sign In")

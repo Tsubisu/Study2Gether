@@ -22,6 +22,7 @@ object Home
 @Serializable object Profile
 @Serializable object ThemeSelection
 @Serializable object Security
+@Serializable object AboutUs
 
 
 

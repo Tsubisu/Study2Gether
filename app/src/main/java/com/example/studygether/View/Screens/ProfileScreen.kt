@@ -32,6 +32,8 @@ import com.example.studygether.ViewModels.AppBarsViewModel
 import com.example.studygether.View.AppBars.BottomBars
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Intent
+import android.provider.MediaStore
 import androidx.compose.ui.platform.LocalContext
 import com.example.studygether.ViewModels.BottomBarState
 
@@ -41,6 +43,7 @@ fun ProfileScreen(
     onNavigateBack: () -> Unit,
     onNavigateToTheme: () -> Unit,
     onNavigateToSecurity: () -> Unit,
+    onNavigateToAboutUs: () -> Unit,
     viewModel: ProfileViewModel = viewModel()
 ) {
     val activity = LocalActivity.current as ComponentActivity
@@ -71,18 +74,24 @@ fun ProfileScreen(
     var communityCreationError by remember { mutableStateOf("") }
 
     val communityImageLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        if (uri != null) {
-            selectedCommunityImageUri = uri
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val uri = result.data?.data
+            if (uri != null) {
+                selectedCommunityImageUri = uri
+            }
         }
     }
 
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        if (uri != null) {
-            viewModel.uploadProfileImage(context, uri)
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val uri = result.data?.data
+            if (uri != null) {
+                viewModel.uploadProfileImage(context, uri)
+            }
         }
     }
 
@@ -104,7 +113,8 @@ fun ProfileScreen(
             // Avatar representation
             Box(
                 modifier = Modifier.clickable(enabled = !isUploading) {
-                    launcher.launch("image/*")
+                    val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    launcher.launch(intent)
                 }
             ) {
                 com.example.studygether.View.Components.AvatarImage(
@@ -250,6 +260,12 @@ fun ProfileScreen(
             )
 
             ProfileOptionItem(
+                icon = Icons.Default.Info,
+                title = "About Us",
+                onClick = onNavigateToAboutUs
+            )
+
+            ProfileOptionItem(
                 icon = Icons.Default.GroupAdd,
                 title = "Create Community",
                 onClick = {
@@ -353,7 +369,8 @@ fun ProfileScreen(
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.primaryContainer)
                                 .clickable(enabled = !isCreatingCommunity) {
-                                    communityImageLauncher.launch("image/*")
+                                    val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                                    communityImageLauncher.launch(intent)
                                 },
                             contentAlignment = Alignment.Center
                         ) {
@@ -374,7 +391,10 @@ fun ProfileScreen(
                         }
 
                         TextButton(
-                            onClick = { communityImageLauncher.launch("image/*") },
+                             onClick = {
+                                 val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                                 communityImageLauncher.launch(intent)
+                             },
                             enabled = !isCreatingCommunity
                         ) {
                             Text("Choose Image")
