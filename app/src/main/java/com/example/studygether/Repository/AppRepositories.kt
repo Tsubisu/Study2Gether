@@ -11,19 +11,61 @@ import kotlinx.coroutines.SupervisorJob
 
 object AppRepositories {
 
-    private val db = FirebaseDatabase.getInstance()
-    private val auth = FirebaseAuth.getInstance()
+    private val db by lazy { FirebaseDatabase.getInstance() }
+    private val auth by lazy { FirebaseAuth.getInstance() }
 
     // owned here, lives for the app process, passed into communityRepository below
     private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    val imageRepository: ImageRepository = CloudinaryImageRepositoryImpl()
-    val userRepository: UserRepository = UserRepositoryImpl(db, auth)
-    val authenticationRepository: AuthenticationRepository = AuthRepoImpl(auth, db)
-    val channelRepository: ChannelRepository = ChannelRepositoryImpl(db)
+    private var _imageRepository: ImageRepository? = null
+    var imageRepository: ImageRepository
+        get() {
+            if (_imageRepository == null) {
+                _imageRepository = CloudinaryImageRepositoryImpl()
+            }
+            return _imageRepository!!
+        }
+        set(value) {
+            _imageRepository = value
+        }
+
+    private var _userRepository: UserRepository? = null
+    var userRepository: UserRepository
+        get() {
+            if (_userRepository == null) {
+                _userRepository = UserRepositoryImpl(db, auth)
+            }
+            return _userRepository!!
+        }
+        set(value) {
+            _userRepository = value
+        }
+
+    private var _authenticationRepository: AuthenticationRepository? = null
+    var authenticationRepository: AuthenticationRepository
+        get() {
+            if (_authenticationRepository == null) {
+                _authenticationRepository = AuthRepoImpl(auth, db)
+            }
+            return _authenticationRepository!!
+        }
+        set(value) {
+            _authenticationRepository = value
+        }
+
+    private var _channelRepository: ChannelRepository? = null
+    var channelRepository: ChannelRepository
+        get() {
+            if (_channelRepository == null) {
+                _channelRepository = ChannelRepositoryImpl(db)
+            }
+            return _channelRepository!!
+        }
+        set(value) {
+            _channelRepository = value
+        }
 
     lateinit var communityRepository: CommunityRepository
-        private set
 
     private var isInitialized = false
 

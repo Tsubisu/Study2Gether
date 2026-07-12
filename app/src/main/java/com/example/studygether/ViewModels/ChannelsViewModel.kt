@@ -52,4 +52,12 @@ class ChannelsViewModel : ViewModel() {
             onResult(result)
         }
     }
+
+    fun deleteChannel(channelId: String, onResult: (Result<Unit>) -> Unit) {
+        val community = selectedCommunity.value ?: return onResult(Result.failure(Exception("No community selected")))
+        viewModelScope.launch {
+            val result = channelRepository.deleteChannel(community.id, channelId)
+            onResult(result)
+        }
+    }
 }

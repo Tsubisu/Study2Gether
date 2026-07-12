@@ -81,6 +81,8 @@ import androidx.compose.material.icons.filled.Apps
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.studygether.ViewModels.AppBarsViewModel
 import com.example.studygether.Repository.AppRepositories
@@ -98,6 +100,26 @@ fun AppGraph()
     val context = androidx.compose.ui.platform.LocalContext.current
 
     var callerUsername by remember { mutableStateOf<String?>(null) }
+    var pendingIncomingCall by remember { mutableStateOf<com.example.studygether.Utility.ZegoCallState.Incoming?>(null) }
+
+    val incomingPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val cameraGranted = permissions[android.Manifest.permission.CAMERA] ?: false
+        val audioGranted = permissions[android.Manifest.permission.RECORD_AUDIO] ?: false
+        val call = pendingIncomingCall
+        if (cameraGranted && audioGranted) {
+            if (call != null) {
+                com.example.studygether.Utility.ZegoService.acceptCall(call.callId, call.callerId, context)
+            }
+        } else {
+            android.widget.Toast.makeText(context, "Camera and microphone permissions are required to accept video calls", android.widget.Toast.LENGTH_LONG).show()
+            if (call != null) {
+                com.example.studygether.Utility.ZegoService.rejectCall(call.callId)
+            }
+        }
+        pendingIncomingCall = null
+    }
 
     val activity = LocalActivity.current as ComponentActivity
     val appBarsViewModel: AppBarsViewModel = viewModel(activity)
@@ -136,7 +158,19 @@ fun AppGraph()
                     Button(
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
                         onClick = {
-                            com.example.studygether.Utility.ZegoService.acceptCall(state.callId, state.callerId, context)
+                            val cameraGranted = context.checkSelfPermission(android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                            val audioGranted = context.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                            if (cameraGranted && audioGranted) {
+                                com.example.studygether.Utility.ZegoService.acceptCall(state.callId, state.callerId, context)
+                            } else {
+                                pendingIncomingCall = state
+                                incomingPermissionLauncher.launch(
+                                    arrayOf(
+                                        android.Manifest.permission.CAMERA,
+                                        android.Manifest.permission.RECORD_AUDIO
+                                    )
+                                )
+                            }
                         }
                     ) {
                         Text("Accept", color = Color.White)
@@ -150,6 +184,30 @@ fun AppGraph()
                         }
                     ) {
                         Text("Decline", color = Color.White)
+                    }
+                }
+            )
+        }
+        is com.example.studygether.Utility.ZegoCallState.Outgoing -> {
+            var inviteeUsername by remember(state.callId) { mutableStateOf<String?>(null) }
+            LaunchedEffect(state.inviteeId) {
+                AppRepositories.userRepository.getUser(state.inviteeId).onSuccess { user ->
+                    inviteeUsername = user?.username
+                }
+            }
+            AlertDialog(
+                onDismissRequest = {},
+                title = { Text("Outgoing Video Call") },
+                text = { Text("Calling: ${inviteeUsername ?: "Loading..."}\nRinging...") },
+                confirmButton = {},
+                dismissButton = {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                        onClick = {
+                            com.example.studygether.Utility.ZegoService.cancelCall(state.callId)
+                        }
+                    ) {
+                        Text("Cancel", color = Color.White)
                     }
                 }
             )
@@ -349,7 +407,7 @@ fun AppGraph()
                 popEnterTransition = { fadeIn(animationSpec = tween(300)) },
                 popExitTransition = { fadeOut(animationSpec = tween(300)) }
             ) {
-                navigation<MainGraphRoute>(startDestination = ChannelList) {
+                navigation<MainGraphRoute>(startDestination = Home) {
                     composable<Home> {
                         HomeScreen(
                             modifier = Modifier.padding(innerPadding),
@@ -437,7 +495,8 @@ fun AppGraph()
                             modifier = Modifier.padding(innerPadding),
                             onNavigateBack = { navController.navigateUp() },
                             onNavigateToTheme = { navController.navigate(ThemeSelection) },
-                            onNavigateToSecurity = { navController.navigate(Security) }
+                            onNavigateToSecurity = { navController.navigate(Security) },
+                            onNavigateToAboutUs = { navController.navigate(AboutUs) }
                         )
                     }
 
@@ -451,6 +510,12 @@ fun AppGraph()
                     composable<Security> {
                         SecurityBody(
                             modifier = Modifier.padding(innerPadding),
+                            onNavigateBack = { navController.navigateUp() }
+                        )
+                    }
+
+                    composable<AboutUs> {
+                        com.example.studygether.View.Screens.AboutUsBody(
                             onNavigateBack = { navController.navigateUp() }
                         )
                     }

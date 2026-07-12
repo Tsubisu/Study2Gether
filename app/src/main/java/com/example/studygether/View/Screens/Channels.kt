@@ -2,6 +2,7 @@
 
 package com.example.studygether.View.Screens
 
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
@@ -15,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -59,6 +62,9 @@ fun ChannelListScreen(
     var channelNameText by remember { mutableStateOf("") }
     var channelDescText by remember { mutableStateOf("") }
     var isCreating by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    var showDeleteConfirmDialog by remember { mutableStateOf(false) }
+    var channelToDelete by remember { mutableStateOf<ChannelModel?>(null) }
 
     LaunchedEffect(selectedCommunity) {
         val titleText = selectedCommunity?.name ?: "Channels"
@@ -124,11 +130,17 @@ fun ChannelListScreen(
                                 .padding(all = AppSpacing.small),
                             verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)
                         ) {
-                            items(channels) { ch ->
+                             items(channels) { ch ->
                                 ChannelCard(
                                     channel = ch,
                                     communityId = selectedCommunity!!.id,
-                                    onClick = onNavigateToChannel
+                                    onClick = onNavigateToChannel,
+                                    onDelete = if (isOwner) {
+                                        {
+                                            channelToDelete = ch
+                                            showDeleteConfirmDialog = true
+                                        }
+                                    } else null
                                 )
                             }
                         }
@@ -213,6 +225,43 @@ fun ChannelListScreen(
                 }
             )
         }
+
+        if (showDeleteConfirmDialog && channelToDelete != null) {
+            AlertDialog(
+                onDismissRequest = { showDeleteConfirmDialog = false },
+                title = { Text("Delete Channel") },
+                text = { Text("Are you sure you want to delete the channel \"${channelToDelete?.name}\"? All posts and data under this channel will be permanently removed.") },
+                confirmButton = {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                        onClick = {
+                            val ch = channelToDelete
+                            if (ch != null) {
+                                channelsViewModel.deleteChannel(ch.id) { result ->
+                                    if (result.isSuccess) {
+                                        Toast.makeText(context, "Channel deleted successfully", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        Toast.makeText(context, "Failed to delete channel: ${result.exceptionOrNull()?.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                            showDeleteConfirmDialog = false
+                            channelToDelete = null
+                        }
+                    ) {
+                        Text("Delete", color = Color.White)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showDeleteConfirmDialog = false
+                        channelToDelete = null
+                    }) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -221,7 +270,8 @@ fun ChannelCard(
     channel: ChannelModel,
     communityId: String,
     onClick: (channelId: String, channelName: String, communityId: String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDelete: (() -> Unit)? = null
 ) {
     Card(
         modifier = modifier
@@ -258,6 +308,15 @@ fun ChannelCard(
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.7f)
                 )
+            }
+            if (onDelete != null) {
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Channel",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
     }

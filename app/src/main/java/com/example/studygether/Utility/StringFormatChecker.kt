@@ -1,9 +1,14 @@
 package com.example.studygether.Utility
 
 fun validateEmail(value: String): String {
+    val isValid = try {
+        android.util.Patterns.EMAIL_ADDRESS.matcher(value).matches()
+    } catch (e: NullPointerException) {
+        value.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$".toRegex())
+    }
     return when {
         value.isBlank() -> "Email cannot be empty"
-        !android.util.Patterns.EMAIL_ADDRESS.matcher(value).matches() -> "Invalid email format"
+        !isValid -> "Invalid email format"
         else -> ""
     }
 }

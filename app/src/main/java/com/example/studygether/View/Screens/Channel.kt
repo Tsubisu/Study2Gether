@@ -9,6 +9,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Intent
+import android.provider.MediaStore
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -44,6 +46,7 @@ import com.example.studygether.View.AppBars.ChannelTitleCard
 import com.example.studygether.ViewModels.AppBarsViewModel
 import com.example.studygether.ViewModels.BottomBarState
 import com.example.studygether.ViewModels.ChannelDetailViewModel
+import com.example.studygether.ViewModels.PostSortOrder
 import com.example.studygether.ui.theme.Typography
 import com.example.studygether.ui.theme.tokens.AppSpacing
 import java.text.SimpleDateFormat
@@ -87,13 +90,16 @@ fun ChannelScreen(
 
     val scope = rememberCoroutineScope()
     val channelLogoLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        if (uri != null) {
-            AppRepositories.imageRepository.uploadImage(context, uri) { result ->
-                if (result != null) {
-                    scope.launch {
-                        AppRepositories.channelRepository.updateChannelImage(channelId, result.url)
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val uri = result.data?.data
+            if (uri != null) {
+                AppRepositories.imageRepository.uploadImage(context, uri) { resultData ->
+                    if (resultData != null) {
+                        scope.launch {
+                            AppRepositories.channelRepository.updateChannelImage(channelId, resultData.url)
+                        }
                     }
                 }
             }
@@ -109,7 +115,10 @@ fun ChannelScreen(
                     channelName = channelName,
                     imageUrl = channelDetail?.imageUrl,
                     channelMemberCount = memberCount,
-                    onLogoClick = if (isModerator) { { channelLogoLauncher.launch("image/*") } } else null
+                    onLogoClick = if (isModerator) { {
+                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                        channelLogoLauncher.launch(intent)
+                    } } else null
                 )
             },
             showBackButton = true,
@@ -189,6 +198,36 @@ fun ChannelScreen(
                                     Text(if (isMember) "Leave Channel" else "Join Channel")
                                 }
                             }
+                        }
+                    }
+
+                    item {
+                        val currentSortOrder by viewModel.sortOrder.collectAsStateWithLifecycle()
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Sort by:",
+                                style = Typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                                fontWeight = FontWeight.Bold
+                            )
+                            
+                            FilterChip(
+                                selected = currentSortOrder == PostSortOrder.NEWEST,
+                                onClick = { viewModel.setSortOrder(PostSortOrder.NEWEST) },
+                                label = { Text("Newest") }
+                            )
+                            
+                            FilterChip(
+                                selected = currentSortOrder == PostSortOrder.MOST_POPULAR,
+                                onClick = { viewModel.setSortOrder(PostSortOrder.MOST_POPULAR) },
+                                label = { Text("Most Popular") }
+                            )
                         }
                     }
 

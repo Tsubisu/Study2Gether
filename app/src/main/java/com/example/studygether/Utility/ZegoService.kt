@@ -146,9 +146,6 @@ object ZegoService {
         currentUserId = null
         _blockedUserIds.value = emptySet()
         _callState.value = ZegoCallState.Idle
-        try {
-            ZegoExpressEngine.destroyEngine(null)
-        } catch (e: Exception) {}
     }
 
     fun fetchBlacklist() {

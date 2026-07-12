@@ -48,7 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.studygether.ViewModels.TopBarState
 import com.example.studygether.ui.theme.Typography
-import com.example.studygether.View.EmojiPickerSheet
+
 
 
 enum class BottomBars
@@ -255,13 +255,7 @@ fun BottomMessageBar()
         }
 
     }
-    EmojiPickerSheet(
-        visible = showEmojiPicker,
-        onDismiss = { showEmojiPicker = false },
-        onEmojiSelected = { emoji ->
-            textFieldValue = insertEmoji(textFieldValue, emoji)
-        }
-    )
+
 }
 fun insertEmoji(current: TextFieldValue, emoji: String): TextFieldValue {
     val text = current.text

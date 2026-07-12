@@ -46,6 +46,8 @@ import com.example.studygether.R
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Intent
+import android.provider.MediaStore
 import com.example.studygether.View.Components.AvatarImage
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,18 +71,21 @@ fun HomeScreen(
     val context = LocalContext.current
 
     val communityLogoLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        if (uri != null && screenState is CommunityScreenState.Loaded) {
-            AppRepositories.imageRepository.uploadImage(context, uri) { result ->
-                if (result != null) {
-                    scope.launch {
-                        AppRepositories.communityRepository.updateCommunityImage(
-                            screenState.community.id,
-                            result.url,
-                            result.publicId
-                        ).onSuccess {
-                            Toast.makeText(context, "Community logo updated!", Toast.LENGTH_SHORT).show()
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val uri = result.data?.data
+            if (uri != null && screenState is CommunityScreenState.Loaded) {
+                AppRepositories.imageRepository.uploadImage(context, uri) { resultData ->
+                    if (resultData != null) {
+                        scope.launch {
+                            AppRepositories.communityRepository.updateCommunityImage(
+                                screenState.community.id,
+                                resultData.url,
+                                resultData.publicId
+                            ).onSuccess {
+                                Toast.makeText(context, "Community logo updated!", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
@@ -108,7 +113,10 @@ fun HomeScreen(
                     if (screenState is CommunityScreenState.Loaded) {
                         val community = screenState.community
                         val logoModifier = if (isOwner) {
-                            Modifier.clickable { communityLogoLauncher.launch("image/*") }
+                             Modifier.clickable {
+                                 val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                                 communityLogoLauncher.launch(intent)
+                             }
                         } else {
                             Modifier
                         }
