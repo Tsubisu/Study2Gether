@@ -5,11 +5,11 @@ import com.example.studygether.Model.Community
 import com.google.firebase.database.FirebaseDatabase
 
 object DatabaseMigration {
-    /**
-     * Call this method once (e.g. inside MainActivity onCreate) to migrate existing community
-     * members in Firebase to include their correct authority roles.
-     * It compares user IDs to the community creatorId to assign "OWNER" or "MEMBER".
-     */
+    
+
+
+
+
     fun migrateCommunityMembersRole() {
         val db = FirebaseDatabase.getInstance()
         val communitiesRef = db.getReference("communities")
@@ -30,7 +30,7 @@ object DatabaseMigration {
 
                 if (communityId.isEmpty()) continue
 
-                // Fetch members of this community
+                
                 membersRef.child(communityId).get().addOnSuccessListener { membersSnapshot ->
                     if (!membersSnapshot.exists()) return@addOnSuccessListener
 
@@ -39,7 +39,7 @@ object DatabaseMigration {
                         val userId = memberSnap.key ?: continue
                         val memberMap = memberSnap.value as? Map<*, *> ?: continue
                         
-                        // Skip if role already exists
+                        
                         if (memberMap.containsKey("role")) continue
 
                         val role = if (userId == creatorId) "OWNER" else "MEMBER"

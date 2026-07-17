@@ -14,7 +14,7 @@ object AppRepositories {
     private val db by lazy { FirebaseDatabase.getInstance() }
     private val auth by lazy { FirebaseAuth.getInstance() }
 
-    // owned here, lives for the app process, passed into communityRepository below
+    
     private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private var _imageRepository: ImageRepository? = null
@@ -72,7 +72,7 @@ object AppRepositories {
     fun init(context: Context) {
         if (isInitialized) return
 
-        // Initialize Cloudinary MediaManager
+        
         try {
             com.cloudinary.android.MediaManager.get()
         } catch (e: IllegalStateException) {

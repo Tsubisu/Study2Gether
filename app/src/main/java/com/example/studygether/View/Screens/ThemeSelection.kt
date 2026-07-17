@@ -114,7 +114,7 @@ fun ThemeSelectionScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp, vertical = 24.dp)
     ) {
-        // Light / Dark Mode selector tabs
+        
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)

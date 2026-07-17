@@ -95,7 +95,7 @@ fun AppGraph()
     val isLoggedIn by SessionState.isLoggedIn.collectAsStateWithLifecycle()
     val startDestination = remember(isLoggedIn) { if (isLoggedIn) MainGraphRoute else AuthGraph }
 
-    // Zego Call Invitation Signaling Overlay Handler
+    
     val callState by com.example.studygether.Utility.ZegoService.callState.collectAsStateWithLifecycle()
     val context = androidx.compose.ui.platform.LocalContext.current
 
@@ -266,7 +266,7 @@ fun AppGraph()
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Navigation Items
+                    
                     Text(
                         text = "Navigation",
                         style = MaterialTheme.typography.labelMedium,
@@ -337,7 +337,7 @@ fun AppGraph()
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Communities Section
+                    
                     Text(
                         text = "My Communities",
                         style = MaterialTheme.typography.labelMedium,
@@ -373,7 +373,7 @@ fun AppGraph()
                         }
                     }
 
-                    // Footer (Logout)
+                    
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
                     Spacer(modifier = Modifier.height(8.dp))
                     NavigationDrawerItem(
@@ -399,7 +399,7 @@ fun AppGraph()
             bottomBar = { BottomBar(navController) }
         ) { innerPadding ->
             NavHost(
-                // modifier = Modifier.padding(innerPadding),
+                
                 navController = navController,
                 startDestination = startDestination,
                 enterTransition = { fadeIn(animationSpec = tween(300)) },

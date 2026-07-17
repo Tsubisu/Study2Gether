@@ -86,7 +86,7 @@ fun ConvoListScreen(
                 .padding(all = AppSpacing.small)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                // Messenger Style Search Bar
+                
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
@@ -115,7 +115,7 @@ fun ConvoListScreen(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 if (searchQuery.isEmpty()) {
-                    // Active Conversations
+                    
                     if (activeConversations.isEmpty()) {
                         Box(
                             modifier = Modifier
@@ -154,7 +154,7 @@ fun ConvoListScreen(
                         }
                     }
                 } else {
-                    // Filtered Community Members
+                    
                     val filteredMembers = communityMembers.filter {
                         it.username.contains(searchQuery, ignoreCase = true) ||
                                 it.email.contains(searchQuery, ignoreCase = true)
@@ -322,7 +322,7 @@ fun MemberCard(
                 )
             }
 
-            // Chat Action button
+            
             IconButton(
                 onClick = onChatClick,
                 enabled = !isBlocked,
@@ -337,7 +337,7 @@ fun MemberCard(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Block Action button
+            
             Button(
                 onClick = onBlockToggle,
                 colors = ButtonDefaults.buttonColors(

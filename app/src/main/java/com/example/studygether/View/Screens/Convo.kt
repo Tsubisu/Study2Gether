@@ -90,7 +90,7 @@ fun ConvoScreen(
             title = { ChatUserLabelCard(name = resolvedName, profileImageUrl = targetUser?.profileImageUrl, onClick = {}) },
             showBackButton = true,
             actions = {
-                // Call trigger button
+                
                 IconButton(onClick = {
                     if (hasCallPermissions.value) {
                         chatViewModel.startCall { }
@@ -106,7 +106,7 @@ fun ConvoScreen(
                     Icon(Icons.Default.Videocam, contentDescription = "Video Call")
                 }
 
-                // Block/Unblock toggle button
+                
                 IconButton(onClick = {
                     if (isBlocked) {
                         chatViewModel.unblockUser()
@@ -132,7 +132,7 @@ fun ConvoScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Message list
+        
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
@@ -148,7 +148,7 @@ fun ConvoScreen(
                     else -> "[Message]"
                 }
 
-                // Show avatar only if it is the last message in a consecutive block of the other user's messages
+                
                 val isLastInBlock = !isCurrentUser && (
                     index == messages.size - 1 ||
                     messages[index + 1].senderUserID != msg.senderUserID
@@ -164,7 +164,7 @@ fun ConvoScreen(
             }
         }
 
-        // Constraints and message input
+        
         if (!isTargetMemberOfSameCommunity) {
             Card(
                 modifier = Modifier
@@ -261,7 +261,7 @@ fun ChatBubble(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
             } else {
-                Spacer(modifier = Modifier.width(36.dp)) // aligns bubbles where avatar is absent
+                Spacer(modifier = Modifier.width(36.dp)) 
             }
         }
 

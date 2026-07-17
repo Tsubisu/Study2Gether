@@ -49,14 +49,14 @@ object ZegoService {
             return
         }
         try {
-            // 1. Init ZIM
+            
             val appConfig = ZIMAppConfig().apply {
                 appID = ZegoConfig.APP_ID
                 appSign = ZegoConfig.APP_SIGN
             }
             zim = ZIM.create(appConfig, context.applicationContext as Application)
             
-            // Set ZIM Event Handler
+            
             zim?.setEventHandler(object : ZIMEventHandler() {
                 override fun onReceivePeerMessage(zim: ZIM?, messageList: ArrayList<ZIMMessage>?, fromUserID: String?) {
                     messageList?.forEach { msg ->
@@ -104,7 +104,7 @@ object ZegoService {
                 }
             })
 
-            // 2. Init ZegoExpress Engine
+            
             val profile = ZegoEngineProfile().apply {
                 appID = ZegoConfig.APP_ID
                 appSign = ZegoConfig.APP_SIGN
@@ -291,7 +291,7 @@ object ZegoService {
         val sendConfig = ZIMMessageSendConfig()
         zimInstance.sendMessage(textMessage, targetUserId, ZIMConversationType.PEER, sendConfig, object : ZIMMessageSentCallback {
             override fun onMessageAttached(message: ZIMMessage?) {
-                // Not strictly needed for core functionality
+                
             }
             override fun onMessageSent(message: ZIMMessage?, errorInfo: ZIMError?) {
                 if (errorInfo?.code == ZIMErrorCode.SUCCESS) {

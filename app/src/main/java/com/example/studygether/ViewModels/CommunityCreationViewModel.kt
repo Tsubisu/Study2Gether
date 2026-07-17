@@ -24,7 +24,7 @@ data class CommunityCreationUiState(
     val password: String = "",
     val confirmPassword: String = "",
 
-    // Errors
+    
     val firstNameError: String = "",
     val lastNameError: String = "",
     val communityNameError: String = "",
@@ -84,7 +84,7 @@ class CommunityCreationViewModel : ViewModel() {
             it.copy(
                 password = value,
                 passwordError = validatePassword(value),
-                // re-validate confirm password when password changes
+                
                 confirmPasswordError = validateConfirmPassword(value, it.confirmPassword)
             )
         }
@@ -124,7 +124,7 @@ class CommunityCreationViewModel : ViewModel() {
             emailError, passwordError, confirmPasswordError
         ).any { it.isNotEmpty() }
 
-        if (hasErrors) return  // stop here, errors are already shown in UI
+        if (hasErrors) return  
 
         viewModelScope.launch {
             _uiState.update { it.copy(isRegistering = true, registrationError = "") }

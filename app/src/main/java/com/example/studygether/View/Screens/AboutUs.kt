@@ -87,7 +87,7 @@ fun AboutUsBody(onNavigateBack: () -> Unit) {
                 style = TextStyle(
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    // fontFamily = myFontFamily,
+                    
                     color = TextColor,
                     textDecoration = TextDecoration.Underline
                 ),
@@ -102,7 +102,7 @@ fun AboutUsBody(onNavigateBack: () -> Unit) {
                 style = TextStyle(
                     fontSize = 16.sp,
                     color = Color.Gray,
-                    //fontFamily = myFontFamily,
+                    
                     lineHeight = 24.sp
                 ),
                 modifier = Modifier.fillMaxWidth(),
@@ -116,7 +116,7 @@ fun AboutUsBody(onNavigateBack: () -> Unit) {
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    // fontFamily = myFontFamily,
+                    
                     color = TextColor,
                     textDecoration = TextDecoration.Underline
 

@@ -103,14 +103,14 @@ class ConvoViewModel : ViewModel() {
     fun blockUser() {
         val targetId = _targetUserId.value ?: return
         ZegoService.blockUser(targetId) {
-            // State automatically propagates
+            
         }
     }
 
     fun unblockUser() {
         val targetId = _targetUserId.value ?: return
         ZegoService.unblockUser(targetId) {
-            // State automatically propagates
+            
         }
     }
 

@@ -19,7 +19,7 @@ object UserCommunity {
     private val _selectedCommunityId = MutableStateFlow<String?>(null)
     private val _currentUserSelectedCommunity = MutableStateFlow<Community?>(null)
 
-    private val _hasLoaded = MutableStateFlow(false) // true after first real emission
+    private val _hasLoaded = MutableStateFlow(false) 
     val hasLoaded: StateFlow<Boolean> = _hasLoaded.asStateFlow()
 
     val currentUserSelectedCommunity: StateFlow<Community?> =

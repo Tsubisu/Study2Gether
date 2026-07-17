@@ -71,7 +71,7 @@ fun ChannelScreen(
     val isModerator by viewModel.isModerator.collectAsStateWithLifecycle()
     val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
 
-    // Observe channel details for description and metadata
+    
     val channelsFlow = remember(channelId) {
         AppRepositories.channelRepository.observeChannelsForCommunity(communityId)
     }.collectAsState(initial = emptyList())
@@ -124,7 +124,7 @@ fun ChannelScreen(
             showBackButton = true,
             actions = {
                 Row {
-                    // Quick stats or menu action if needed
+                    
                 }
             },
             barColor = barBgColor
@@ -149,7 +149,7 @@ fun ChannelScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(vertical = 16.dp)
                 ) {
-                    // Header Item: Channel details & Join/Leave
+                    
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
@@ -231,7 +231,7 @@ fun ChannelScreen(
                         }
                     }
 
-                    // Posts Timeline items
+                    
                     if (posts.isEmpty()) {
                         item {
                             Box(
@@ -269,7 +269,7 @@ fun ChannelScreen(
             }
         }
 
-        // Floating Action Button to create a post (visible if member)
+        
         if (isMember) {
             FloatingActionButton(
                 onClick = {
@@ -365,13 +365,13 @@ fun PostCard(
         sdf.format(Date(post.createdAt))
     }
 
-    // Observe comments count reactively
+    
     val commentsFlow = remember(post.id) {
         AppRepositories.channelRepository.observeComments(post.id)
     }.collectAsState(initial = emptyList())
     val commentsCount = commentsFlow.value.size
 
-    // Observe current reaction of the user
+    
     val currentUserId = SessionState.currentUser.collectAsState().value?.id
     val reaction = if (currentUserId != null) {
         remember(post.id, currentUserId) {
@@ -388,7 +388,7 @@ fun PostCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Post metadata (Author and Date)
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -416,7 +416,7 @@ fun PostCard(
             }
             Spacer(modifier = Modifier.height(8.dp))
             
-            // Post Title
+            
             Text(
                 text = post.title,
                 fontSize = 15.sp,
@@ -425,7 +425,7 @@ fun PostCard(
             )
             Spacer(modifier = Modifier.height(6.dp))
             
-            // Post Content
+            
             Text(
                 text = post.content,
                 fontSize = 13.sp,
@@ -436,13 +436,13 @@ fun PostCard(
             
             Spacer(modifier = Modifier.height(12.dp))
             
-            // Interactive Footer (Voting and comments count)
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Vote Buttons
+                
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -475,7 +475,7 @@ fun PostCard(
                     }
                 }
 
-                // Comments count
+                
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)

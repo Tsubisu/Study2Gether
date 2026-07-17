@@ -21,7 +21,7 @@ class LoginScreenInstrumentedTest {
             LoginScreen()
         }
 
-        // Verify elements exist using tags
+        
         composeTestRule.onNodeWithTag("email_input").assertExists()
         composeTestRule.onNodeWithTag("password_input").assertExists()
         composeTestRule.onNodeWithTag("login_button").assertExists()
@@ -34,7 +34,7 @@ class LoginScreenInstrumentedTest {
             LoginScreen()
         }
 
-        // Enter email and verify it exists in the node
+        
         composeTestRule.onNodeWithTag("email_input").performTextInput("test@example.com")
         composeTestRule.onNodeWithTag("email_input").assert(hasText("test@example.com"))
     }
@@ -45,7 +45,7 @@ class LoginScreenInstrumentedTest {
             LoginScreen()
         }
 
-        // Enter password and verify it exists
+        
         composeTestRule.onNodeWithTag("password_input").performTextInput("Secret123")
         composeTestRule.onNodeWithTag("password_input").assertExists()
     }
@@ -56,7 +56,7 @@ class LoginScreenInstrumentedTest {
             LoginScreen()
         }
 
-        // Toggle icon exists and can be clicked
+        
         composeTestRule.onNodeWithTag("password_toggle").assertExists()
         composeTestRule.onNodeWithTag("password_toggle").performClick()
     }
@@ -72,10 +72,10 @@ class LoginScreenInstrumentedTest {
             )
         }
 
-        // Click "Sign In" button via tag
+        
         composeTestRule.onNodeWithTag("sign_in_button").performClick()
 
-        // Verify the callback was triggered
+        
         assertTrue(signInClicked)
     }
 }

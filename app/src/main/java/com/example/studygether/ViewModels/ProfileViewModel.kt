@@ -45,7 +45,7 @@ class ProfileViewModel : ViewModel() {
         viewModelScope.launch {
             usersRef.child(uid).child("status").setValue(status)
                 .addOnSuccessListener {
-                    // Locally sync SessionState if needed
+                    
                     SessionState.currentUser.value?.let { user ->
                         SessionState.setUser(user.copy(status = status))
                     }

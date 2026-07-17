@@ -131,7 +131,7 @@ fun VideoCallScreen(
                 override fun onSurfaceTextureUpdated(surface: android.graphics.SurfaceTexture) {}
             }
 
-            // Fallback: If surfaces are already available upon composition, trigger manually
+            
             if (localTextureView.isAvailable) {
                 try { ZegoExpressEngine.getEngine().startPreview(ZegoCanvas(localTextureView)) } catch (e: Exception) {}
             }
@@ -205,13 +205,13 @@ fun VideoCallScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-        // Remote stream
+        
         AndroidView(
             factory = { remoteTextureView },
             modifier = Modifier.fillMaxSize()
         )
 
-        // Local Preview
+        
         Box(
             modifier = Modifier
                 .padding(16.dp)
@@ -226,7 +226,7 @@ fun VideoCallScreen(
             )
         }
 
-        // Action controls
+        
         Card(
             modifier = Modifier
                 .align(Alignment.BottomCenter)

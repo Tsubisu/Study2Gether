@@ -289,7 +289,7 @@ class CommunityRepositoryImpl(
         userCommunitiesJob = null
         hasAutoSelected = false
         UserCommunity.reset()
-        // lastSelectedStore intentionally NOT cleared — needed for next login's auto-select
+        
     }
 
     override suspend fun getMemberRole(communityId: String, userId: String): Result<String?> =

@@ -155,7 +155,7 @@ fun PostDetailScreen(
                     }
                 }
 
-                // Comment input box at bottom of container
+                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

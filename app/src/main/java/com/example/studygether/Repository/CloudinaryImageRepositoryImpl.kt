@@ -25,7 +25,7 @@ class CloudinaryImageRepositoryImpl : ImageRepository {
     override fun uploadImage(context: Context, imageUri: Uri, callback: (UploadResult?) -> Unit) {
         ensureInitialized(context)
 
-        // Copy content URI to internal cache directory to ensure background job permissions
+        
         val tempFile = try {
             val inputStream = context.contentResolver.openInputStream(imageUri) ?: throw Exception("Failed to open input stream")
             val file = java.io.File(context.cacheDir, "temp_profile_${System.currentTimeMillis()}.jpg")

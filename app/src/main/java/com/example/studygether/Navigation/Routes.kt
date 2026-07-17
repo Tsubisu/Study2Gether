@@ -2,13 +2,13 @@ package com.example.studygether.Navigation
 import com.example.studygether.Model.User
 import kotlinx.serialization.Serializable
 
-//Graph for Main Application
+
 @Serializable object MainGraphRoute
 
 @Serializable
 object Home
 
-//App Screens
+
 @Serializable object HomePage
 @Serializable object ConvoList
 @Serializable data class Convo(val name:String, val image:Int, val targetUserId:String)
@@ -26,9 +26,9 @@ object Home
 
 
 
-//Graph for authentication related screens
+
 @Serializable object AuthGraph
-//Auth Screens
+
 @Serializable object Login
 @Serializable object CommunityCreation
 @Serializable object ForgetPassword

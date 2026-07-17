@@ -103,7 +103,7 @@ class SignInViewModel: ViewModel() {
             emailError, passwordError, confirmPasswordError
         ).any { it.isNotEmpty() }
 
-        if (hasErrors) return  // stop here, errors are already shown in UI
+        if (hasErrors) return  
 
         viewModelScope.launch {
             _uiState.update { it.copy(isRegistering = true, registrationError = "")

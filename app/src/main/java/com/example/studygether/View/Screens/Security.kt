@@ -119,7 +119,7 @@ fun SecurityBody(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Current Password
+                
                 PasswordField(
                     value = currentPassword,
                     onValueChange = { currentPassword = it },
@@ -128,7 +128,7 @@ fun SecurityBody(
                     onToggleVisibility = { currentPasswordVisible = !currentPasswordVisible }
                 )
 
-                // New Password
+                
                 PasswordField(
                     value = newPassword,
                     onValueChange = { newPassword = it },
@@ -137,7 +137,7 @@ fun SecurityBody(
                     onToggleVisibility = { newPasswordVisible = !newPasswordVisible }
                 )
 
-                // Confirm New Password
+                
                 PasswordField(
                     value = confirmPassword,
                     onValueChange = { confirmPassword = it },
@@ -148,7 +148,7 @@ fun SecurityBody(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Update Button
+                
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -257,10 +257,10 @@ fun PasswordField(
     )
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun SecurityPreview() {
-//    StudyGetherTheme {
-//        SecurityBody()
-//    }
-//}
+
+
+
+
+
+
+

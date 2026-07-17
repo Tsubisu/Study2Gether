@@ -25,7 +25,7 @@ class ConvoListViewModel : ViewModel() {
     val blockedUserIds: StateFlow<Set<String>> = ZegoService.blockedUserIds
 
     init {
-        // Observe community members when the selected community or current user changes
+        
         viewModelScope.launch {
             combine(
                 UserCommunity.currentUserSelectedCommunity,
@@ -38,7 +38,7 @@ class ConvoListViewModel : ViewModel() {
                         val currentUid = currentUser.id
                         val filteredIds = memberIds.filter { it != currentUid }
                         
-                        // Fetch details for each member
+                        
                         val membersList = mutableListOf<User>()
                         filteredIds.forEach { id ->
                             val userResult = userRepository.getUser(id)
@@ -63,7 +63,7 @@ class ConvoListViewModel : ViewModel() {
     fun refreshActiveChats() {
         ZegoService.queryConversations { list, _ ->
             if (list != null) {
-                // Filter: only keep conversations with users from the same community
+                
                 val memberIds = _communityMembers.value.map { it.id }.toSet()
                 val filteredList = list.filter { it.conversationID in memberIds }
                 _activeConversations.value = filteredList

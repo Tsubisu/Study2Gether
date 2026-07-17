@@ -21,18 +21,18 @@ interface ChannelRepository {
     suspend fun isMember(channelId: String, userId: String): Boolean
     suspend fun isModerator(channelId: String, userId: String): Boolean
 
-    // Reddit-style post features
+    
     suspend fun createPost(channelId: String, communityId: String, authorId: String, authorName: String, title: String, content: String): Result<String>
     fun observePosts(channelId: String): Flow<List<Post>>
     fun observePost(postId: String): Flow<Post?>
     suspend fun deletePost(channelId: String, postId: String): Result<Unit>
     
-    // Likes / Dislikes
+    
     suspend fun toggleLikePost(postId: String, userId: String): Result<Unit>
     suspend fun toggleDislikePost(postId: String, userId: String): Result<Unit>
     fun observeUserPostReaction(postId: String, userId: String): Flow<String?>
 
-    // Commenting features
+    
     suspend fun createComment(postId: String, authorId: String, authorName: String, content: String): Result<String>
     fun observeComments(postId: String): Flow<List<Comment>>
     suspend fun deleteComment(postId: String, commentId: String): Result<Unit>

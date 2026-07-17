@@ -103,14 +103,14 @@ fun ProfileScreen(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        // User Info Section
+        
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Avatar representation
+            
             Box(
                 modifier = Modifier.clickable(enabled = !isUploading) {
                     val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -156,7 +156,7 @@ fun ProfileScreen(
                     }
                 }
 
-                // Active dot
+                
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -190,7 +190,7 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Update status trigger
+        
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -232,7 +232,7 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        // Options List
+        
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -278,7 +278,7 @@ fun ProfileScreen(
             )
         }
 
-        // Logout Action
+        
         Button(
             onClick = { viewModel.logout() },
             modifier = Modifier
@@ -499,7 +499,7 @@ fun ProfileOptionItem(
         Icon(
             imageVector = icon,
             contentDescription = title,
-            //tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(24.dp)
         )
